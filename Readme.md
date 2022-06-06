@@ -82,11 +82,11 @@ cd frontend && yarn quasar dev
 ### Собираем:
 
 ```bash
-docker build -t moscow_hack_1 . --no-cache
+docker build -t moscow_hack . --no-cache
 ```
 
 ### Запускаем:
 
 ```bash
-docker run -it -p 5000:80  moscow_hack_1 sh
+docker run -it -p 5000:80  moscow_hack
 ```
