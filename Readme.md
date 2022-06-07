@@ -44,6 +44,27 @@ wsl
 cd frontend && yarn
 ```
 
+Создать `env-файл`:
+
+```bash
+# Linux and MacOS
+
+cd frontend 
+
+touch .env
+
+# Windows
+
+wsl
+# Далее аналогично как для Linux
+```
+
+Положить в него необходимые переменные:
+
+```bash
+APP_BACKEND=https://localhost
+```
+
 # Инструкция для разработки
 
 ## Backend

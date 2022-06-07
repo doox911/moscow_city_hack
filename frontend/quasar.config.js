@@ -14,6 +14,8 @@
 
 const { configure } = require('quasar/wrappers');
 
+const path = require('path');
+
 module.exports = configure(function (ctx) {
   return {
     // https://v2.quasar.dev/quasar-cli-webpack/supporting-ts
@@ -33,8 +35,8 @@ module.exports = configure(function (ctx) {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files
     boot: [
-
       'axios',
+      'errorHandler',
     ],
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
@@ -80,6 +82,24 @@ module.exports = configure(function (ctx) {
       // https://v2.quasar.dev/quasar-cli-webpack/handling-webpack
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
       // chainWebpack (/* chain */) {}
+      extendWebpack(cfg) {
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias,
+
+          App: path.join(__dirname, './'),
+          Assets: path.join(__dirname, './src/assets'),
+          Boot: path.join(__dirname, './src/boot'),
+          Components: path.join(__dirname, './src/components'),
+          Constants: path.join(__dirname, './src/constants'),
+          Layouts: path.join(__dirname, './src/layouts'),
+          Pages: path.join(__dirname, './src/pages'),
+          Services: path.join(__dirname, './src/services'),
+          Src: path.join(__dirname, './src'),
+          Stores: path.join(__dirname, './src/stores'),
+        };
+      },
+
+      env: require('dotenv').config().parsed,
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-devServer
