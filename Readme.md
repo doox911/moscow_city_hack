@@ -22,6 +22,9 @@ docker run --rm \
     laravelsail/php81-composer:latest \
     composer install --ignore-platform-reqs
 
+# or 
+docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php81-composer:latest composer install --ignore-platform-reqs
+
 # Windows
 wsl 
 
@@ -71,7 +74,11 @@ APP_BACKEND=https://localhost
 
 ```bash
 # Linux and MacOS
-cd backend && ./vendor/bin/sail up
+cd backend
+
+cp .env.example .env
+
+./vendor/bin/sail up
 
 # Windows
 wsl
