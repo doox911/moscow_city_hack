@@ -74,7 +74,11 @@ APP_BACKEND=https://localhost
 
 ```bash
 # Linux and MacOS
-cd backend && ./vendor/bin/sail up
+cd backend
+
+cp .env.example .env
+
+./vendor/bin/sail up
 
 # Windows
 wsl
