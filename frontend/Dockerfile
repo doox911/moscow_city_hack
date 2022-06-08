@@ -10,12 +10,14 @@ ARG api=http://localhost
 
 ENV APP_BACKEND=$api
 
+RUN touch .env
+
+RUN echo "APP_BACKEND=$api" >> .env
+
 # build
 FROM frontend as build-frontend
 
 RUN yarn
-
-RUN ls
 
 RUN quasar build
 

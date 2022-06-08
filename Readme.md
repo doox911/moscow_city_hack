@@ -7,13 +7,15 @@
 - Yarn (`npm install --global yarn`)
 - Docker
 
-## После клонирования
+# Инструкция для демонстрации
 
-### Backend
+## Backend
 
+### Linux and MacOS:
 ```bash
-# Linux and MacOS
 cd backend 
+
+cp .env-example .env
 
 docker run --rm \
     -u "$(id -u):$(id -g)" \
@@ -22,94 +24,17 @@ docker run --rm \
     laravelsail/php81-composer:latest \
     composer install --ignore-platform-reqs
 
-# or 
-docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php81-composer:latest composer install --ignore-platform-reqs
-
-# Windows
-wsl 
-
-# Дальше как для Linux
-```
-
-> Может попросить сгенерировать ключ, кнопка в правом верхнем углу.
-
-### Frontend
-
-```bash
-# Linux and MacOS
-cd frontend && yarn
-
-# Windows
-cd frontend
-yarn
-
-# or
-wsl
-
-cd frontend && yarn
-```
-
-Создать `env-файл`:
-
-```bash
-# Linux and MacOS
-
-cd frontend 
-
-touch .env
-
-# Windows
-
-wsl
-# Далее аналогично как для Linux
-```
-
-Положить в него необходимые переменные:
-
-```bash
-APP_BACKEND=https://localhost
-```
-
-# Инструкция для разработки
-
-## Backend
-
-```bash
-# Linux and MacOS
-cd backend
-
-cp .env.example .env
-
 ./vendor/bin/sail up
-
-# Windows
-wsl
-
-cd backend && ./vendor/bin/sail up
 ```
+### Windows:
+
+Используем `wsl`
+
+> Может попросить **сгенерировать ключ**, кнопка в правом верхнем углу.
 
 ## Frontend
 
-Запуск dev-сервера:
-
-```bash
-# Linux and MacOS
-cd frontend && yarn quasar dev
-
-# Windows
-wsl
-
-cd frontend && yarn quasar dev
-```
-> На *Windows* есть конфликты с локальным хостом. Quasar предлагает альтернативные хосты.
-
-# Инструкция для демонстрации
-
-## Backend
-
-## Frontend
-
-### Собираем:
+Windows, Linux, MacOS:
 
 ```bash
 docker build -t moscow_hack ./frontend --no-cache
@@ -120,3 +45,68 @@ docker build -t moscow_hack ./frontend --no-cache
 ```bash
 docker run -p 5000:80  moscow_hack
 ```
+
+# Инструкция для разработки
+
+## Backend
+
+- Подготовка
+
+    Linux, MacOS:
+
+    ```bash
+    cd backend 
+
+    cp .env-example .env
+
+    docker run --rm \
+        -u "$(id -u):$(id -g)" \
+        -v $(pwd):/var/www/html \
+        -w /var/www/html \
+        laravelsail/php81-composer:latest \
+        composer install --ignore-platform-reqs
+
+    # or 
+    docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php81-composer:latest composer install --ignore-platform-reqs
+    ```
+    ### Windows:
+
+    Используем `wsl`
+
+    > Может попросить **сгенерировать ключ**, кнопка в правом верхнем углу.
+
+- Работа
+
+    ```bash
+    ./vendor/bin/sail up
+
+    # В фоне
+    ./vendor/bin/sail up -d
+    ```
+
+## Frontend
+- Подготовка
+
+    Linux and MacOS:
+    ```bash
+    cd frontend && yarn
+
+    cp .env-example .env
+    ```
+    Windows:
+
+    ```bash
+    wsl
+
+    cd frontend && yarn
+
+    cp .env-example .env
+    ```
+
+- Работа
+
+    ```bash
+    cd frontend && yarn quasar dev
+    ```
+
+> На *Windows* есть конфликты с локальным хостом. Quasar предлагает альтернативные хосты.

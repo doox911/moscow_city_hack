@@ -99,9 +99,7 @@ module.exports = configure(function (ctx) {
         };
       },
 
-      env: {
-        APP_BACKEND: process.env.APP_BACKEND
-      },
+      env: require('dotenv').config().parsed,
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-devServer
