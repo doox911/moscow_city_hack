@@ -34,13 +34,9 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files
-    boot: [{
-        client: false,
-        path: 'axios'
-      }, {
-        client: false,
-        path: 'errorHandler'
-      }
+    boot: [
+      'axios',
+      'errorHandler'
     ],
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
@@ -103,7 +99,9 @@ module.exports = configure(function (ctx) {
         };
       },
 
-      env: require('dotenv').config().parsed,
+      env: {
+        APP_BACKEND: process.env.APP_BACKEND
+      },
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-devServer
