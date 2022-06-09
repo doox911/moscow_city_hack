@@ -1,7 +1,7 @@
 /**
  * Libraries
  */
-import { axios } from 'Boot/axios';
+import { api, axios } from 'Boot/axios';
 
 /**
  * Types
