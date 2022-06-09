@@ -91,6 +91,7 @@ module.exports = configure(function (ctx) {
           Boot: path.join(__dirname, './src/boot'),
           Components: path.join(__dirname, './src/components'),
           Constants: path.join(__dirname, './src/constants'),
+          Hooks: path.join(__dirname, './src/hooks'),
           Layouts: path.join(__dirname, './src/layouts'),
           Pages: path.join(__dirname, './src/pages'),
           Services: path.join(__dirname, './src/services'),
