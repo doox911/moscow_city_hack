@@ -27,7 +27,7 @@ export class AuthService {
   /**
    * Осуществляется запрос входа в систему
    */
-  async login({ email, password }: UserData): Promise<any> {
+  async login({ email, password }: UserDataForLogin): Promise<any> {
     const { access_token } = await apiLogin({
       email,
       password,
@@ -42,11 +42,13 @@ export class AuthService {
   async registration({
     name,
     email,
+    role,
     password
-  }: UserData): Promise<ResponseTokens> {
+  }: UserDataForSave): Promise<ResponseTokens> {
     return await apiSignupUser({
       name,
       email,
+      role,
       password,
     });
   }
@@ -79,8 +81,14 @@ export class AuthService {
 
 export default new AuthService();
 
-interface UserData {
-  name?: string;
+interface UserDataForSave {
+  name: string;
+  email: string;
+  role: string;
+  password: string;
+}
+
+interface UserDataForLogin {
   email: string;
   password: string;
 }
