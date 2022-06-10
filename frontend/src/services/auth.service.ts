@@ -1,20 +1,16 @@
 import { apiGetUserInfo, apiLogin, apiLogoutAccess, apiSignupUser } from '../api/users';
 import { userStore } from '../stores/userStore';
 import { Token } from '../classes/token';
+import { ResponseTokens } from '../types';
 
-/**
- * @TODO Добавить сохранение user в userStore
- * @TODO Добавить в userStore token
- */
 export class AuthService {
   accessToken: Token = new Token('access_token', 0);
   /**
    * Запрос пользователя, если есть токен
    */
-  init()
-  {
+  init() {
     if(this.isAuthenticated)
-      this.getUserInfo();
+      this.updateUserInfo();
   }
   /**
    * Получить текущий access токен
@@ -38,7 +34,7 @@ export class AuthService {
     });
     this.accessToken.save(access_token);
 
-    await this.getUserInfo();
+    await this.updateUserInfo();
   }
   /**
    * Осуществляется запрос регистрации пользователя
@@ -47,17 +43,18 @@ export class AuthService {
     name,
     email,
     password
-  }: UserData): Promise<any> {
+  }: UserData): Promise<ResponseTokens> {
     return await apiSignupUser({
       name,
       email,
       password,
     });
   }
-  async getUserInfo()
-  {
+  async updateUserInfo() {
     const data = await apiGetUserInfo();
+
     const { setUser } = userStore();
+
     data && setUser(data);
   }
   /**
