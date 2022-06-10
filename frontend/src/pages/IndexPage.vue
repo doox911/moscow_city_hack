@@ -80,8 +80,12 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from 'vue';
-  import { useRouter } from 'vue-router';
+  import { computed, ref, onMounted} from 'vue';
+  
+  /**
+   * Routers
+   */
+  import { useRoute, useRouter } from 'vue-router';
 
   /**
    * Components
@@ -102,6 +106,11 @@
    * Store
    */
   import { userStore } from '../stores/userStore';
+
+  /**
+   * Constants
+   */
+  import { Roles } from '../constants';
 
   const router = useRouter();
 
@@ -124,6 +133,8 @@
 
   const resetTooltip = ref(false);
 
+  const route = useRoute();
+
   async function login() {
     if (!disabled.value) {
       loading.value = true;
@@ -138,7 +149,7 @@
       const { user } = userStore();
 
       if (user.id !== -1) {
-        router.push("/" + user.role);
+        router.push('/' + user.role);
       }
     }
   }
@@ -149,4 +160,16 @@
       password: '',
     };
   }
+
+  onMounted(() => {
+    const { user } = userStore();
+      
+    if (route.name !== user.role) {
+      router.push({
+        name: user.role === Roles.Guest
+          ? 'home'
+          : user.role,
+      })
+    }
+  });
 </script>
