@@ -1,12 +1,7 @@
 /**
  * Api
  */
-import ApiRequest, { RequestResponse } from './ApiRequest';
-
-/**
- * Service
- */
-import AuthService from '../services/auth.service';
+import ApiRequest from './ApiRequest';
 
 /**
  * Types
