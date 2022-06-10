@@ -51,10 +51,15 @@ class AuthController extends Controller {
 
     $token = $user->createToken('auth_token')->plainTextToken;
 
-    return response()->json([
-      'access_token' => $token,
-      'token_type' => 'Bearer',
-    ]);
+    $result = [
+      'messages' => ['Данные пользователя обновлены'],
+      'content' => [
+        'access_token' => $token,
+        'token_type' => 'Bearer',
+      ],
+    ];
+
+    return response()->json($result);
   }
 
   /**
@@ -83,10 +88,15 @@ class AuthController extends Controller {
 
     $token = $user->createToken('auth_token')->plainTextToken;
 
-    return response()->json([
-      'access_token' => $token,
-      'token_type' => 'Bearer',
-    ]);
+    $result = [
+      'messages' => ['Пользователь успешно создан'],
+      'content' => [
+        'access_token' => $token,
+        'token_type' => 'Bearer',
+      ],
+    ];
+
+    return response()->json($result);
   }
 
   /**
@@ -104,10 +114,15 @@ class AuthController extends Controller {
 
     $token = $user->createToken('auth_token')->plainTextToken;
 
-    return response()->json([
-      'access_token' => $token,
-      'token_type' => 'Bearer',
-    ]);
+    $result = [
+      'messages' => ['Пользователь успешно авторизован'],
+      'content' => [
+        'access_token' => $token,
+        'token_type' => 'Bearer',
+      ],
+    ];
+
+    return response()->json($result);
   }
 
   /**
@@ -119,8 +134,13 @@ class AuthController extends Controller {
       $request->user()->currentAccessToken()->delete();
     }
 
-    return response()->json([
-      'is_logout' => true
-    ]);
+    $result = [
+      'messages' => ['Пользователь вышел из системы'],
+      'content' => [
+        'is_logout' => true,
+      ],
+    ];
+
+    return response()->json($result);
   }
 }
