@@ -5,18 +5,25 @@
         <q-input
           v-model="userData.name"
           :rules="[ requiredStringRule ]"
-          label="Login"
+          label="Имя"
         />
         <q-input
           v-model="userData.email"
           :rules="[ requiredStringRule ]"
           label="Email"
         />
+        <q-select
+          v-model="userData.role"
+          :options="roleList"
+          :rules="[ requiredSelectRule ]"
+          label="Роль"
+        />
         <q-input
           v-model="userData.password"
           :rules="[ requiredStringRule ]"
           :type="isPwd ? 'password' : 'text'"
-          label="Password"
+          label="Пароль"
+          ref="fldPasswordChange"
         >
           <template v-slot:append>
             <q-icon
@@ -28,9 +35,9 @@
         </q-input>
         <q-input
           v-model="userData.confirmPassword"
-          :rules="[ requiredStringRule ]"
+          :rules="[ requiredStringRule, (v) => requiredPasswordRule(v, userData.password) ]"
           :type="isPwd ? 'password' : 'text'"
-          label="Confirm password"
+          label="Подтверждение пароля"
         >
           <template v-slot:append>
             <q-icon
@@ -43,7 +50,7 @@
         <q-btn
           color="primary float-right"
           label="Registration"
-          :disable="disabled()"
+          :disable="disabled"
           style="margin-top: 20px"
           @click="registration()"
         />
@@ -53,36 +60,46 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { computed, ref } from 'vue';
   import { useRouter } from 'vue-router';
   import AuthService from '../services/auth.service';
-  import { requiredStringRule } from '../common/rules';
+  import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from '../common/rules';
 
   const router = useRouter();
 
   const userData = ref({
     name: '',
     email: '',
+    role: '',
     password: '',
     confirmPassword: '',
   });
 
   let isPwd = ref(true);
 
+  const roleList = ref([
+    { value: 'admin', label: 'Администратор' },
+    { value: 'user', label: 'Пользователь' },
+    { value: 'company', label: 'Предприятие' },
+  ])
+
   async function registration() {
       await AuthService.registration({
         name: userData.value.name,
         email: userData.value.email,
+        role: userData.value.role,
         password: userData.value.password
       });
       router.push('/login');
   }
-  function disabled(): boolean
-  {
+  /**
+   * Отправить запрос можно только при наличии всех значений
+   */
+  const disabled = computed(() => {
     return !userData.value.name
       || !userData.value.email
       || !userData.value.password
       || !userData.value.confirmPassword
       || userData.value.password !== userData.value.confirmPassword;
-  }
+  })
 </script>
