@@ -62,7 +62,7 @@ class AuthController extends Controller {
           'content' => [],
         ];
 
-        return response()->json($result);
+        return response()->json($result, 500);
       }
     }
 
