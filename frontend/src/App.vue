@@ -11,13 +11,6 @@
     name: 'App',
     setup()
     {
-      ApiRequest.beforeRequest = (request) => {
-        request.config.headers = {
-          'content-type': 'application/json',
-          'Authorization': `Bearer ${ AuthService.getToken() }`,
-        };
-      };
-      AuthService.init();
     }
   });
 </script>

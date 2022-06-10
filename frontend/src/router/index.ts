@@ -6,7 +6,9 @@ import {
   createWebHistory,
 } from 'vue-router';
 import AuthService from '../services/auth.service';
+import { userStore } from '../stores/userStore';
 import routes from './routes';
+import { storeToRefs } from 'pinia'
 
 /*
  * If not building with SSR mode, you can
@@ -37,14 +39,17 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, from, next) => {
+    const { user } = storeToRefs(userStore());
     // Если пользователь уже зашел, скидывать на /main
     if (to.matched.some((record) => record.meta.guest)) {
-      if (AuthService.isAuthenticated) return next({ path: '/main' });
+      if (AuthService.isAuthenticated) return next({ path: user.value.role });
       next();
     }
     // Если для страницы нужна авторизация
-    else if (to.matched.some((record) => record.meta.requiresAuth)) {
-      if (AuthService.isAuthenticated) return next();
+    else if (to.matched.some((record) => record.meta.role)) {
+      if (AuthService.isAuthenticated) {
+        return next({ path: user.value.role });
+      }
       next({ path: '/login' });
     } else next();
   });

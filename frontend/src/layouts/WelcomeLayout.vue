@@ -1,23 +1,5 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" />
-
-        <template v-if="user.name">
-          <q-btn flat dense label="Main" to="/main" />
-          <q-btn flat dense label="Logout" @click="logout" />
-        </template>
-
-        <template v-else>
-          <q-btn flat dense label="Registration" to="/registration" />
-          <q-btn flat dense label="Login" to="/login" />
-        </template>
-
-        <div style="margin-left: auto">{{ user.name }}</div>
-      </q-toolbar>
-    </q-header>
-
     <q-page-container>
       <router-view />
     </q-page-container>

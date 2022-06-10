@@ -1,20 +1,16 @@
 import { apiGetUserInfo, apiLogin, apiLogoutAccess, apiSignupUser } from '../api/users';
 import { userStore } from '../stores/userStore';
 import { Token } from '../classes/token';
+import { ResponseTokens } from '../types';
 
-/**
- * @TODO Добавить сохранение user в userStore
- * @TODO Добавить в userStore token
- */
 export class AuthService {
   accessToken: Token = new Token('access_token', 0);
   /**
    * Запрос пользователя, если есть токен
    */
-  init()
-  {
+  async init() {
     if(this.isAuthenticated)
-      this.getUserInfo();
+      await this.updateUserInfo();
   }
   /**
    * Получить текущий access токен
@@ -31,14 +27,13 @@ export class AuthService {
   /**
    * Осуществляется запрос входа в систему
    */
-  async login({ email, password }: UserData): Promise<any> {
+  async login({ email, password }: UserDataForLogin): Promise<any> {
     const { access_token } = await apiLogin({
       email,
       password,
     });
+    await this.updateUserInfo();
     this.accessToken.save(access_token);
-
-    await this.getUserInfo();
   }
   /**
    * Осуществляется запрос регистрации пользователя
@@ -46,18 +41,21 @@ export class AuthService {
   async registration({
     name,
     email,
+    role,
     password
-  }: UserData): Promise<any> {
+  }: UserDataForSave): Promise<ResponseTokens> {
     return await apiSignupUser({
       name,
       email,
+      role,
       password,
     });
   }
-  async getUserInfo()
-  {
+  async updateUserInfo() {
     const data = await apiGetUserInfo();
+
     const { setUser } = userStore();
+
     data && setUser(data);
   }
   /**
@@ -65,8 +63,11 @@ export class AuthService {
    */
   async logout(): Promise<any> {
     await apiLogoutAccess();
+
     this.clearToken();
+
     const { removeUser } = userStore();
+    
     removeUser();
   }
   /**
@@ -79,8 +80,14 @@ export class AuthService {
 
 export default new AuthService();
 
-interface UserData {
-  name?: string;
+interface UserDataForSave {
+  name: string;
+  email: string;
+  role: string;
+  password: string;
+}
+
+interface UserDataForLogin {
   email: string;
   password: string;
 }
