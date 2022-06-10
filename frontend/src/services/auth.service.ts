@@ -42,12 +42,14 @@ export class AuthService {
    */
   async registration({
     name,
+    second_name,
     email,
     role,
     password
-  }: UserDataForSave): Promise<ResponseTokens> {
+  }: UserDataForSave): Promise<ResponseTokens | null> {
     return await apiSignupUser({
       name,
+      second_name,
       email,
       role,
       password,
@@ -84,6 +86,7 @@ export default new AuthService();
 
 interface UserDataForSave {
   name: string;
+  second_name: string;
   email: string;
   role: string;
   password: string;

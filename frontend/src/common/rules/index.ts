@@ -16,7 +16,6 @@ export function requiredPasswordRule(
   confirmPassword?: string,
   message = 'Пароли должны совпадать',
 ) {
-  console.log(password, confirmPassword)
   if (password != confirmPassword) {
     return message;
   }

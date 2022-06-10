@@ -35,8 +35,8 @@ import { requestWrapper } from '../common/wrappers';
 export async function apiSignupUser(
   data: object,
   config?: AxiosRequestConfig,
-): Promise<ResponseTokens> {
-  let tokens: ResponseTokens = { access_token: '', token_type: '' };
+): Promise<ResponseTokens | null> {
+  let tokens: ResponseTokens | null = null;
   await requestWrapper({
     success: async () => {
       tokens = (await new ApiRequest(config).post<ResponseTokens>('api/register', data) as ApiResponse<ResponseTokens>).content;
