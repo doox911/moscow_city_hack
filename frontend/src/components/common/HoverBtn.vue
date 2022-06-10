@@ -19,7 +19,7 @@
   /**
    * Components
    */
-  import Tooltip from 'Components/common/Tooltip.vue';
+  import Tooltip from 'components/common/Tooltip.vue';
 
   /**
    * Hooks

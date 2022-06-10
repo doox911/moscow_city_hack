@@ -12,7 +12,7 @@ export enum Roles {
   /**
    * Собственник компании
    */
-  Owner = 'Owner',
+  Owner = 'owner',
 
   /**
    * Гость

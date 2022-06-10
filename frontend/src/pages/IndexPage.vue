@@ -7,15 +7,10 @@
     </div>
     <div class="row items-center justify-center">
       <div class="col-auto">
-<<<<<<< HEAD
-        <h1 class="text-center non-selectable text-weight-regular text-h5 text-grey-9">
-          <span class="text-weight-bold">Д</span>обро пожаловать в <span class="text-weight-bold text-green">М</span>ос<span class="text-weight-bold text-green">И</span>мпорт<span class="text-weight-bold text-green">З</span>ам
-=======
         <h1
           class="text-center non-selectable text-weight-regular text-h5 text-grey-9"
         >
           <span class="text-weight-bold">Д</span>обро пожаловать в <span class="text-weight-bold text-green">М</span>ос<span class="text-weight-bold text-green">И</span>порт<span class="text-weight-bold text-green">З</span>ам
->>>>>>> 37cfc59c134e82304d7266d70f6c8a9740ceff27
         </h1>
       </div>
     </div>
@@ -112,15 +107,11 @@
 
   const disabled = computed(() => {
     return !userData.value.email?.length || !userData.value.password?.length;
-<<<<<<< HEAD
-  })
-=======
   });
->>>>>>> 37cfc59c134e82304d7266d70f6c8a9740ceff27
-
-  const isPwd = ref(true);
 
   const loading = ref(false);
+
+  const isPwd = ref(true);
 
   const infoTooltip = ref(false);
 
@@ -142,7 +133,7 @@
       const { user } = userStore();
 
       if (user.id !== -1) {
-        router.push(user.role);
+        router.push("/" + user.role);
       }
     }
   }

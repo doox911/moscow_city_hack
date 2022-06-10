@@ -8,9 +8,9 @@ export class AuthService {
   /**
    * Запрос пользователя, если есть токен
    */
-  init() {
+  async init() {
     if(this.isAuthenticated)
-      this.updateUserInfo();
+      await this.updateUserInfo();
   }
   /**
    * Получить текущий access токен
@@ -32,9 +32,8 @@ export class AuthService {
       email,
       password,
     });
-    this.accessToken.save(access_token);
-
     await this.updateUserInfo();
+    this.accessToken.save(access_token);
   }
   /**
    * Осуществляется запрос регистрации пользователя

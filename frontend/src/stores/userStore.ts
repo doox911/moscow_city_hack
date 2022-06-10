@@ -34,6 +34,7 @@ export const userStore = defineStore('user', () => {
 
   async function setUser(u: User) {
     user.value = u;
+    user.value.role = user.value.role || Roles.Guest
   }
 
   function removeUser() {
@@ -49,10 +50,15 @@ export const userStore = defineStore('user', () => {
       updated_at: '',
     };
   }
+  function isAuthenticated()
+  {
+    return user.value.id !== -1;
+  }
 
   return {
     removeUser,
     setUser,
     user,
+    isAuthenticated,
   };
 });
