@@ -4,45 +4,44 @@ import { Roles } from '../constants';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
+    name: 'index',
     component: () => import('layouts/WelcomeLayout.vue'),
     meta: { guest: true },
     children: [
       {
-        path: '',
+        path: '/',
+        name: 'home',
         component: () => import('pages/IndexPage.vue'),
       },
       {
-        path: 'login', redirect: '/'
-      }
-    ]
-  },
-  {
-    path: "/" + Roles.Admin,
-    component: () => import('pages/AdminPage.vue'),
-    meta: { role: Roles.Admin },
-    children: [
+        path: '/' + Roles.Guest,
+        name: Roles.Guest,
+        component: () => import('pages/IndexPage.vue'),
+      },
       {
-        path: 'registration',
-        component: () => import('pages/RegistrationPage.vue'),
+        path: '/' + Roles.Admin,
+        component: () => import('pages/AdminPage.vue'),
+        meta: { role: Roles.Admin },
+        children: [
+          {
+            path: 'registration',
+            component: () => import('pages/RegistrationPage.vue'),
+          },
+        ]
+      },
+      {
+        path: '/' + Roles.Government,
+        component: () => import('pages/GovernmentPage.vue'),
+        meta: { role: Roles.Government },
+      },
+      {
+        path: '/' + Roles.Owner,
+        component: () => import('pages/OwnerPage.vue'),
+        meta: { role: Roles.Owner },
       },
     ]
   },
-  {
-    path: "/" + Roles.Government,
-    component: () => import('pages/GovernmentPage.vue'),
-    meta: { role: Roles.Government },
-  },
-  {
-    path: "/" + Roles.Owner,
-    component: () => import('pages/OwnerPage.vue'),
-    meta: { role: Roles.Owner },
-  },
-  /* {
-    path: "/" + Roles.Guest,
-    redirect: "/", */
-    /* component: () => import('pages/GuestPage.vue'),
-    meta: { role: Roles.Guest }, */
-  /* }, */
+
 
   // Always leave this as last one,
   // but you can also remove it
