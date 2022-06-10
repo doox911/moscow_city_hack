@@ -7,43 +7,53 @@
     </div>
     <div class="row items-center justify-center">
       <div class="col-auto">
+<<<<<<< HEAD
         <h1 class="text-center non-selectable text-weight-regular text-h5 text-grey-9">
           <span class="text-weight-bold">Д</span>обро пожаловать в <span class="text-weight-bold text-green">М</span>ос<span class="text-weight-bold text-green">И</span>мпорт<span class="text-weight-bold text-green">З</span>ам
+=======
+        <h1
+          class="text-center non-selectable text-weight-regular text-h5 text-grey-9"
+        >
+          <span class="text-weight-bold">Д</span>обро пожаловать в <span class="text-weight-bold text-green">М</span>ос<span class="text-weight-bold text-green">И</span>порт<span class="text-weight-bold text-green">З</span>ам
+>>>>>>> 37cfc59c134e82304d7266d70f6c8a9740ceff27
         </h1>
       </div>
     </div>
     <div class="row items-center justify-center">
       <q-card class="my-card" style="width: 400px; padding: 20px">
         <q-form @submit="login" @reset="reset">
-
-        <q-card-section class="q-ma-none q-pa-none">
-          <p class="q-ma-none q-pa-none text-center non-selectable text-weight-regular text-grey-9">Вход в систему</p>
-        </q-card-section>
-        <q-card-section  class="q-mb-none q-pb-none">
-          <q-input
-            v-model="userData.email"
-            :rules="[ requiredStringRule ]"
-            label="Адрес электронной почты"
-            :disable="loading"
-          />
-          <q-input
-            v-model="userData.password"
-            :type="isPwd ? 'password' : 'text'"
-            :rules="[ requiredStringRule ]"
-            label="Пароль"
-            :disable="loading"
-          >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd = !isPwd"
-              />
-            </template>
-          </q-input>
-        </q-card-section>
-        <q-card-actions class="q-my-none q-py-none" align="right">
-          <q-btn
+          <q-card-section class="q-ma-none q-pa-none">
+            <p
+              class="q-ma-none q-pa-none text-center non-selectable text-weight-regular text-grey-9"
+            >
+              Вход в систему
+            </p>
+          </q-card-section>
+          <q-card-section class="q-mb-none q-pb-none">
+            <q-input
+              v-model="userData.email"
+              :rules="[requiredStringRule]"
+              label="Адрес электронной почты"
+              :disable="loading"
+            />
+            <q-input
+              v-model="userData.password"
+              :type="isPwd ? 'password' : 'text'"
+              :rules="[requiredStringRule]"
+              label="Пароль"
+              :disable="loading"
+            >
+              <template v-slot:append>
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
+              </template>
+            </q-input>
+          </q-card-section>
+          <q-card-actions class="q-my-none q-py-none" align="right">
+            <q-btn
               color="primary float-right"
               label="Сбросить"
               style="margin-top: 20px"
@@ -52,7 +62,7 @@
             >
               <Tooltip v-model="resetTooltip" text="Сбросить форму" />
             </q-btn>
-          <q-btn
+            <q-btn
               color="primary float-right"
               label="Вход"
               :disable="disabled"
@@ -63,7 +73,7 @@
               <Tooltip v-model="loginTooltip" text="Вход в программу" />
             </q-btn>
           </q-card-actions>
-          </q-form>
+        </q-form>
       </q-card>
     </div>
   </q-page>
@@ -76,7 +86,7 @@
   /**
    * Components
    */
-  import Tooltip from 'Components/common/Tooltip.vue'
+  import Tooltip from 'Components/common/Tooltip.vue';
 
   /**
    * Rules
@@ -92,7 +102,7 @@
    * Store
    */
   import { userStore } from '../stores/userStore';
-  
+
   const router = useRouter();
 
   const userData = ref({
@@ -102,7 +112,11 @@
 
   const disabled = computed(() => {
     return !userData.value.email?.length || !userData.value.password?.length;
+<<<<<<< HEAD
   })
+=======
+  });
+>>>>>>> 37cfc59c134e82304d7266d70f6c8a9740ceff27
 
   const isPwd = ref(true);
 
@@ -117,7 +131,7 @@
   async function login() {
     if (!disabled.value) {
       loading.value = true;
-      
+
       await AuthService.login({
         email: userData.value.email,
         password: userData.value.password,
@@ -137,6 +151,6 @@
     userData.value = {
       email: '',
       password: '',
-    }
+    };
   }
 </script>
