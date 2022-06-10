@@ -4,9 +4,9 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" />
 
-        <template v-if="isLoggedIn()">
+        <template v-if="isLoggedIn">
           <q-btn flat dense label="Main" to="/main" />
-          <q-btn flat dense label="Logout" @click="logout()" />
+          <q-btn flat dense label="Logout" @click="logout" />
         </template>
 
         <template v-else>
@@ -14,7 +14,7 @@
           <q-btn flat dense label="Login" to="/login" />
         </template>
 
-        <div style="margin-left: auto">{{ user?.name }}</div>
+        <div style="margin-left: auto">{{ user.name }}</div>
       </q-toolbar>
     </q-header>
 
@@ -25,6 +25,9 @@
 </template>
 
 <script setup lang="ts">
+  import { computed, onMounted } from 'vue'
+  import { storeToRefs } from 'pinia'
+  
   /**
    * Routers
    */
@@ -41,14 +44,11 @@
   import AuthService from '../services/auth.service';
 
   const router = useRouter();
+  
+  const { user } = storeToRefs(userStore());
 
-  const { user } = userStore();
+  const isLoggedIn = computed(() => AuthService.isAuthenticated);
 
-  console.dir(user);
-
-  function isLoggedIn(): boolean {
-    return AuthService.isAuthenticated;
-  }
   async function logout() {
     await AuthService.logout();
 

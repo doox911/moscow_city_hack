@@ -65,8 +65,11 @@ export class AuthService {
    */
   async logout(): Promise<any> {
     await apiLogoutAccess();
+
     this.clearToken();
+
     const { removeUser } = userStore();
+    
     removeUser();
   }
   /**

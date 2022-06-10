@@ -11,14 +11,26 @@ export type User = {
 };
 
 export const userStore = defineStore('user', () => {
-  const user = ref<User | null>(null);
+  const user = ref<User>({
+    id: -1,
+    name: '',
+    email: '',
+    created_at: '',
+    updated_at: '',
+  });
 
   async function setUser(u: User) {
     user.value = u;
   }
 
   function removeUser() {
-    user.value = null;
+    user.value = {
+    id: -1,
+    name: '',
+    email: '',
+    created_at: '',
+    updated_at: '',
+  };
   }
 
   return {
