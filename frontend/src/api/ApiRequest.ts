@@ -1,24 +1,26 @@
 /**
   * Libraries
   */
-import { api, axios } from 'Boot/axios';
+import { api } from 'Boot/axios';
 /**
   * Types
   */
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
+import type { AxiosError, AxiosRequestConfig } from 'axios'
+
 export type RequestResponse<R> = Promise<R | AxiosError<unknown> | null>
 
-export class APIRequest {
+export default class ApiRequest {
 
-  static beforeRequest: (request: APIRequest) => void;
+  static beforeRequest: (request: ApiRequest) => void;
 
   public headers: Map<string, string> = new Map();
+
   constructor(public config: AxiosRequestConfig = {}) {}
 
   public async get<R>(url: string) {
-    APIRequest.beforeRequest(this);
+    ApiRequest.beforeRequest(this);
 
-    const completeConfig = {
+    const completeConfig: AxiosRequestConfig = {
       url,
       ...this.getCompleteConfig(),
       method: 'get',
@@ -29,9 +31,9 @@ export class APIRequest {
   }
 
   public async post<R>(url: string, data?: unknown) {
-    APIRequest.beforeRequest(this);
+    ApiRequest.beforeRequest(this);
 
-    const completeConfig = {
+    const completeConfig: AxiosRequestConfig = {
       url,
       ...this.getCompleteConfig(),
       method: 'post',
@@ -41,9 +43,9 @@ export class APIRequest {
   }
 
   public async put<R>(url: string, data?: unknown) {
-    APIRequest.beforeRequest(this);
+    ApiRequest.beforeRequest(this);
 
-    const completeConfig = {
+    const completeConfig: AxiosRequestConfig = {
       url,
       ...this.getCompleteConfig(),
       method: 'put',
@@ -54,9 +56,9 @@ export class APIRequest {
   }
 
   public async delete<R>(url: string) {
-    APIRequest.beforeRequest(this);
+    ApiRequest.beforeRequest(this);
 
-    const completeConfig = {
+    const completeConfig: AxiosRequestConfig = {
       url,
       ...this.getCompleteConfig(),
       method: 'delete',
@@ -88,14 +90,15 @@ export class APIRequest {
       return error
     } */
   }
-  private getCompleteConfig()
-  {
-    const completeConfig: any = {
+  private getCompleteConfig() {
+    const completeConfig: AxiosRequestConfig = {
       headers: {},
       ...this.config,
     }
+
     this.headers.forEach((value, key) => completeConfig.headers[key] = value);
+
     return completeConfig;
   }
+
  }
- 

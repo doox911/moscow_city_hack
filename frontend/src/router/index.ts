@@ -1,9 +1,9 @@
 import { route } from 'quasar/wrappers';
 import {
-    createMemoryHistory,
-    createRouter,
-    createWebHashHistory,
-    createWebHistory,
+  createMemoryHistory,
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
 } from 'vue-router';
 import AuthService from '../services/auth.service';
 import routes from './routes';
@@ -20,7 +20,9 @@ import routes from './routes';
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
-    : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory);
+    : process.env.VUE_ROUTER_MODE === 'history'
+    ? createWebHistory
+    : createWebHashHistory;
 
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
@@ -30,27 +32,22 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(
-      process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE
+      process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE,
     ),
   });
 
-  Router.beforeEach((to, from, next) =>
-  {
+  Router.beforeEach((to, from, next) => {
     // Если пользователь уже зашел, скидывать на /main
-    if(to.matched.some(record => record.meta.guest))
-    {
-      if(AuthService.isAuthenticated) return next({ path: '/main' });
+    if (to.matched.some((record) => record.meta.guest)) {
+      if (AuthService.isAuthenticated) return next({ path: '/main' });
       next();
     }
-    else 
-      // Если для страницы нужна авторизация
-      if(to.matched.some(record => record.meta.requiresAuth)) 
-      {
-        if (AuthService.isAuthenticated) return next();
-        next({ path: '/login' });
-      } 
-      else next();
-  })
+    // Если для страницы нужна авторизация
+    else if (to.matched.some((record) => record.meta.requiresAuth)) {
+      if (AuthService.isAuthenticated) return next();
+      next({ path: '/login' });
+    } else next();
+  });
 
   return Router;
 });

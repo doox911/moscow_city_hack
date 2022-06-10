@@ -3,7 +3,7 @@ import { ref } from 'vue';
 /**
  * Используется при событиях: mouseover, mouseout
  */
- export function useHover() {
+export function useHover() {
   const is_hover = ref(false);
 
   function setHovering() {

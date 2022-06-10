@@ -8,3 +8,8 @@ export type ResetValidationMethods = {
 export type QTableOnRequestProps = Parameters<
   Required<QTableProps>['onRequest']
 >[0];
+
+export type ResponseTokens = {
+  access_token: string;
+  token_type: string;
+}
