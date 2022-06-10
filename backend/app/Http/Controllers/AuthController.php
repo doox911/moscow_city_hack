@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -47,6 +48,24 @@ class AuthController extends Controller {
     $user->roles()->detach();
 
     $user_role = Role::where('name', $validatedData['role'])->first();
+
+    $current_role_name = $user->roles->first()->name ?? null;
+
+    if ($user_role->name !== 'admin' && $current_role_name === 'admin') {
+      $is_last_admin = User::whereHas('roles', function (Builder $builder) use ($user_role) {
+          $builder->where('role_id', $user_role->id);
+        })->get()->count() === 1;
+
+      if ($is_last_admin) {
+        $result = [
+          'messages' => ['Невозможно убрать роль администратора у единственного администратора'],
+          'content' => [],
+        ];
+
+        return response()->json($result);
+      }
+    }
+
     $user->roles()->attach($user_role->id);
 
     $token = $user->createToken('auth_token')->plainTextToken;
