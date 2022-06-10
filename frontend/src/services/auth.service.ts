@@ -32,8 +32,10 @@ export class AuthService {
       email,
       password,
     });
-    await this.updateUserInfo();
+
     this.accessToken.save(access_token);
+
+    await this.updateUserInfo();
   }
   /**
    * Осуществляется запрос регистрации пользователя
