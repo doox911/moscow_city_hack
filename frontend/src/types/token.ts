@@ -2,17 +2,12 @@ import { apiTokenRefresh } from "../api/users";
 
 export class Token
 {
-    token:string = "";
-    data:any;
-    name:string = "";
-    time:number = 0;
-    private lifeTime:number = 0;
-    private timer:any;
+    token: string = "";
+    time: number = 0;
+    private timer: any;
 
-    constructor(name:string, lifeTime:number) 
+    constructor(private name: string, private lifeTime: number = 0) 
     {
-        this.name = name;
-        this.lifeTime = lifeTime;
         let localData = localStorage.getItem(name);
         if(localData) {
             this.load(JSON.parse(localData));
@@ -26,8 +21,7 @@ export class Token
     {
         this.time = new Date().getTime() + this.lifeTime * 60 * 1000;
         this.token = token;
-        this.data = this.parseJwt(this.token);
-
+        console.log("save", this.token)
         localStorage.setItem(
             this.name, 
             JSON.stringify({
@@ -44,7 +38,6 @@ export class Token
     {
         this.time = localData.time;
         this.token = localData.token;
-        this.data = this.parseJwt(this.token);
     }
     /**
      * Удаление данных из localStorage
@@ -52,7 +45,6 @@ export class Token
     clear()
     {
         this.token = "";
-        this.data = null;
         localStorage.removeItem(this.name);
     }
     /**
@@ -82,16 +74,4 @@ export class Token
     {
         clearTimeout(this.timer);
     }
-    /**
-     * Парсинг метаданных из токена
-     */
-    private parseJwt(token:string) 
-    {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-    };
 }

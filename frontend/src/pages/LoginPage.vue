@@ -2,7 +2,7 @@
     <div class="q-pa-md">
         <q-card class="my-card absolute-center" style = "width: 400px; padding: 20px;">
             <q-card-section>
-                <q-input v-model="userData.name" label="Login"/>
+                <q-input v-model="userData.email" label="Email"/>
                 <q-input v-model="userData.password" :type="isPwd ? 'password' : 'text'" label="Password">
                     <template v-slot:append>
                         <q-icon
@@ -44,10 +44,8 @@
         data() {
             return {
                 userData: {
-                    name: "",
                     email: "",
                     password: "",
-                    confirmPassword: "",
                 },
                 isPwd: true,
                 /** @TODO Сделать из этого компонент */
@@ -70,7 +68,7 @@
             {
                 try {
                     await AuthService.login({
-                        name: this.userData.name,
+                        email: this.userData.email,
                         password: this.userData.password
                     });
                     this.$router.push("/main")

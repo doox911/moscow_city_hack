@@ -12,13 +12,10 @@ export class AuthService
     accessToken: Token | null = null;
     refreshToken: Token | null = null;
 
-    /**
-     * Из localStorage подгружаются токены
-     */
-    init()
+    constructor()
     {
         this.refreshToken = new Token("refresh_token", 0);
-        this.accessToken = new Token("access_token", 15);
+        this.accessToken = new Token("access_token", 0);
     }
     /**
      * Получить текущий access токен
@@ -42,26 +39,19 @@ export class AuthService
         return this.accessToken?.token ? true : false;
     }
     /**
-     * Получить статус, является ли пользователь администратором
-     */
-    get isAdmin(): boolean
-    {
-        return this.accessToken?.token && this.accessToken?.data.role === "admin" || false;
-    }
-    /**
      * Осуществляется запрос входа в систему
      */
-    async login({ name, password }: UserData): Promise<any>
+    async login({ email, password }: UserData): Promise<any>
     {
-        if(name == "") throw new TextError(TextMessage.LoginError);
+        if(email == "") throw new TextError(TextMessage.LoginError);
         if(password == "") throw new TextError(TextMessage.PasswordError);
-        let out = await apiLogin({
-            name,
+        const { access_token, refresh_token } = await apiLogin({
+            email,
             password
         });
-        
-        this.accessToken?.save(out.access_token);
-        this.refreshToken?.save(out.refresh_token);
+        console.log(access_token)
+        this.accessToken?.save(access_token);
+        this.refreshToken?.save(refresh_token);
     }
     /**
      * Осуществляется запрос регистрации пользователя
@@ -100,8 +90,8 @@ export default new AuthService();
 
 interface UserData
 {
-    name: string
-    email?: string
+    name?: string
+    email: string
     password: string
     confirmPassword?: string
 }
