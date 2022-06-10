@@ -1,4 +1,4 @@
-import { TextMessage } from './message';
+import { TextMessage } from '../types/message';
 
 export const Translate = Object.freeze({
   translation: {

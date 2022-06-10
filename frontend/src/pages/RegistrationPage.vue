@@ -2,10 +2,19 @@
   <div class="q-pa-md">
     <q-card class="my-card absolute-center" style="width: 400px; padding: 20px">
       <q-card-section>
-        <q-input v-model="userData.name" label="Login" />
-        <q-input v-model="userData.email" label="Email" />
+        <q-input
+          v-model="userData.name"
+          :rules="[ requiredStringRule ]"
+          label="Login"
+        />
+        <q-input
+          v-model="userData.email"
+          :rules="[ requiredStringRule ]"
+          label="Email"
+        />
         <q-input
           v-model="userData.password"
+          :rules="[ requiredStringRule ]"
           :type="isPwd ? 'password' : 'text'"
           label="Password"
         >
@@ -19,6 +28,7 @@
         </q-input>
         <q-input
           v-model="userData.confirmPassword"
+          :rules="[ requiredStringRule ]"
           :type="isPwd ? 'password' : 'text'"
           label="Confirm password"
         >
@@ -33,70 +43,46 @@
         <q-btn
           color="primary float-right"
           label="Registration"
+          :disable="disabled()"
           style="margin-top: 20px"
           @click="registration()"
         />
       </q-card-section>
     </q-card>
   </div>
-  <q-dialog v-model="registrationError.isOpen">
-    <q-card style="width: 300px">
-      <q-card-section>
-        <div class="text-h6" style="font-size: 1em; text-align: center">
-          {{ registrationError.message }}
-        </div>
-      </q-card-section>
-
-      <q-card-actions align="right" class="bg-white text-teal">
-        <q-btn flat label="OK" v-close-popup />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
 </template>
 
-<script lang="ts">
-  import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
+  import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
   import AuthService from '../services/auth.service';
-  import { TextMessage } from '../types/message';
-  import { Translate } from '../types/translate';
+  import { requiredStringRule } from '../common/rules';
 
-  export default defineComponent({
-    name: 'RegistrationPage',
-    components: {},
-    data() {
-      return {
-        userData: {
-          name: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
-        },
-        isPwd: true,
-        /** @TODO Сделать из этого компонент */
-        registrationError: {
-          message: '',
-          isOpen: false,
-          open(message: TextMessage) {
-            this.message = Translate.get(message);
-            this.isOpen = true;
-          },
-        },
-      };
-    },
-    methods: {
-      async registration() {
-        try {
-          await AuthService.registration({
-            name: this.userData.name,
-            email: this.userData.email,
-            password: this.userData.password,
-            confirmPassword: this.userData.confirmPassword,
-          });
-          this.$router.push('/login');
-        } catch (e: any) {
-          this.registrationError.open(e.message);
-        }
-      },
-    },
+  const router = useRouter();
+
+  const userData = ref({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
+
+  let isPwd = ref(true);
+
+  async function registration() {
+      await AuthService.registration({
+        name: userData.value.name,
+        email: userData.value.email,
+        password: userData.value.password
+      });
+      router.push('/login');
+  }
+  function disabled(): boolean
+  {
+    return !userData.value.name
+      || !userData.value.email
+      || !userData.value.password
+      || !userData.value.confirmPassword
+      || userData.value.password !== userData.value.confirmPassword;
+  }
 </script>

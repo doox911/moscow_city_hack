@@ -4,8 +4,20 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue';
+  import ApiRequest from './api/ApiRequest';
+  import AuthService from './services/auth.service';
 
   export default defineComponent({
     name: 'App',
+    setup()
+    {
+      ApiRequest.beforeRequest = (request) => {
+        request.config.headers = {
+          'content-type': 'application/json',
+          'Authorization': `Bearer ${ AuthService.getToken() }`,
+        };
+      };
+      AuthService.init();
+    }
   });
 </script>

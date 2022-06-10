@@ -12,6 +12,8 @@ export class Token {
    * Сохранение токена в localStorage, и получение метаданных
    */
   save(token: string) {
+    if(!token) return;
+
     this.time = new Date().getTime() + this.lifeTime * 60 * 1000;
     this.token = token;
 

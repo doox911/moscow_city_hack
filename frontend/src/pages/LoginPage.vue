@@ -2,10 +2,15 @@
   <div class="q-pa-md">
     <q-card class="my-card absolute-center" style="width: 400px; padding: 20px">
       <q-card-section>
-        <q-input v-model="userData.email" label="Email" />
+        <q-input
+          v-model="userData.email"
+          :rules="[ requiredStringRule ]"
+          label="Email"
+        />
         <q-input
           v-model="userData.password"
           :type="isPwd ? 'password' : 'text'"
+          :rules="[ requiredStringRule ]"
           label="Password"
         >
           <template v-slot:append>
@@ -19,66 +24,39 @@
         <q-btn
           color="primary float-right"
           label="Login"
+          :disable="disabled()"
           style="margin-top: 20px"
           @click="login()"
         />
       </q-card-section>
     </q-card>
   </div>
-  <q-dialog v-model="loginError.isOpen">
-    <q-card style="width: 300px">
-      <q-card-section>
-        <div class="text-h6" style="font-size: 1em; text-align: center">
-          {{ loginError.message }}
-        </div>
-      </q-card-section>
-
-      <q-card-actions align="right" class="bg-white text-teal">
-        <q-btn flat label="OK" v-close-popup />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
 </template>
 
-<script lang="ts">
-  import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
+  import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
   import AuthService from '../services/auth.service';
-  import { TextMessage } from '../types/message';
-  import { Translate } from '../types/translate';
+  import { requiredStringRule } from '../common/rules';
+  const router = useRouter();
 
-  export default defineComponent({
-    name: 'LoginPage',
-    components: {},
-    data() {
-      return {
-        userData: {
-          email: '',
-          password: '',
-        },
-        isPwd: true,
-        /** @TODO Сделать из этого компонент */
-        loginError: {
-          message: '',
-          isOpen: false,
-          open(message: TextMessage) {
-            this.message = Translate.get(message);
-            this.isOpen = true;
-          },
-        },
-      };
-    },
-    methods: {
-      async login() {
-        try {
-          await AuthService.login({
-            email: this.userData.email,
-            password: this.userData.password,
-          });
-          this.$router.push('/main');
-        } catch (e: any) {
-          this.loginError.open(e.message);
-        }
-      },
-    },
+  const userData = ref({
+    email: '',
+    password: '',
   });
+
+  let isPwd = ref(true);
+
+  async function login() {
+    await AuthService.login({
+      email: userData.value.email,
+      password: userData.value.password,
+    });
+    router.push('/main');
+  }
+  function disabled(): boolean
+  {
+    return !userData.value.email
+      || !userData.value.password;
+  }
 </script>

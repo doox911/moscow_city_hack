@@ -1,7 +1,6 @@
-import { apiLogin, apiLogoutAccess, apiSignupUser } from '../api/users';
-import { TextError, TextMessage } from '../types/message';
+import { apiGetUserInfo, apiLogin, apiLogoutAccess, apiSignupUser } from '../api/users';
 import { userStore } from '../stores/userStore';
-import { Token } from '../types/token';
+import { Token } from '../classes/token';
 
 /**
  * @TODO Добавить сохранение user в userStore
@@ -9,7 +8,14 @@ import { Token } from '../types/token';
  */
 export class AuthService {
   accessToken: Token = new Token('access_token', 0);
-
+  /**
+   * Запрос пользователя, если есть токен
+   */
+  init()
+  {
+    if(this.isAuthenticated)
+      this.getUserInfo();
+  }
   /**
    * Получить текущий access токен
    */
@@ -26,13 +32,13 @@ export class AuthService {
    * Осуществляется запрос входа в систему
    */
   async login({ email, password }: UserData): Promise<any> {
-    if (email == '') throw new TextError(TextMessage.LoginError);
-    if (password == '') throw new TextError(TextMessage.PasswordError);
-    const { access_token, refresh_token } = await apiLogin({
+    const { access_token } = await apiLogin({
       email,
       password,
     });
     this.accessToken.save(access_token);
+
+    await this.getUserInfo();
   }
   /**
    * Осуществляется запрос регистрации пользователя
@@ -40,19 +46,19 @@ export class AuthService {
   async registration({
     name,
     email,
-    password,
-    confirmPassword,
+    password
   }: UserData): Promise<any> {
-    if (name == '') throw new TextError(TextMessage.LoginError);
-    if (email == '') throw new TextError(TextMessage.EmailError);
-    if (password == '') throw new TextError(TextMessage.PasswordError);
-    if (password !== confirmPassword)
-      throw new TextError(TextMessage.ConfirmError);
     return await apiSignupUser({
       name,
       email,
       password,
     });
+  }
+  async getUserInfo()
+  {
+    const data = await apiGetUserInfo();
+    const { setUser } = userStore();
+    data && setUser(data);
   }
   /**
    * Осуществляется запрос на деактивацию токена
@@ -60,6 +66,8 @@ export class AuthService {
   async logout(): Promise<any> {
     await apiLogoutAccess();
     this.clearToken();
+    const { removeUser } = userStore();
+    removeUser();
   }
   /**
    * Удаление данных из localStorage
@@ -75,5 +83,4 @@ interface UserData {
   name?: string;
   email: string;
   password: string;
-  confirmPassword?: string;
 }

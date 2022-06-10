@@ -1,7 +1,7 @@
 /**
  * Api
  */
-import ApiRequest from './ApiRequest';
+import ApiRequest, { RequestResponse } from './ApiRequest';
 
 /**
  * Service
@@ -14,23 +14,23 @@ import AuthService from '../services/auth.service';
 import type { User } from 'Stores/userStore';
 import type { AxiosRequestConfig } from 'axios';
 import type { ResponseTokens } from 'Src/types';
+import { requestWrapper } from '../common/wrappers';
 
-export async function getUserInfo(): Promise<User | null> {
-  const request = new ApiRequest();
-
-  const response = await request.get<User>('api/user');
-
-  return response && !(response instanceof Error) ? response : null;
+/**
+ * Информация о пользователе
+ */
+ export async function apiGetUserInfo(
+  config?: AxiosRequestConfig,
+): Promise<User | null> {
+  let user = null;
+  await requestWrapper({
+    success: async () => {
+      user = await new ApiRequest(config).get('api/user') as User;
+    }
+  })
+  return user;
 }
 
-export async function logout(): Promise<void> {
-  /**
-   * @TODO Фронт воткнули в back end. Для выхода из системы надо просто перейти по маршруту
-   */
-  const request = new ApiRequest();
-
-  await request.post('api/');
-}
 
 /**
  * Регистрация обычного пользователя
@@ -38,28 +38,37 @@ export async function logout(): Promise<void> {
 export async function apiSignupUser(
   data: object,
   config?: AxiosRequestConfig,
-): Promise<unknown> {
-  return new ApiRequest(config).post<ResponseTokens>('api/register', data);
-}
-/**
- * Выход пользователя из системы
- */
-export async function apiLogoutAccess(config?: AxiosRequestConfig): Promise<unknown> {
-  return new ApiRequest(config).post('api/logout', {});
-}
-/**
- * Вход пользователя в систему
- */
-export async function apiLogin(data: object, config?: AxiosRequestConfig): Promise<unknown> {
-  return new ApiRequest(config).post('api/login', data);
+): Promise<ResponseTokens> {
+  let tokens: ResponseTokens = { access_token: "", token_type: "" };
+  await requestWrapper({
+    success: async () => {
+      tokens = await new ApiRequest(config).post<ResponseTokens>('api/register', data) as ResponseTokens;
+    }
+  })
+  return tokens;
 }
 
 /**
- * @TODO Лучше перенести в более подходящее место
+ * Выход пользователя из системы
  */
-ApiRequest.beforeRequest = (request) => {
-  request.config.headers = {
-    'content-type': 'application/json',
-    Authorization: `Bearer ${AuthService.getToken()}`,
-  };
-};
+export async function apiLogoutAccess(
+  config?: AxiosRequestConfig
+): Promise<unknown> {
+  return new ApiRequest(config).post('api/logout', {});
+}
+
+/**
+ * Вход пользователя в систему
+ */
+export async function apiLogin(
+  data: object,
+  config?: AxiosRequestConfig
+): Promise<ResponseTokens> {
+  let tokens: ResponseTokens = { access_token: "", token_type: "" };
+  await requestWrapper({
+    success: async () => {
+      tokens = await new ApiRequest(config).post('api/login', data) as ResponseTokens;
+    }
+  })
+  return tokens;
+}
