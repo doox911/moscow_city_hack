@@ -40,7 +40,6 @@ export default route(function (/* { store, ssrContext } */) {
 
   Router.beforeEach((to, from, next) => {
     const { user } = storeToRefs(userStore());
-    console.log(AuthService.isAuthenticated, user, to)
     // Если пользователь уже зашел, скидывать на /main
     if (to.matched.some((record) => record.meta.guest)) {
       if (AuthService.isAuthenticated) return next({ path: user.value.role });
