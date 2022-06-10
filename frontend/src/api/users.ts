@@ -21,7 +21,8 @@ import { requestWrapper } from '../common/wrappers';
   await requestWrapper({
     success: async () => {
       user = await new ApiRequest(config).get('api/user') as User;
-    }
+    },
+    error_message: 'Ошибка получения информации о пользователе',
   })
   return user;
 }
@@ -63,7 +64,8 @@ export async function apiLogin(
   await requestWrapper({
     success: async () => {
       tokens = await new ApiRequest(config).post('api/login', data) as ResponseTokens;
-    }
+    },
+    error_message: 'Ошибка входа',
   })
   return tokens;
 }
