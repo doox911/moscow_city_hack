@@ -1,7 +1,7 @@
 /**
  * Api
  */
-import ApiRequest from './ApiRequest';
+import ApiRequest, { ApiResponse } from './ApiRequest';
 
 /**
  * Types
@@ -16,14 +16,15 @@ import { requestWrapper } from '../common/wrappers';
  */
  export async function apiGetUserInfo(
   config?: AxiosRequestConfig,
-): Promise<User | null> {
+) {
   let user = null;
   await requestWrapper({
     success: async () => {
-      user = await new ApiRequest(config).get('api/user') as User;
+      user = (await new ApiRequest(config).get<User>('api/user') as ApiResponse<User>).content;
     },
     error_message: 'Ошибка получения информации о пользователе',
   })
+
   return user;
 }
 
@@ -35,10 +36,10 @@ export async function apiSignupUser(
   data: object,
   config?: AxiosRequestConfig,
 ): Promise<ResponseTokens> {
-  let tokens: ResponseTokens = { access_token: "", token_type: "" };
+  let tokens: ResponseTokens = { access_token: '', token_type: '' };
   await requestWrapper({
     success: async () => {
-      tokens = await new ApiRequest(config).post<ResponseTokens>('api/register', data) as ResponseTokens;
+      tokens = (await new ApiRequest(config).post<ResponseTokens>('api/register', data) as ApiResponse<ResponseTokens>).content;
     }
   })
   return tokens;
@@ -60,10 +61,10 @@ export async function apiLogin(
   data: object,
   config?: AxiosRequestConfig
 ): Promise<ResponseTokens> {
-  let tokens: ResponseTokens = { access_token: "", token_type: "" };
+  let tokens: ResponseTokens = { access_token: '', token_type: '' };
   await requestWrapper({
     success: async () => {
-      tokens = await new ApiRequest(config).post('api/login', data) as ResponseTokens;
+      tokens = (await new ApiRequest(config).post('api/login', data) as ApiResponse<ResponseTokens>).content;
     },
     error_message: 'Ошибка входа',
   })

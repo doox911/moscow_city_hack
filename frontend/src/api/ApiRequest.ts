@@ -7,7 +7,13 @@ import { api } from 'Boot/axios';
   */
 import type { AxiosError, AxiosRequestConfig } from 'axios'
 
-export type RequestResponse<R> = Promise<R | AxiosError<unknown> | null>
+
+export type ApiResponse<R> = {
+  content: R;
+  message: string;
+};
+
+export type RequestResponse<R> = Promise<ApiResponse<R> | AxiosError<unknown> | null>
 
 export default class ApiRequest {
 
