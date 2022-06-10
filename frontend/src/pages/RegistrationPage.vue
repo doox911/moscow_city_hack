@@ -64,6 +64,7 @@
   import { useRouter } from 'vue-router';
   import AuthService from '../services/auth.service';
   import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from '../common/rules';
+import { Roles } from '../constants';
 
   const router = useRouter();
 
@@ -78,9 +79,9 @@
   let isPwd = ref(true);
 
   const roleList = ref([
-    { value: 'admin', label: 'Администратор' },
-    { value: 'user', label: 'Пользователь' },
-    { value: 'company', label: 'Предприятие' },
+    { value: Roles.Admin, label: 'Администратор' },
+    { value: Roles.Government, label: 'Правительственный персонал' },
+    { value: Roles.Owner, label: 'Собственник компании' },
   ])
 
   async function registration() {

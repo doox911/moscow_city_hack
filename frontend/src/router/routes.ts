@@ -22,12 +22,10 @@ const routes: RouteRecordRaw[] = [
         path: '/' + Roles.Admin,
         component: () => import('pages/AdminPage.vue'),
         meta: { role: Roles.Admin },
-        children: [
-          {
-            path: 'registration',
-            component: () => import('pages/RegistrationPage.vue'),
-          },
-        ]
+      },
+      {
+        path: '/registration',
+        component: () => import('pages/RegistrationPage.vue'),
       },
       {
         path: '/' + Roles.Government,
@@ -41,8 +39,6 @@ const routes: RouteRecordRaw[] = [
       },
     ]
   },
-
-
   // Always leave this as last one,
   // but you can also remove it
   {
