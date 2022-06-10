@@ -10,7 +10,12 @@
         <h1
           class="text-center non-selectable text-weight-regular text-h5 text-grey-9"
         >
-          <span class="text-weight-bold">Д</span>обро пожаловать в <span class="text-weight-bold text-green">М</span>ос<span class="text-weight-bold text-green">И</span>порт<span class="text-weight-bold text-green">З</span>ам
+          <span class="text-weight-bold">Д</span>обро пожаловать в
+        </h1>
+        <h1
+          class="text-center non-selectable text-weight-regular text-h5 text-grey-9"
+        >
+          <span class="text-weight-bold text-green">М</span>ос<span class="text-weight-bold text-green">И</span>порт<span class="text-weight-bold text-green">М</span>ониторинг
         </h1>
       </div>
     </div>

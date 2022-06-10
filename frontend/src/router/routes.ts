@@ -20,6 +20,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/' + Roles.Admin,
+        name: Roles.Admin,
         component: () => import('pages/AdminPage.vue'),
         meta: { role: Roles.Admin },
       },
@@ -29,11 +30,13 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/' + Roles.Government,
+        name: Roles.Government,
         component: () => import('pages/GovernmentPage.vue'),
         meta: { role: Roles.Government },
       },
       {
         path: '/' + Roles.Owner,
+        name: Roles.Owner,
         component: () => import('pages/OwnerPage.vue'),
         meta: { role: Roles.Owner },
       },

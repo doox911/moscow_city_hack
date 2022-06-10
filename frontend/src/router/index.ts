@@ -40,10 +40,14 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, from) => {
-    // const { user } = storeToRefs(userStore());
+    const { user } = storeToRefs(userStore());
 
     if (AuthService.isAuthenticated) {
-
+      if (to.path === '/') {
+        return {
+          name: user.value.role,
+        }
+      }
     } else {
       if (to.path !== '/') {
         return {
