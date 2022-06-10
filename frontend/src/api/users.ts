@@ -35,12 +35,6 @@ export async function apiSignupUser(data: object, config?: any): Promise<any> {
   return new APIRequest(config).post(`api/register`, data);
 }
 /**
- * Обновить пользовательский токен
- */
-export async function apiTokenRefresh(config?: any): Promise<any> {
-  return new APIRequest(config).post(`api/token/refresh`, { /* token: Vue.prototype.$auth.getRefreshToken() */ });
-}
-/**
  * Выход пользователя из системы
  */
 export async function apiLogoutAccess(config?: any): Promise<any> {

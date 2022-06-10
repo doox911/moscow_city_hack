@@ -57,8 +57,7 @@
                         this.message = Translate.get(message);
                         this.isOpen = true;
                     }
-                },
-                mode: this.$route.meta.mode || 'login'
+                }
             }
         },
         setup() {

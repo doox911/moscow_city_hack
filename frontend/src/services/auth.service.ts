@@ -9,27 +9,14 @@ import { Token } from "../types/token";
  */
 export class AuthService
 {
-    accessToken: Token | null = null;
-    refreshToken: Token | null = null;
+    accessToken: Token = new Token("access_token", 0);
 
-    constructor()
-    {
-        this.refreshToken = new Token("refresh_token", 0);
-        this.accessToken = new Token("access_token", 0);
-    }
     /**
      * Получить текущий access токен
      */
     getToken()
     {
         return this.accessToken?.token;
-    }
-    /**
-     * Получить текущий refresh токен
-     */
-    getRefreshToken()
-    {
-        return this.refreshToken?.token;
     }
     /**
      * Получить статус, авторизован ли пользователь
@@ -49,9 +36,7 @@ export class AuthService
             email,
             password
         });
-        console.log(access_token)
-        this.accessToken?.save(access_token);
-        this.refreshToken?.save(refresh_token);
+        this.accessToken.save(access_token);
     }
     /**
      * Осуществляется запрос регистрации пользователя
@@ -81,8 +66,7 @@ export class AuthService
      */
     clearToken()
     {
-        this.accessToken?.clear();
-        this.refreshToken?.clear();
+        this.accessToken.clear();
     }
 }
 
