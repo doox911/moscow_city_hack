@@ -8,6 +8,11 @@
           label="Имя"
         />
         <q-input
+          v-model="userData.secondName"
+          :rules="[ requiredStringRule ]"
+          label="Фамилия"
+        />
+        <q-input
           v-model="userData.email"
           :rules="[ requiredStringRule ]"
           label="Email"
@@ -61,15 +66,21 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue';
-  import { useRouter } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import AuthService from '../services/auth.service';
   import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from '../common/rules';
-import { Roles } from '../constants';
+  import { Roles } from '../constants';
+  import { userStore } from '../stores/userStore';
 
+  const { user } = userStore();
   const router = useRouter();
+  const route = useRoute();
+
+  if(user.role !== Roles.Admin) router.push(user.role);
 
   const userData = ref({
     name: '',
+    secondName: "",
     email: '',
     role: '',
     password: '',
@@ -85,20 +96,23 @@ import { Roles } from '../constants';
   ])
 
   async function registration() {
-      await AuthService.registration({
-        name: userData.value.name,
-        email: userData.value.email,
-        role: userData.value.role,
-        password: userData.value.password
-      });
-      router.push('/login');
+    const response = await AuthService.registration({
+      name: userData.value.name,
+      second_name: userData.value.secondName,
+      email: userData.value.email,
+      role: userData.value.role.value,
+      password: userData.value.password
+    });
+    if(response) router.push({ name: "home" });
   }
   /**
    * Отправить запрос можно только при наличии всех значений
    */
   const disabled = computed(() => {
     return !userData.value.name
+      || !userData.value.secondName
       || !userData.value.email
+      || !userData.value.role
       || !userData.value.password
       || !userData.value.confirmPassword
       || userData.value.password !== userData.value.confirmPassword;
