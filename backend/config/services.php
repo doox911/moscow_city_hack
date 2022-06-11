@@ -34,5 +34,6 @@ return [
   'fns' => [
     'url' => env('FNS_URL'),
     'secret' => env('FNS_KEY'),
+    'request_ip' => env('FNS_REQUEST_IP'),
   ]
 ];
