@@ -58,6 +58,11 @@
   import { storeToRefs } from 'pinia'
 
   /**
+   * Api
+   */
+  import { apiMenuList } from '../api/menu';
+
+  /**
    * Common
    */
   import { capitalizeFirstLetter } from 'Src/common'
@@ -125,4 +130,10 @@
 
   const { menuList } = storeToRefs(menuStore());
 
+  async function getMenuList()
+  {
+    const { setMenu } = menuStore();
+    setMenu(await apiMenuList());
+  }
+  getMenuList();
 </script>

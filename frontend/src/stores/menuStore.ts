@@ -13,7 +13,8 @@ export type MenuListItem = {
 export const menuStore = defineStore('menuStore', () => {
   const menuList = ref<MenuListItem[]>([]);
 
-  async function setMenu(u: MenuListItem[]) {    
+  async function setMenu(u: MenuListItem[]) {
+    
     u.sort((a, b) => a.order - b.order);
 
     menuList.value = u;
