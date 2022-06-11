@@ -11,12 +11,14 @@ class Counterparty extends Model {
 
   protected $fillable = [
     'id',
+    'user_id',
     'name',
     'inn',
     'ogrn',
     'address',
     'email',
     'phone',
+    'site',
   ];
 
   public function activities() {
