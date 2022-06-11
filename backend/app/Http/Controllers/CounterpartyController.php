@@ -47,7 +47,8 @@ class CounterpartyController extends Controller {
 
     return response()->json([
       'content' => [
-        'counterparties' => CounterpartyResource::collection($counterparties->simplePaginate($items_per_page)),
+        //'counterparties' => CounterpartyResource::collection($counterparties->simplePaginate($items_per_page)),
+        'counterparties' => $counterparties->simplePaginate($items_per_page),
         'pages_count' => $pages_count,
         'total_rows' => $total_rows,
       ],
