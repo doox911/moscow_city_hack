@@ -14,8 +14,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/AdminPage.vue'),
       },
       {
-        path: '/' + Roles.Admin + "/profile",
-        name: 'adminProfile',
+        path: '/' + Roles.Admin + '/profile',
+        name: Roles.Admin + 'Profile',
         component: () => import('pages/AdminProfilePage.vue'),
       },
       {
@@ -28,9 +28,19 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/GovernmentPage.vue'),
       },
       {
+        path: '/' + Roles.Government + '/profile',
+        name: Roles.Government + 'Profile',
+        component: () => import('pages/GovernmentProfilePage.vue'),
+      },
+      {
         path: '/' + Roles.Owner,
         name: Roles.Owner,
         component: () => import('pages/OwnerPage.vue'),
+      },
+      {
+        path: '/' + Roles.Government + '/profile',
+        name: Roles.Government + 'Profile',
+        component: () => import('pages/GovernmentProfilePage.vue'),
       },
     ]
   },
