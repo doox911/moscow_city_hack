@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
 use App\Models\Task;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller {
   /**
@@ -31,7 +32,8 @@ class TaskController extends Controller {
         'id' => 'asc',
       ]
     ];
-    $filters['columns'] = [...$default_sort['columns'], ...$filters['columns']];
+
+    $filters['columns'] = [...$default_sort['columns'], ...($filters['columns'] ?? [])];
 
     foreach ($filters['columns'] as $column => $sort_direction) {
       if (!empty($filters['search_string'])) {
@@ -74,7 +76,7 @@ class TaskController extends Controller {
    * @param \App\Models\Task $task
    * @return \Illuminate\Http\Response
    */
-  public function update(StoreTaskRequest $request, Task $task) {
+  public function update(Request $request, Task $task) {
 
     $data = $request->all();
 

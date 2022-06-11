@@ -56,8 +56,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // CRUD
     Route::get('', [TaskController::class, 'index'])->middleware('role:admin');
 
-    $routeCollection = Illuminate\Support\Facades\Route::getRoutes();
-    // dd($routeCollection);
     Route::prefix('{task}')->group(static function () {
       Route::put('', [TaskController::class, 'update']);
     });
