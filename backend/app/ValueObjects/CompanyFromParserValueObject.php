@@ -15,6 +15,7 @@ use JsonException;
  * @property string|null $full_name
  * @property string|null $description
  * @property string|null $site
+ * @property string|null $logo_url
  *
  * @description Объект позиции для быстрого ввода
  * @package Preorder
@@ -51,6 +52,12 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
    * @var string|null
    */
   protected ?string $site = null;
+
+  /**
+   * @description URL логотипа
+   * @var string|null
+   */
+  protected ?string $logo_url = null;
 
 
   /**

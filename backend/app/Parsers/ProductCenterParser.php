@@ -34,12 +34,9 @@ class ProductCenterParser extends AbstractParser {
     $url = self::$base_url . str_replace('#query#', $query, self::$search_url);
 
     $res_json = $this->client->request('GET', $url);
-
     $response_html = $res_json->getBody()->getContents();
-
     $search_page_document = new Document($response_html);
 
-    $founded_links = collect();
     foreach ($search_page_document->find('div.card_item') as $result_text) {
       $produced_id = $result_text->first('.to_favorites')->attr('data-item-id');
       $image_path = $result_text->first('.image img')->attr('src');
@@ -58,30 +55,13 @@ class ProductCenterParser extends AbstractParser {
 
       $producer_vo = new CompanyFromParserValueObject([
         'description' => $producer_description,
+        'logo_url' => self::$base_url . $image_path,
       ]);
 
 
-      $counterparty = Counterparty::where('id', 100)->first();
-      $counterparty->getMedia('company_logo')->each->forceDelete();
-
-      $filepath = self::$base_url .$image_path;;
-
-      // добавляем время в название файла, для уникальности,
-      // если в один день загрузят несколько файлов чтобы они не затирали друг друга
-      $current_time = Carbon::now()->format('H_i');
-      $path_info = pathinfo($filepath);
-      $filename = $path_info['filename'] . "_$current_time." . $path_info['extension'];
-
-      try {
-        $counterparty
-          ->addMediaFromUrl($filepath)
-          ->usingName($filename)
-          ->usingFileName($filename)
-          ->toMediaCollection('company_logo');
-      } catch (FileDoesNotExist | FileIsTooBig $e) {
-        dd($e->getMessage());
-        //Log::channel('preorder')->info($e->getMessage());
-      }
+      // сохранение логотипа
+      // $counterparty = Counterparty::where('id', 100)->first();
+      // $counterparty->saveLogoFromUrl($producer_vo->logo_url);
       dd($producer_vo);
       $producers->push($producer_vo);
     }
