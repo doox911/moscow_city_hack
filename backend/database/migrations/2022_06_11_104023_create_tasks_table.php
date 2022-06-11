@@ -22,6 +22,7 @@ return new class extends Migration {
       $table->json('value');
       $table->boolean('is_moderated')->default(false);
       $table->boolean('is_accepted')->default(false);
+      $table->longText('comment');
       $table->timestamps();
       $table->softDeletes();
     });

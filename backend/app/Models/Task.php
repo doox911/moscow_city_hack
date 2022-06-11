@@ -16,7 +16,8 @@ class Task extends Model {
     'entity_type',
     'value',
     'is_moderated',
-    'is_accepted'
+    'is_accepted',
+    'comment',
   ];
 
   protected $with = [
