@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder {
     // ]);
 
     $this->call(TestDataSeeder::class);
+    $this->call(MenuSeeder::class);
   }
 }
