@@ -1,5 +1,6 @@
 <template>
   <div class="q-pa-none">
+    <h5 class="q-ma-xs non-selectable text-grey-9">Задачи</h5>
     <q-table
       v-model:pagination="pagination"
       v-model:selected="s"
@@ -10,6 +11,7 @@
       :selected-rows-label="selectedRowsLabel"
       binary-state-sort
       class="no-shadow"
+      no-data-label="Нет данных"
       row-key="id"
       rows-per-page-label="Задач на странице"
       selection="multiple"

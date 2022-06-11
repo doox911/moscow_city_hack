@@ -1,13 +1,15 @@
 <template>
+  <h5 class="q-ma-xs non-selectable text-grey-9">Пользователи</h5>
   <q-table
-    title="Пользователи"
     :columns="columns"
     :rows="rows"
     :pagination-label="paginationLabel"
     :selected-rows-label="selectedRowsLabel"
+    class="no-shadow"
     row-key="id"
+    rows-per-page-label="Пользователей на странице"
   >
-    <template v-slot:body-cell-edit="props">
+    <template v-slot:body-cell-actions="props">
       <q-td :props="props">
         <q-btn flat icon="edit" @click="onEdit(props.row)"></q-btn>
       </q-td>
@@ -112,10 +114,27 @@
 </template>
 
 <script setup lang="ts">
-
   import { computed, ref } from 'vue';
-  import AuthService from '../../services/auth.service';
-  import { Roles, RolesDescription } from '../../constants';
+
+  /**
+   * Api
+   */
+  import { apiGetAllUsers, apiSignupUser, apiUpdateUserInfo } from 'Src/api/users';
+
+  /**
+   * Constants
+   */
+  import { Roles, RolesDescription } from 'Src/constants';
+
+  /**
+   * Common
+   */
+  import { selectedRowsLabel, paginationLabel} from 'Src/common';
+
+  /**
+   * Rules
+   */
+  import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from 'Src/common/rules';
 
   /**
    * Store
@@ -124,15 +143,9 @@
   import { storeToRefs } from 'pinia';
 
   /**
-   * Common
+   * Types
    */
-  import { selectedRowsLabel, paginationLabel} from 'Src/common'
-  import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from 'Src/common/rules';
-
-  /**
-   * Api
-   */
-  import { apiGetAllUsers, apiSignupUser, apiUpdateUserInfo } from '../../api/users';
+  import type { QTableProps } from 'quasar';
 
   const userData = ref({
     id: null,
@@ -145,6 +158,7 @@
     password: '',
     confirmPassword: '',
   });
+
   let modalMode = ref<'new' | 'update'>('new');
 
   const roleList = ref([
@@ -153,6 +167,7 @@
     { value: Roles.Owner, label: RolesDescription[Roles.Owner] },
     { value: Roles.Guest, label: RolesDescription[Roles.Guest] },
   ])
+
   /**
    * Осуществляется запрос регистрации пользователя
    */
@@ -233,7 +248,7 @@
   /**
    * Заголовки таблицы
    */
-  const columns = [
+  const columns: QTableProps['columns'] = [
     {
       name: 'name',
       align: 'left',
@@ -263,8 +278,10 @@
       sortable: true
     },
     {
-      name: 'edit',
-      label: ''
+      align: 'center',
+      field: '',
+      label: 'Управление',
+      name: 'actions',
     },
   ];
   const isOpen = ref(false);
