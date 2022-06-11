@@ -22,6 +22,7 @@
               v-for="(button, index) of buttons"
               :key="index"
               :color="button.color"
+              :disabled="!props.row.is_moderated"
               :icon="button.icon"
               :tooltip-text="button.tooltip"
               hover-color="primary"
@@ -58,7 +59,7 @@
 
   type Button = {
     color: string;
-    event: 'cancel' | 'apply';
+    event: 'onCancel' | 'onApply';
     icon: string;
     tooltip: string;
   };
@@ -103,25 +104,22 @@
   const buttons: Button[] = [
     {
       color: 'red',
-      event: 'cancel',
+      event: 'onCancel',
       icon: 'cancel',
       tooltip: 'Отмена',
     },
     {
       color: 'green',
-      event: 'apply',
+      event: 'onApply',
       icon: 'ok',
-      tooltip: 'Принять изменения',
+      tooltip: 'Принять',
     },
   ];
 
   const emit = defineEmits([
-    'onLoadCSV',
-    'onRemigrate',
+    'onApply',
+    'onCancel',
     'onRequest',
-    'onSelectedTimeline',
-    'onStart',
-    'onStop',
     'update:selected',
   ]);
 

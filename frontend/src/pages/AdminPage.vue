@@ -2,7 +2,12 @@
   <q-page class="q-ma-md">
     <div class="row">
       <div class="col">
-        <TasksTable :tasks="tasks" :loading="loading"/>
+        <TasksTable 
+          :tasks="tasks" 
+          :loading="loading"
+          @on-apply="onTaskApply"
+          @on-cancel="onTaskCancel"
+      />
       </div>
     </div>
     <div class="row">
@@ -55,10 +60,13 @@
   useUserPageGuard();
 
   const tasks = ref<Task[]>([]);
+
   const counterpart = ref<Counterparty[]>([]);
 
   const rowsNumber = ref(0);
+
   const rowsPerPage = ref(10);
+  
   const searchText = ref('');
 
   const loading = ref(false)
@@ -84,6 +92,15 @@
     counterpart.value = counterparties.data;
     loading.value = false;
   }
+
+  async function onTaskApply(t: Task) {
+    console.log('onTaskApply', t);
+  }
+
+  async function onTaskCancel(t: Task) {
+    console.log('onTaskCancel', t);
+  }
+
 
   onMounted(async () => {
     loading.value = true;
