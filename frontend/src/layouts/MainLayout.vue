@@ -5,12 +5,16 @@
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
 
         <div class="non-selectable ">
-          <span class="text-weight-bold text-green">М</span>ос<span class="text-weight-bold text-green">И</span>порт<span class="text-weight-bold text-green">М</span>ониторинг
+          <span class="text-weight-bold text-green">М</span>ос<span
+            class="text-weight-bold text-green">И</span>порт<span class="text-weight-bold text-green">М</span>ониторинг
         </div>
 
         <q-space />
 
-        <div>{{ getUserInfo }}</div>
+        <q-btn flat @click="goToProfile">
+          {{ getUserInfo }}
+          <Tooltip v-model="profileTooltip" text="Просмотр профиля" />
+        </q-btn>
 
         <q-btn flat @click="logout" round dense icon="logout">
           <Tooltip v-model="tooltip" text="Выход" />
@@ -19,23 +23,28 @@
     </q-header>
 
     <q-drawer v-model="drawer" :width="200" :breakpoint="500" overlay bordered class="bg-grey-3">
-       <q-scroll-area class="fit">
-          <q-list>
+      <q-scroll-area class="fit">
+        <q-list>
 
-            <template v-for="(menuItem, index) in menuList" :key="index">
-              <q-item>
-                <q-item-section avatar>
-                  <q-icon :name="menuItem.iconName" />
-                </q-item-section>
-                <q-item-section>
-                  {{ menuItem.name }}
-                </q-item-section>
-              </q-item>
-              <!-- <q-separator :key="'sep' + index"  v-if="menuItem.separator" /> -->
-            </template>
+          <template v-for="(menuItem, index) in menuList" :key="index">
+            <q-item 
+              :active="menuItem.to === route.path"
+              :clickable="menuItem.to !== route.path" 
+              class="non-selectable" 
+              @click="router.push(menuItem.to)"
+            >
+              <q-item-section avatar>
+                <q-icon :name="menuItem.icon_name" />
+              </q-item-section>
+              <q-item-section>
+                {{ menuItem.name }}
+              </q-item-section>
+            </q-item>
+            <!-- <q-separator :key="'sep' + index"  v-if="menuItem.separator" /> -->
+          </template>
 
-          </q-list>
-        </q-scroll-area>
+        </q-list>
+      </q-scroll-area>
     </q-drawer>
 
     <q-page-container>
@@ -47,6 +56,11 @@
 <script setup lang="ts">
   import { computed, ref } from 'vue'
   import { storeToRefs } from 'pinia'
+
+  /**
+   * Api
+   */
+  import { apiMenuList } from '../api/menu';
 
   /**
    * Common
@@ -61,7 +75,7 @@
   /**
    * Routers
    */
-  import { useRouter } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
 
   /**
    * Store
@@ -73,6 +87,8 @@
    */
   import AuthService from '../services/auth.service';
 
+  const route = useRoute();
+
   const router = useRouter();
 
   const { user } = storeToRefs(userStore());
@@ -80,6 +96,8 @@
   const drawer = ref(false);
 
   const tooltip = ref(false);
+
+  const profileTooltip = ref(false);
 
   const getUserInfo = computed(() => {
     const { name, second_name, patronymic } = user.value;
@@ -97,7 +115,7 @@
       : ''
 
     return `${n} ${sn} ${p}`;
-     
+
   })
 
   async function logout() {
@@ -106,5 +124,16 @@
     router.push('/login');
   }
 
+  function goToProfile() {
+    router.push(`/${user.value.role}/profile`);
+  }
+
   const { menuList } = storeToRefs(menuStore());
+
+  async function getMenuList()
+  {
+    const { setMenu } = menuStore();
+    setMenu(await apiMenuList());
+  }
+  getMenuList();
 </script>

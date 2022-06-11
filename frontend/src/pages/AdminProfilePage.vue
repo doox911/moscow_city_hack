@@ -25,6 +25,11 @@
                 Добавление организации
               </q-item-section>
             </q-item>
+            <q-item clickable to='/admin/profile/registration'>
+              <q-item-section>
+                Регистрация пользователя
+              </q-item-section>
+            </q-item>
           </q-list>
         </div>
         <div class='col-12 col-md-7'>

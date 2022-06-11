@@ -34,12 +34,12 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'owner',
             component: () => import('pages/profile/OwnerPage.vue'),
-          }
+          },
+          {
+            path: 'registration',
+            component: () => import('pages/profile/RegistrationPage.vue'),
+          },
         ]
-      },
-      {
-        path: '/registration',
-        component: () => import('pages/RegistrationPage.vue'),
       },
       {
         path: '/' + Roles.Government,
@@ -48,8 +48,15 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/' + Roles.Government + '/profile',
-        name: Roles.Government + 'Profile',
         component: () => import('pages/GovernmentProfilePage.vue'),
+        redirect: { name: Roles.Government + 'Profile' },
+        children: [
+          {
+            path: '',
+            name: Roles.Government + 'Profile',
+            component: () => import('pages/profile/ProfilePage.vue'),
+          }
+        ]
       },
       {
         path: '/' + Roles.Owner,
