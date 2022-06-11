@@ -20,10 +20,25 @@
 
     <q-drawer v-model="drawer" :width="200" :breakpoint="500" overlay bordered class="bg-grey-3">
       <q-scroll-area class="fit">
-        <!-- <q-list>
+      <!--   <q-item clickable v-ripple>
+        <q-item-section avatar>
+          <q-icon color="primary" name="bluetooth" />
+        </q-item-section>
+
+        <q-item-section>Icon as avatar</q-item-section>
+      </q-item> -->
+        <q-list>
 
           <template v-for="(menuItem, index) in menuList" :key="index">
-            <q-item clickable :active="menuItem.label === 'Outbox'" v-ripple>
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon :name="menuItem.iconName" />
+              </q-item-section>
+              <q-item-section>
+                {{ menuItem.name }}
+              </q-item-section>
+            </q-item>
+            <!-- <q-item clickable :active="menuItem.label === 'Outbox'" v-ripple>
               <q-item-section avatar>
                 <q-icon :name="menuItem.icon" />
               </q-item-section>
@@ -31,10 +46,10 @@
                 {{ menuItem.label }}
               </q-item-section>
             </q-item>
-            <q-separator :key="'sep' + index" v-if="menuItem.separator" />
+            <q-separator :key="'sep' + index" v-if="menuItem.separator" /> -->
           </template>
 
-        </q-list> -->
+        </q-list>
       </q-scroll-area>
     </q-drawer>
 
@@ -48,6 +63,10 @@
   import { computed, ref } from 'vue'
   import { storeToRefs } from 'pinia'
 
+  /**
+   * Api
+   */
+  import { apiMenuList } from '../api/menu';
   /**
    * Common
    */
@@ -66,7 +85,7 @@
   /**
    * Store
    */
-  import { userStore } from '../stores/userStore';
+  import { userStore, menuStore } from '../stores';
 
   /**
    * Services
@@ -105,4 +124,15 @@
 
     router.push('/login');
   }
+
+  const { setMenu } = menuStore();
+  const { menuList } = storeToRefs(menuStore());
+
+  async function loadMenu()
+  {
+    const list = await apiMenuList();
+    console.log(list)
+    list && setMenu(list);
+  }
+  loadMenu();
 </script>

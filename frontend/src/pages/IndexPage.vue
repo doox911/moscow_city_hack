@@ -6,15 +6,14 @@
       </q-btn>
     </div>
     <div class="row items-center justify-center">
+      <img src="~/assets/p.png" alt="Правительство Москвы">
+    </div>
+    <div class="row items-center justify-center">
       <div class="col-auto">
         <h1
           class="text-center non-selectable text-weight-regular text-h5 text-grey-9"
         >
           <span class="text-weight-bold">Д</span>обро пожаловать в
-        </h1>
-        <h1
-          class="text-center non-selectable text-weight-regular text-h5 text-grey-9"
-        >
           <span class="text-weight-bold text-green">М</span>ос<span class="text-weight-bold text-green">И</span>порт<span class="text-weight-bold text-green">М</span>ониторинг
         </h1>
       </div>
@@ -26,7 +25,7 @@
             <p
               class="q-ma-none q-pa-none text-center non-selectable text-weight-regular text-grey-9"
             >
-              Вход в систему
+              <b>Вход в систему</b>
             </p>
           </q-card-section>
           <q-card-section class="q-mb-none q-pb-none">
