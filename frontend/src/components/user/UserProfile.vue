@@ -16,7 +16,6 @@
       <p class="q-my-xs"><b class="q-pr-sm">Обновлён:</b>{{ user_updated }}</p>
     </div>
   </div>
-  <SelectedCompany></SelectedCompany>
 </template>
 
 <script setup lang="ts">
@@ -26,7 +25,6 @@
    * Common
    */
   import { getRoleDescription, setDateAndTimeToDateTimeComponent } from 'Src/common';
-  import SelectedCompany from 'Components/user/SelectCompany.vue'
 
   /**
    * Store

@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue';
+  import { computed, onMounted, ref} from 'vue';
 
   /**
    * Api
@@ -79,11 +79,14 @@
   async function updateCounterparty(s = '') {
     const pagination = await apiCounterparties({
       params: {
-        item_per_page: item_per_page.value,
         page: page.value,
+        item_per_page: item_per_page.value,
         filters: {
-          search_string: 'либе',
-          columns: {}
+          search_string: s,
+          columns: {
+            name: 'asc',
+            inn: 'desc'
+          }
         }
       }
     });
@@ -99,13 +102,13 @@
   }
 
   async function getCompany() {
-    selected.value = undefined;
-
     loading.value = true;
 
     await updateCounterparty(filter.value);
 
     loading.value = false;
+
+    selected.value = undefined;
   }
 
   onMounted(async () => {
