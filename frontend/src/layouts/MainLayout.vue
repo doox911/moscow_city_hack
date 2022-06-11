@@ -45,13 +45,9 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, ref } from 'vue'
   import { storeToRefs } from 'pinia'
 
-  /**
-   * Api
-   */
-  import { apiMenuList } from '../api/menu';
   /**
    * Common
    */
@@ -110,20 +106,5 @@
     router.push('/login');
   }
 
-  const { setMenu } = menuStore();
-
   const { menuList } = storeToRefs(menuStore());
-
-
-  async function loadMenu()
-  {
-    const list = await apiMenuList();
-    console.log(list)
-    setMenu(list);
-  }
-
-  onMounted(() => {
-    loadMenu();
-
-  });
 </script>
