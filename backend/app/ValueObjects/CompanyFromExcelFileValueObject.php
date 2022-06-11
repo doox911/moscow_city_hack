@@ -15,7 +15,7 @@ use JsonException;
  * @property string $full_name
  * @property string $site
  *
- * @description Объект позиции для быстрого ввода
+ * @description Объект компании для импорта из Excel файла
  * @package Preorder
  */
 final class CompanyFromExcelFileValueObject extends AbstractValueObject {
