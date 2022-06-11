@@ -15,10 +15,45 @@
       selection="multiple"
       @request="onRequest"
     >
-
+      <template v-slot:body-cell-actions="props">
+        <q-td :props="props">
+          <div class="col q-gutter justify-center">
+            <IconBtn
+              v-for="(button, index) of buttons"
+              :key="index"
+              :color="button.color"
+              :icon="button.icon"
+              :tooltip-text="button.tooltip"
+              hover-color="primary"
+              @click="openEditDialog(props.row)"
+            />
+          </div>
+        </q-td>
+      </template>
+      <template v-slot:top-left>
+        <q-btn
+          color="primary"
+          label="Добавить"
+          type="reset"
+          :loading="loading"
+          @request="onRequest"
+          @click="appendNewCounterparty"
+        />
+      </template>
+      <template v-slot:top-right>
+        <q-input borderless dense debounce="300"
+          v-model="searchText"
+          placeholder="Search"
+          @update:model-value="emitOnRequest"
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
     </q-table>
   </div>
-  <TaskEventLogDialog v-model="task_event_dialog" :task="selected_task" />
+  <CounterpartyDialog v-model="dialog" :counterparty="selectCounterparty"/>
 </template>
 
 <script setup lang="ts">
@@ -30,6 +65,12 @@
   import { selectedRowsLabel, paginationLabel} from 'Src/common'
 
   /**
+   * Components
+   */
+  import IconBtn from 'Components/common/IconBtn.vue'
+  import CounterpartyDialog from 'Components/counterparty/CounterpartyDialog.vue';
+
+  /**
    * Types
    */
   import type { QTableOnRequestProps } from 'src/types';
@@ -37,7 +78,15 @@
   import { Counterparty } from 'Src/api/counterparty';
   import { setDateAndTimeToDateTimeComponent } from 'Src/common';
 
+  let dialog = ref(false);
+  let searchText = ref('');
 
+  type Button = {
+    color: string;
+    event: 'edit' | 'delete';
+    icon: string;
+    tooltip: string;
+  };
   const columns: QTableProps['columns'] = [
     {
       align: 'center',
@@ -118,15 +167,33 @@
       format: (val) => setDateAndTimeToDateTimeComponent(val),
       sortable: true,
     },
+    {
+      align: 'center',
+      field: '',
+      label: 'Управление',
+      name: 'actions',
+    },
   ];
 
+  const buttons: Button[] = [
+    {
+      color: 'green',
+      event: 'edit',
+      icon: 'edit',
+      tooltip: 'Редактировать',
+    },
+    {
+      color: 'red',
+      event: 'delete',
+      icon: 'delete',
+      tooltip: 'Удалить',
+    },
+  ];
   const emit = defineEmits([
-    'onLoadCSV',
-    'onRemigrate',
+    'onSearch',
     'onRequest',
-    'onSelectedTimeline',
-    'onStart',
-    'onStop',
+    'onCancel',
+    'onApply',
     'update:selected',
   ]);
 
@@ -147,11 +214,8 @@
     },
   );
 
-  const task_event_dialog = ref(false);
 
   const rows = computed(() => props.counterpart);
-
-  const selected_task = ref<Counterparty | undefined>(undefined);
 
   const pagination = ref({
     sortBy: '',
@@ -177,6 +241,18 @@
     },
   );
 
+  let selectCounterparty = ref({});
+  function openEditDialog(value: any, b: any)
+  {
+    console.log(value, b)
+    dialog.value = true;
+    selectCounterparty.value = value;
+  }
+
+  function appendNewCounterparty()
+  {
+
+  }
 
   function onRequest(ps: QTableOnRequestProps) {
     const { page, rowsPerPage, sortBy, descending } = ps.pagination;
@@ -189,10 +265,18 @@
       descending,
     };
 
+    emitOnRequest()
+  }
+
+  function emitOnRequest()
+  {
     emit('onRequest', {
-      page: page,
-      size: rowsPerPage,
-      sort: [`${sortBy},${descending ? 'desc' : 'asc'}`],
+      page: pagination.value.page,
+      size: pagination.value.rowsPerPage,
+      sort: Object.fromEntries(
+        new Map([[pagination.value.sortBy, pagination.value.descending ? 'desc' : 'asc']])
+      ),
+      searchText: searchText.value
     });
   }
 

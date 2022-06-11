@@ -17,13 +17,6 @@
     </div>
     <div class="row" style="margin-top:10px;">
       <div class="col">
-        <div class = "row" style = "justify-content: end;">
-          <q-input borderless dense debounce="300" v-model="counterpartRef.searchText" placeholder="Search" @update:model-value="searchInCounterpart">
-            <template v-slot:append>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-        </div>
         <OwnerTable
           :counterpart="counterpartRef.data"
           :loading="counterpartRef.loading"
@@ -67,43 +60,27 @@
   const counterpartRef: any = ref({
     data: [],
     rowsNumber: 0,
-    rowsPerPage: 10,
-    searchText: '',
-    size: 10,
     loading: false
-  })
+  });
 
   const loading = ref(false)
 
-  async function onRequestOwner({ page, size, sort }: { page: number, size: number, sort: [string, string] })
+  async function onRequestOwner({ page, size, sort, searchText }: { page: number, size: number, sort: [], searchText: string })
   {
-    const columns: any = {};
-    if(sort)
-    {
-      sort.forEach(item => {
-        let v: string[] = item.split(',');
-        columns[v[0]] = v[1];
-      })
-    }
-    counterpartRef.value.size = size;
     counterpartRef.value.loading = true;
     const { counterparties, total_rows } = await apiCounterparties({
       params: {
         page,
         item_per_page: size,
         filters: {
-          search_string: counterpartRef.value.searchText,
-          columns
+          search_string: searchText,
+          columns: sort
         }
       }
     });
     counterpartRef.value.rowsNumber = total_rows;
     counterpartRef.value.data = counterparties.data;
     counterpartRef.value.loading = false;
-  }
-  function searchInCounterpart()
-  {
-    onRequestOwner({ page: 1, size: counterpartRef.value.size })
   }
 
   async function onTaskApply(t: Task) {
@@ -113,7 +90,6 @@
   async function onTaskCancel(t: Task) {
     console.log('onTaskCancel', t);
   }
-
 
   onMounted(async () => {
     loading.value = true;
@@ -127,7 +103,13 @@
         },
       }
     });
-    onRequestOwner({ page: 1, size: counterpartRef.value.size });
+
+    onRequestOwner({
+      page: 1,
+      size: 10,
+      sort: [],
+      searchText: ''
+    });
     loading.value = false;
   })
 </script>
