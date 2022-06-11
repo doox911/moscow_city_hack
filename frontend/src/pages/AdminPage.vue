@@ -17,14 +17,17 @@
     </div>
     <div class="row" style="margin-top:10px;">
       <div class="col">
-        <div class = "row">
-          <q-input outlined v-model="searchText" label="Поиск" />
-          <q-btn color="primary" label="Поиск"/>
+        <div class = "row" style = "justify-content: end;">
+          <q-input borderless dense debounce="300" v-model="counterpartRef.searchText" placeholder="Search" @update:model-value="searchInCounterpart">
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
         </div>
         <OwnerTable
-          :counterpart="counterpart"
-          :loading="loading"
-          :rowsNumber="rowsNumber"
+          :counterpart="counterpartRef.data"
+          :loading="counterpartRef.loading"
+          :rowsNumber="counterpartRef.rowsNumber"
           @on-request="onRequestOwner"/>
       </div>
     </div>
@@ -61,36 +64,46 @@
 
   const tasks = ref<Task[]>([]);
 
-  const counterpart = ref<Counterparty[]>([]);
-
-  const rowsNumber = ref(0);
-
-  const rowsPerPage = ref(10);
-  
-  const searchText = ref('');
+  const counterpartRef: any = ref({
+    data: [],
+    rowsNumber: 0,
+    rowsPerPage: 10,
+    searchText: '',
+    size: 10,
+    loading: false
+  })
 
   const loading = ref(false)
 
-  async function onRequestOwner({ page, size }: { page: number, size: number })
+  async function onRequestOwner({ page, size, sort }: { page: number, size: number, sort: [string, string] })
   {
-    loading.value = true;
-    const { counterparties, pages_count, total_rows } = await apiCounterparties({
+    const columns: any = {};
+    if(sort)
+    {
+      sort.forEach(item => {
+        let v: string[] = item.split(',');
+        columns[v[0]] = v[1];
+      })
+    }
+    counterpartRef.value.size = size;
+    counterpartRef.value.loading = true;
+    const { counterparties, total_rows } = await apiCounterparties({
       params: {
         page,
         item_per_page: size,
         filters: {
-          search_string: searchText.value,
-          columns: {
-            name: 'asc',
-            inn: 'desc'
-          }
+          search_string: counterpartRef.value.searchText,
+          columns
         }
       }
     });
-    rowsPerPage.value = pages_count;
-    rowsNumber.value = total_rows;
-    counterpart.value = counterparties.data;
-    loading.value = false;
+    counterpartRef.value.rowsNumber = total_rows;
+    counterpartRef.value.data = counterparties.data;
+    counterpartRef.value.loading = false;
+  }
+  function searchInCounterpart()
+  {
+    onRequestOwner({ page: 1, size: counterpartRef.value.size })
   }
 
   async function onTaskApply(t: Task) {
@@ -114,7 +127,7 @@
         },
       }
     });
-    onRequestOwner({ page: 1, size: rowsPerPage.value })
+    onRequestOwner({ page: 1, size: counterpartRef.value.size });
     loading.value = false;
   })
 </script>
