@@ -1,4 +1,7 @@
-<template>Government page</template>
+<template>
+  <q-page class="q-mx-md">
+  </q-page>
+</template>
 
 <script setup lang="ts">
   /**

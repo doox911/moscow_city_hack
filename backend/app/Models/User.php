@@ -89,7 +89,7 @@ class User extends Authenticatable {
   /**
    * Компания пользователя, если есть
    *
-   * @return \Illuminate\Database\Eloquent\Relations\HasOne
+   * @return HasOne
    */
   public function counterparty(): HasOne {
     return $this->hasOne(Counterparty::class);

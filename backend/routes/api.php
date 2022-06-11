@@ -10,8 +10,9 @@ use App\Http\Controllers\AuthController;
 
 Route::middleware('auth:sanctum')->group(function () {
   Route::prefix('user')->group(static function () {
+    Route::get('/all', [AuthController::class, 'getAll'])->middleware('role:admin|government');
     Route::get('/', [AuthController::class, 'getUser']);
-    Route::put('/', [AuthController::class, 'updateUser']);
+    Route::put('/', [AuthController::class, 'updateUser'])->middleware('role:admin');
   });
 
   Route::prefix('menu')->group(static function () {
@@ -60,7 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
   });
 
-  Route::post('/register', [AuthController::class, 'register']);
+  Route::post('/register', [AuthController::class, 'register'])->middleware('role:admin');
   Route::post('/logout', [AuthController::class, 'logout']);
 });
 

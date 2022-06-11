@@ -5,7 +5,7 @@ export type RequestListItem = {
   id: number
 };
 
-export const menuStore = defineStore('menuStore', () => {
+export const requestStore = defineStore('requestStore', () => {
   const requestList = ref<RequestListItem[]>([]);
 
   async function setList(u: RequestListItem[]) {

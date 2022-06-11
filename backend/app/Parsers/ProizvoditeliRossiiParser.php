@@ -8,9 +8,9 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
 
 /**
- * @description Парсер ФНС
+ * @description Парсер сайта "Производители России"
  */
-class FNSParser extends AbstractParser implements IParser {
+class ProizvoditeliRossiiParser extends AbstractParser implements IParser {
 
   /**
    * @inheritDoc

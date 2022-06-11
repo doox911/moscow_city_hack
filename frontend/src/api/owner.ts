@@ -10,7 +10,7 @@ export type MenuResponse = ApiResponse<{
 /**
  * Получение списка меню
  */
-export async function apiMenuList(config?: AxiosRequestConfig) {
+export async function apiOwner(config?: AxiosRequestConfig) {
   let menu: MenuListItem[] = [];
 
   await requestWrapper({

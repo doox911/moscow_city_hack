@@ -19,3 +19,10 @@ export enum Roles {
    */
   Guest = 'guest',
 }
+
+export const RolesDescription = Object.freeze({
+  [Roles.Admin]: 'Администратор',
+  [Roles.Government]: 'Сотрудник Департамента ИПП',
+  [Roles.Owner]: 'Представитель компании',
+  [Roles.Guest]: 'Гость',
+}); 
