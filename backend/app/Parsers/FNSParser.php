@@ -27,7 +27,6 @@ class FNSParser extends AbstractParser implements IParser {
   public function searchCompanies() {
     $url = config('services.fns.url') . "search?q=any&filter=active+region77&key=" . config('services.fns.secret');
 
-    dd($this->client);
     $res_json = $this->client->request('GET', $url);
 
     return json_decode($res_json->getBody())->items;
