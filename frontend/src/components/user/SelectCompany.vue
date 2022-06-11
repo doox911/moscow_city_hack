@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from 'vue';
+  import { onMounted, ref } from 'vue';
 
   /**
    * Common
@@ -58,6 +58,10 @@
   const onSuccess = async () => {
 
   };
+
+  onMounted(() => {
+    
+  });
 
 </script>
 
