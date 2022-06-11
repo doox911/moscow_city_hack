@@ -51,3 +51,21 @@ export function setDateAndTimeToDateTimeComponent(date?: string) {
 
   return date;
 }
+
+/**
+ * Русскоязычное отображение кол-ва выбранных записей в таблице
+ */
+ export function selectedRowsLabel(count: number) {
+  return `Выбрано ${count} записей`;
+}
+
+/**
+ * Русскоязычное отображение пагинации в таблице
+ */
+export function paginationLabel(
+  firstRowIndex: number,
+  endRowIndex: number,
+  totalRowsNumber: number,
+) {
+  return `${firstRowIndex} - ${endRowIndex} из ${totalRowsNumber}`;
+}
