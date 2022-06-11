@@ -19,7 +19,7 @@
       </div>
       <div class="row">
         <div class="col">
-          <q-select v-model="selected_company" :options="companies" label="Выбрать компанию" />
+          <q-select v-model="selected_company" :options="counterparties" label="Выбрать компанию" />
         </div>
       </div>
     </div>
@@ -30,18 +30,24 @@
   import { onMounted, ref } from 'vue';
 
   /**
+   * Api
+   */
+  import { apiCounterparties, Counterparty } from 'Src/api/counterparty';
+
+  /**
    * Common
    */
   import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue'
 
+  let page = 1;
 
   const dialog = ref(false);
 
   const filter = ref('');
 
-  const companies = ref([]);
+  const counterparties = ref<Counterparty[]>([]);
 
-  const selected_company = ref(null);
+  const selected_company = ref<Counterparty | null>(null);
 
   async function getCompany() {
     console.log('getCompany');
@@ -59,8 +65,17 @@
 
   };
 
-  onMounted(() => {
-    
+  onMounted(async () => {
+    counterparties.value = await apiCounterparties({
+      params: {
+        item_per_page: 15,
+        page,
+        filters: {
+          search_string: '',
+          columns: {}
+        }
+      }
+    });
   });
 
 </script>

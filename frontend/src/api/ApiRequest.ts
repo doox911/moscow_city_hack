@@ -32,7 +32,7 @@ export default class ApiRequest {
       method: 'get',
       data: { data: null }
     }
-    console.log(completeConfig)
+    
     return this.request<R>(completeConfig)
   }
 

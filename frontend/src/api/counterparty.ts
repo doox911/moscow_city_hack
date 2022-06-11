@@ -1,9 +1,13 @@
-import ApiRequest, { ApiResponse } from './ApiRequest';
+import ApiRequest from './ApiRequest';
 import { AxiosRequestConfig } from 'axios';
-import { MenuListItem } from '../stores/menuStore';
 import { requestWrapper } from '../common/wrappers';
 
-export type Owner = {
+/**
+ * Types
+ */
+import type { PaginationCount, LaravelPagination } from 'Src/types';
+
+export type Counterparty = {
   id: number,
   user_id: number,
   name: string,
@@ -16,9 +20,9 @@ export type Owner = {
   site: string,
 };
 
-export type OwnerResponce = {
-  content: {
-    owner: Owner[],
+export type CounterpartyResponce = {
+  content: PaginationCount & {
+    counterparties: LaravelPagination<Counterparty>,
   },
   message: string;
 }
@@ -27,11 +31,11 @@ export type OwnerResponce = {
  * Получение списка предприятий
  */
 export async function apiCounterparties(config?: AxiosRequestConfig) {
-  let owner: Owner[] = [];
+  let owner: Counterparty[] = [];
   console.log(config)
   await requestWrapper({
     success: async () => {
-      owner = (await new ApiRequest(config).get('api/counterparties') as OwnerResponce).content.owner;
+      owner = (await new ApiRequest(config).get('api/counterparties') as CounterpartyResponce).content.counterparties.data;
     }
   });
 

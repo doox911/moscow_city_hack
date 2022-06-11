@@ -25,7 +25,7 @@
    * Api
    */
   import { apiTasks } from 'Src/api/task';
-  import { apiCounterparties, Owner } from '../api/owner';
+  import { apiCounterparties, Counterparty } from '../api/counterparty';
 
   /**
    * Hooks
@@ -47,7 +47,7 @@
   useUserPageGuard();
 
   const tasks = ref<Task[]>([])
-  const owner = ref<Owner[]>([])
+  const owner = ref<Counterparty[]>([])
 
   const loading = ref(false)
 

@@ -2,6 +2,11 @@ import ApiRequest from './ApiRequest';
 import { AxiosRequestConfig } from 'axios';
 import { requestWrapper } from '../common/wrappers';
 
+/**
+ * Types
+ */
+import type { PaginationCount, LaravelPagination } from 'Src/types';
+
 export type Task = {
   user_id: number,
   entity_id: number,
@@ -13,20 +18,8 @@ export type Task = {
 };
 
 export type TaskResponce = {
-  content: {
-    pages_count: number
-    tasks: {
-      current_page: number
-      data: Task[]
-      first_page_url: string
-      from: string
-      next_page_url: string
-      path: string
-      per_page: string
-      prev_page_url: string
-      to: string
-    }
-    total_rows: 0
+  content: PaginationCount & {
+    tasks: LaravelPagination<Task>,
   },
   message: string;
 }

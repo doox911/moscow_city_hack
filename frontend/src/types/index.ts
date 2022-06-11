@@ -22,3 +22,20 @@ export type QueryWrapperOptions = {
   error_message?: string;
   always_message?: string;
 };
+
+export type PaginationCount = {
+  pages_count: number
+  total_rows: number
+}
+
+export type LaravelPagination<T> = {
+  current_page: number
+  data: T[]
+  first_page_url: string
+  from: string
+  next_page_url: string
+  path: string
+  per_page: string
+  prev_page_url: string
+  to: string
+}
