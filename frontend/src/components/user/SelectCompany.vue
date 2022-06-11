@@ -77,18 +77,18 @@
   };
 
   async function updateCounterparty(s = '') {
-    const c = await apiCounterparties({
+    const pagination = await apiCounterparties({
       params: {
         item_per_page: item_per_page.value,
         page: page.value,
         filters: {
-          search_string: 'ввв',
+          search_string: 'либе',
           columns: {}
         }
       }
     });
 
-    counterparties.value = c.map(e => {
+    counterparties.value = pagination.counterparties.data.map(e => {
       return {
         ...e,
         name: e.name.length > 50 

@@ -12,7 +12,11 @@
     </div>
     <div class="row" style="margin-top:10px;">
       <div class="col">
-        <OwnerTable :owner="owner" :loading="loading" @on-request="onRequestOwner"/>
+        <OwnerTable
+          :counterpart="counterpart"
+          :loading="loading"
+          :rowsNumber="rowsNumber"
+          @on-request="onRequestOwner"/>
       </div>
     </div>
   </q-page>
@@ -46,14 +50,34 @@
 
   useUserPageGuard();
 
-  const tasks = ref<Task[]>([])
-  const owner = ref<Counterparty[]>([])
+  const tasks = ref<Task[]>([]);
+  const counterpart = ref<Counterparty[]>([]);
+
+  const rowsNumber = ref(0);
+  const rowsPerPage = ref(10);
 
   const loading = ref(false)
 
-  function onRequestOwner(e: any)
+  async function onRequestOwner({ page, size }: { page: number, size: number })
   {
-    console.log(e)
+    loading.value = true;
+    const { counterparties, pages_count, total_rows } = await apiCounterparties({
+      params: {
+        page,
+        item_per_page: size,
+        filters: {
+          search_string: '',
+          columns: {
+            name: 'asc',
+            inn: 'desc'
+          }
+        }
+      }
+    });
+    rowsPerPage.value = pages_count;
+    rowsNumber.value = total_rows;
+    counterpart.value = counterparties.data;
+    loading.value = false;
   }
 
   onMounted(async () => {
@@ -65,22 +89,10 @@
         filter: {
           search_string: '',
           columns: {},
-        }
+        },
       }
     });
-    owner.value = await apiCounterparties({
-      params: {
-        item_per_page: 15,
-        filters: {
-          search_string: '',
-          columns: {
-            name: 'asc',
-            inn: 'desc'
-          }
-        }
-      }
-    });
-
+    onRequestOwner({ page: 1, size: rowsPerPage.value })
     loading.value = false;
   })
 </script>

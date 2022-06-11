@@ -31,13 +31,28 @@ export type CounterpartyResponce = {
  * Получение списка предприятий
  */
 export async function apiCounterparties(config?: AxiosRequestConfig) {
-  let owner: Counterparty[] = [];
-  console.log(config)
+  let pagination: PaginationCount & {
+    counterparties: LaravelPagination<Counterparty>,
+  } = {
+    pages_count: 0,
+    total_rows: 0,
+    counterparties: {
+      current_page: 1,
+      data: [],
+      first_page_url: '',
+      from: '',
+      next_page_url: '',
+      path: '',
+      per_page: '',
+      prev_page_url: '',
+      to: ''
+    }
+  };
   await requestWrapper({
     success: async () => {
-      owner = (await new ApiRequest(config).get('/api/counterparties') as CounterpartyResponce).content.counterparties.data;
+      pagination = (await new ApiRequest(config).get('/api/counterparties') as CounterpartyResponce).content;
     }
   });
 
-  return owner;
+  return pagination;
 }
