@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Activity extends Model {
@@ -17,11 +19,17 @@ class Activity extends Model {
     'is_active'
   ];
 
-  public function counterparty() {
+  /**
+   * @return BelongsTo
+   */
+  public function counterparty(): BelongsTo {
     return $this->belongsTo(Counterparty::class);
   }
 
-  public function activity() {
+  /**
+   * @return MorphTo
+   */
+  public function activity(): MorphTo {
     return $this->morphTo('activity');
   }
 

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ActivityProperty extends Model {
@@ -18,11 +20,17 @@ class ActivityProperty extends Model {
     'is_active',
   ];
 
-  public function property() {
+  /**
+   * @return BelongsTo
+   */
+  public function property(): BelongsTo {
     return $this->belongsTo(Property::class);
   }
 
-  public function activity() {
+  /**
+   * @return MorphTo
+   */
+  public function activity(): MorphTo {
     return $this->morphTo('activity');
   }
 }
