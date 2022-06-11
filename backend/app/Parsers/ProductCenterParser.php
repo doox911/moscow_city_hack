@@ -38,15 +38,14 @@ class ProductCenterParser extends AbstractParser {
     $search_page_document = new Document($response_html);
 
     foreach ($search_page_document->find('div.card_item') as $result_text) {
-      $produced_id = $result_text->first('.to_favorites')->attr('data-item-id');
+      $producer_id = $result_text->first('.to_favorites')->attr('data-item-id');
 
       // TODO: проверить, возможно это изображение брать надёжнее чем из галереи компании
       $image_path = $result_text->first('.image img')->attr('src');
 
       $producer_page_path = $result_text->first('.text .link')->attr('href');
-      $city_name = $result_text->first('.item_info .ii_city a')->text();
 
-
+      // переходим на страницу производителя
       $res = $this->client->request('GET', self::$base_url . $producer_page_path);
       $response_html_producer_page = (string)$res->getBody();
 
@@ -85,18 +84,56 @@ class ProductCenterParser extends AbstractParser {
         }
       }
 
+      $email = $producer_page->first('.tc_contacts span[itemprop="email"]')->text();
+      $phone = $producer_page->first('.tc_contacts span[itemprop="telephone"]')->text();
+      $site = $producer_page->first('.tc_contacts a[itemprop="url"]')->text();
 
-      //dd($keywords_for_search);
-      $email = '';
-      $phone = '';
-      $site = '';
+      // фактический адрес
+      $address_region = $producer_page->first('.tc_contacts span[itemprop="addressRegion"]')->text();
+      $address_locality = $producer_page->first('.tc_contacts span[itemprop="addressLocality"]')->text();
+      $street_address = $producer_page->first('.tc_contacts span[itemprop="streetAddress"]')->text();
+
+      if (empty($street_address)) {
+        $actual_address = implode(', ', [$address_region, $address_locality]);
+      } else {
+        $actual_address = implode(', ', [$address_region, $address_locality, $street_address]);
+      }
+
+      $legal_address = '';
+
+      // ОГРН
+      $orgn = '';
+
+      // ИНН
+      $inn = '';
+
+      // КПП
+      $kpp = '';
+
+      // количество сотрудников
+      $number_of_employees = 0;
+
+      // уставной капитал
+      $authorized_capital = 0;
+
+      // дата регистрации
+      $registration_date = '';
+
+      // виды деятельности - делятся на 2 типа (Основной ОКВЭД, Дополнительные ОКВЭД)
+      $activities = [];
 
       $producer_vo = new CompanyFromParserValueObject([
+        //'data_source_id' => $data_source_id,
+        'data_source_item_id' => $producer_id,
         'name' => $producer_name,
         'description' => $producer_description,
         'logo_url' => $logo_url,
         'photos_urls' => $photos_urls,
         'keywords_for_search' => $keywords_for_search,
+        'email' => $email,
+        'phone' => $phone,
+        'site' => $site,
+        'actual_address' => $actual_address,
       ]);
 
 

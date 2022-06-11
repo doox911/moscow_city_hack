@@ -17,6 +17,10 @@ use JsonException;
  * @property string|null $full_name
  * @property string|null $description
  * @property string|null $site
+ * @property string|null $phone
+ * @property string|null $email
+ * @property string|null $actual_address
+ * @property string|null $legal_address
  * @property string|null $logo_url
  * @property array $photos_urls
  * @property array $keywords_for_search
@@ -68,6 +72,31 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
    * @var string|null
    */
   protected ?string $site = null;
+
+  /**
+   * @description Адрес фактический
+   * @var string|null
+   */
+  protected ?string $actual_address = null;
+
+  /**
+   * @description Адрес юридический
+   * @var string|null
+   */
+  protected ?string $legal_address = null;
+
+
+  /**
+   * @description Контактный телефон
+   * @var string|null
+   */
+  protected ?string $phone = null;
+
+  /**
+   * @description Электронная почта
+   * @var string|null
+   */
+  protected ?string $email = null;
 
   /**
    * @description URL логотипа
