@@ -20,7 +20,7 @@ class ProxyService {
    */
   public static function getProxyIpCollection(): Collection {
     $proxy_ip_list = [
-      '172.67.70.88:80',
+      config('services.fns.request_ip'),
     ];
 
     return collect($proxy_ip_list);

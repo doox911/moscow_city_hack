@@ -32,7 +32,7 @@ abstract class AbstractParser implements IParser {
     ];
 
     if ($proxy_ip_list->isNotEmpty()) {
-      $http_client_params['request.options']['proxy'] = 'tcp://' . $proxy_ip_list[array_rand($proxy_ip_list->toArray())];
+      $http_client_params['request.options']['proxy'] = 'http://' . $proxy_ip_list[array_rand($proxy_ip_list->toArray())];
     }
 
     $this->client = new Client($http_client_params);

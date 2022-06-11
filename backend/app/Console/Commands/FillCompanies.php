@@ -31,6 +31,7 @@ class FillCompanies extends Command {
     $parser = new FNSParser;
 
     $companies = $parser->parse();
+
     foreach ($companies as $company) {
       $c = $company->{"ЮЛ"} ?? $company->{"ИП"};
 
