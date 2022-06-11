@@ -76,7 +76,7 @@
   const router = useRouter();
   const route = useRoute();
 
-  if(user.role !== Roles.Admin) router.push(user.role);
+  /* if(user.role !== Roles.Admin) router.push(user.role); */
 
   const userData = ref({
     name: '',

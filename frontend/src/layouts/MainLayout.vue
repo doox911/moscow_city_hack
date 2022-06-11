@@ -65,7 +65,7 @@
   /**
    * Common
    */
-  import { capitalizeFirstLetter } from 'Src/common'
+  import { getUserName } from 'Src/common';
 
   /**
    * Components
@@ -99,24 +99,7 @@
 
   const profileTooltip = ref(false);
 
-  const getUserInfo = computed(() => {
-    const { name, second_name, patronymic } = user.value;
-
-    const n = name?.length
-      ? `${capitalizeFirstLetter(name)}`
-      : ''
-
-    const sn = second_name?.length
-      ? `${capitalizeFirstLetter(second_name[0])}.`
-      : ''
-
-    const p = patronymic?.length
-      ? `${capitalizeFirstLetter(patronymic[0])}.`
-      : ''
-
-    return `${n} ${sn} ${p}`;
-
-  })
+  const getUserInfo = computed(() => getUserName(user.value));
 
   async function logout() {
     await AuthService.logout();
