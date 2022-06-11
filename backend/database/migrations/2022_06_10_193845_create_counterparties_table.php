@@ -12,9 +12,17 @@ return new class extends Migration {
    */
   public function up() {
     Schema::create('counterparties', function (Blueprint $table) {
-      $table->string('full_name');
-      $table->string('ogrn')->nullable()->change;
-      $table->string('address')->nullable();
+      $table->id();
+      $table->string('name');
+      $table->string('inn');
+      $table->string('ogrn');
+      $table->string('address');
+      $table->string('email')->nullable();
+      $table->string('phone')->nullable();
+      $table->string('site')->nullable();
+      //todo возможно еще какие то поля нужны
+      $table->timestamps();
+      $table->softDeletes();
     });
   }
 
@@ -24,6 +32,6 @@ return new class extends Migration {
    * @return void
    */
   public function down() {
-    // todo not path to back
+    Schema::dropIfExists('counterparties');
   }
 };
