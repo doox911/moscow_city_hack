@@ -78,7 +78,7 @@ class TaskController extends Controller {
 
     $data = $request->all();
 
-    dd($data);
+    dd($data, $task);
   }
 
   /**
