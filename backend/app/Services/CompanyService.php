@@ -27,7 +27,7 @@ class CompanyService {
     $companies = collect();
 
     $active_sheet = $spreadsheet->getActiveSheet();
-    $max_count_rows = 1000;
+    $max_count_rows = 10000000;
 
     for ($row = 2; $row < $max_count_rows; $row++) {
       $inn = $active_sheet->getCell('B' . $row)->getValue();
