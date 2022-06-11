@@ -23,7 +23,7 @@ export default class ApiRequest {
 
   constructor(public config: AxiosRequestConfig = {}) {}
 
-  public async get<R>(url: string) {
+  public async get<R>(url: string, params?: any ) {
     ApiRequest.beforeRequest(this);
 
     const completeConfig: AxiosRequestConfig = {
@@ -31,6 +31,7 @@ export default class ApiRequest {
       ...this.getCompleteConfig(),
       method: 'get',
       data: { data: null },
+      params,
     }
 
     return this.request<R>(completeConfig)
