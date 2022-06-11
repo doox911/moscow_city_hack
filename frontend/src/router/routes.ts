@@ -17,6 +17,24 @@ const routes: RouteRecordRaw[] = [
         path: '/' + Roles.Admin + '/profile',
         name: Roles.Admin + 'Profile',
         component: () => import('pages/AdminProfilePage.vue'),
+        children: [
+          {
+            path: '',
+            component: () => import('pages/profile/ProfilePage.vue'),
+          },
+          {
+            path: 'request',
+            component: () => import('pages/profile/RequestPage.vue'),
+          },
+          {
+            path: 'edit',
+            component: () => import('pages/profile/EditPage.vue'),
+          },
+          {
+            path: 'owner',
+            component: () => import('pages/profile/OwnerPage.vue'),
+          }
+        ]
       },
       {
         path: '/registration',
