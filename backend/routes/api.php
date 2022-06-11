@@ -18,7 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
   Route::prefix('counterparties')->group(static function () {
     // CRUD
-    Route::get('', [CounterpartyController::class, 'index']);
+    Route::get('', [CounterpartyController::class, 'index'])->middleware('role:admin|owner');
     Route::post('', [CounterpartyController::class, 'store']);
 
     Route::prefix('{counterparty}')->group(static function () {
