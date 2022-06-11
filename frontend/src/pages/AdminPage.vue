@@ -12,6 +12,10 @@
     </div>
     <div class="row" style="margin-top:10px;">
       <div class="col">
+        <div class = "row">
+          <q-input outlined v-model="searchText" label="Поиск" />
+          <q-btn color="primary" label="Поиск"/>
+        </div>
         <OwnerTable
           :counterpart="counterpart"
           :loading="loading"
@@ -55,6 +59,7 @@
 
   const rowsNumber = ref(0);
   const rowsPerPage = ref(10);
+  const searchText = ref('');
 
   const loading = ref(false)
 
@@ -66,7 +71,7 @@
         page,
         item_per_page: size,
         filters: {
-          search_string: '',
+          search_string: searchText.value,
           columns: {
             name: 'asc',
             inn: 'desc'
