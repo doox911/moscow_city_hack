@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('', [CounterpartyController::class, 'store']);
 
     Route::prefix('{counterparty}')->group(static function () {
+      Route::get('', [CounterpartyController::class, 'getCounterparty']);
       Route::put('', [CounterpartyController::class, 'update']);
       Route::delete('', [CounterpartyController::class, 'destroy']);
     });

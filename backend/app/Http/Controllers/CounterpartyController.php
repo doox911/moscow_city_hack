@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Resources\CounterpartyResource;
 use App\Models\Counterparty;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Response;
 
 class CounterpartyController extends Controller {
+
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\JsonResponse
+   * @return JsonResponse
    */
   public function index(): JsonResponse {
     $counterparties = Counterparty::query();
@@ -45,7 +47,7 @@ class CounterpartyController extends Controller {
 
     return response()->json([
       'content' => [
-        'counterparties' => $counterparties->simplePaginate($items_per_page),
+        'counterparties' => CounterpartyResource::collection($counterparties->simplePaginate($items_per_page)),
         'pages_count' => $pages_count,
         'total_rows' => $total_rows,
       ],
@@ -56,10 +58,10 @@ class CounterpartyController extends Controller {
   /**
    * Store a newly created resource in storage.
    *
-   * @param \Illuminate\Http\Request $request
-   * @return \Illuminate\Http\JsonResponse
+   * @param Request $request
+   * @return JsonResponse
    */
-  public function store(Request $request) {
+  public function store(Request $request): JsonResponse {
     $data = $request->all();
 
     if ($request->user()->isOwnerRole()) {
@@ -91,7 +93,7 @@ class CounterpartyController extends Controller {
 
     return response()->json([
       'content' => [
-        'counterparty' => $counterparty->refresh(),
+        'counterparty' => CounterpartyResource::make($counterparty->refresh()),
       ],
       'messages' => [
         'Запись о компании создана'
@@ -102,11 +104,11 @@ class CounterpartyController extends Controller {
   /**
    * Update the specified resource in storage.
    *
-   * @param \Illuminate\Http\Request $request
-   * @param \App\Models\Counterparty $counterparty
-   * @return \Illuminate\Http\JsonResponse|void
+   * @param Request $request
+   * @param Counterparty $counterparty
+   * @return JsonResponse
    */
-  public function update(Request $request, Counterparty $counterparty) {
+  public function update(Request $request, Counterparty $counterparty): JsonResponse {
     $data = $request->all();
 
     if ($request->user()->isOwnerRole()) {
@@ -138,7 +140,7 @@ class CounterpartyController extends Controller {
 
     return response()->json([
       'content' => [
-        'counterparty' => $counterparty->refresh(),
+        'counterparty' => CounterpartyResource::make($counterparty->refresh()),
       ],
       'messages' => [
         'Информация о компании обновлена'
@@ -147,12 +149,27 @@ class CounterpartyController extends Controller {
   }
 
   /**
+   * @param Counterparty $counterparty
+   * @return JsonResponse
+   */
+  public function getCounterparty(Counterparty $counterparty): JsonResponse {
+    return response()->json([
+      'content' => [
+        'counterparty' => CounterpartyResource::make($counterparty),
+      ],
+      'messages' => [
+        'Информация о компании получена'
+      ]
+    ]);
+  }
+
+  /**
    * Remove the specified resource from storage.
    *
-   * @param \App\Models\Counterparty $counterparty
-   * @return \Illuminate\Http\Response
+   * @param Counterparty $counterparty
+   * @return Response
    */
-  public function destroy(Counterparty $counterparty) {
+  public function destroy(Counterparty $counterparty): Response {
     // todo realise
   }
 }
