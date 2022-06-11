@@ -8,6 +8,7 @@ import { Roles } from 'Src/constants';
 
 export type User = {
   id: number;
+  company: number;
   name: string;
   second_name: string;
   patronymic: string;
@@ -20,6 +21,7 @@ export type User = {
 export const userStore = defineStore('user', () => {
   const user = ref<User>({
     id: -1,
+    company: -1,
     name: '',
     second_name: '',
     patronymic: '',
@@ -37,6 +39,7 @@ export const userStore = defineStore('user', () => {
   function removeUser() {
     user.value = {
       id: -1,
+      company: -1,
       name: '',
       second_name: '',
       patronymic: '',
@@ -46,8 +49,7 @@ export const userStore = defineStore('user', () => {
       updated_at: '',
     };
   }
-  function isAuthenticated()
-  {
+  function isAuthenticated() {
     return user.value.id !== -1;
   }
 

@@ -65,7 +65,7 @@
 
   const loading = ref(false)
 
-  async function onRequestOwner({ page, size, sort, searchText }: { page: number, size: number, sort: [], searchText: string })
+  async function onRequestOwner({ page, size, columns, searchText }: { page: number, size: number, columns: any, searchText: string })
   {
     counterpartRef.value.loading = true;
     const { counterparties, total_rows } = await apiCounterparties({
@@ -74,7 +74,7 @@
         item_per_page: size,
         filters: {
           search_string: searchText,
-          columns: sort
+          columns
         }
       }
     });
@@ -107,7 +107,7 @@
     onRequestOwner({
       page: 1,
       size: 10,
-      sort: [],
+      columns: {},
       searchText: ''
     });
     loading.value = false;

@@ -20,10 +20,17 @@ export type Counterparty = {
   site: string,
 };
 
-export type CounterpartyResponce = {
+export type CounterpartiesResponce = {
   content: PaginationCount & {
     counterparties: LaravelPagination<Counterparty>,
   },
+  message: string;
+}
+
+export type CounterpartyResponce = {
+  content: {
+    counterparty: Counterparty
+  }
   message: string;
 }
 
@@ -50,9 +57,55 @@ export async function apiCounterparties(config?: AxiosRequestConfig) {
   };
   await requestWrapper({
     success: async () => {
-      pagination = (await new ApiRequest(config).get('/api/counterparties') as CounterpartyResponce).content;
+      pagination = (await new ApiRequest(config).get('/api/counterparties') as CounterpartiesResponce).content;
     }
   });
 
   return pagination;
+}
+
+/**
+ * Получить одно предприятие по user_id
+ */
+export async function apiCounterparty(
+  id: number,
+  config?: AxiosRequestConfig
+) {
+  let counterparty: Counterparty | null = null
+  await requestWrapper({
+    success: async () => {
+      counterparty = (await new ApiRequest(config).get(`/api/counterparties/${id}`) as CounterpartyResponce).content.counterparty;
+    }
+  });
+  return counterparty;
+}
+
+/**
+ * Создать предприятие
+ */
+export async function apiCreateCounterparty(
+  counterparty: Counterparty,
+  config?: AxiosRequestConfig
+) {
+  await requestWrapper({
+    success: async () => {
+      (await new ApiRequest(config).post('/api/counterparties', counterparty) as CounterpartyResponce).content.counterparty;
+    },
+    success_message: 'Предприятие добавлено'
+  });
+}
+
+/**
+ * Изменить предприятие
+ */
+export async function apiUpdateCounterparty(
+  counterparty: Counterparty,
+  config?: AxiosRequestConfig
+) {
+  await requestWrapper({
+    success: async () => {
+      (await new ApiRequest(config).put(`/api/counterparties/${counterparty.id}`, counterparty) as CounterpartyResponce).content.counterparty;
+    },
+    success_message: 'Информация о предприятии изменена успешно'
+  });
 }

@@ -14,12 +14,21 @@
       <p class="q-my-xs"><b class="q-pr-sm">Роль:</b>{{ user_role }}</p>
       <p class="q-my-xs"><b class="q-pr-sm">Создан:</b>{{ user_created }}</p>
       <p class="q-my-xs"><b class="q-pr-sm">Обновлён:</b>{{ user_updated }}</p>
+
+      <q-btn
+        color="primary float-right"
+        label="Изменить"
+        style="margin-top: 10px"
+        type="reset"
+        @click="openDialog"
+      />
     </div>
   </div>
+  <UserDialog v-model="dialog" :user="userData"/>
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
 
   /**
    * Common
@@ -32,6 +41,8 @@
   import { storeToRefs } from 'pinia'
   import { userStore } from 'Src/stores';
 
+  import UserDialog from './UserDialog.vue';
+
   const { user } = storeToRefs(userStore());
 
   const user_role = computed(() => getRoleDescription(user.value.role));
@@ -39,6 +50,15 @@
   const user_created = computed(() => setDateAndTimeToDateTimeComponent(user.value.created_at));
 
   const user_updated = computed(() => setDateAndTimeToDateTimeComponent(user.value.updated_at));
+
+  let dialog = ref(false);
+  let userData = ref({})
+
+  function openDialog()
+  {
+    dialog.value = true;
+    userData.value = user.value;
+  }
 
 </script>
 

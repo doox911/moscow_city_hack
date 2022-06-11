@@ -53,7 +53,7 @@
       </template>
     </q-table>
   </div>
-  <CounterpartyDialog v-model="dialog" :counterparty="selectCounterparty"/>
+  <CounterpartyDialog v-model="dialog" :counterparty="selectCounterparty" @on-success="emitOnRequest"/>
 </template>
 
 <script setup lang="ts">
@@ -242,16 +242,27 @@
   );
 
   let selectCounterparty = ref({});
-  function openEditDialog(value: any, b: any)
+  function openEditDialog(value: any)
   {
-    console.log(value, b)
     dialog.value = true;
     selectCounterparty.value = value;
   }
 
   function appendNewCounterparty()
   {
-
+    dialog.value = true;
+    selectCounterparty.value = {
+      id: null,
+      user_id: null,
+      name: '',
+      full_name: '',
+      inn: '',
+      ogrn: '',
+      adress: '',
+      email: '',
+      phone: '',
+      site: '',
+    };
   }
 
   function onRequest(ps: QTableOnRequestProps) {
@@ -270,12 +281,14 @@
 
   function emitOnRequest()
   {
+    let columns: any = {};
+    if(pagination.value.sortBy)
+      columns[pagination.value.sortBy] = pagination.value.descending ? 'desc' : 'asc';
+
     emit('onRequest', {
       page: pagination.value.page,
       size: pagination.value.rowsPerPage,
-      sort: Object.fromEntries(
-        new Map([[pagination.value.sortBy, pagination.value.descending ? 'desc' : 'asc']])
-      ),
+      columns,
       searchText: searchText.value
     });
   }
