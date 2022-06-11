@@ -10,10 +10,11 @@
           <q-btn flat color="primary" label="Добавление организации" />
         </div>
         <div class="col-12 col-md-7">
-            <q-form
-                @submit="onSubmit"
-                class="q-gutter-md">
-            </q-form>
+          <q-form
+            @submit="onSubmit"
+            class="q-gutter-md">
+          </q-form>
+          <div>Append new task! Common!</div>
         </div>
         <div class="col-12 col-md-1"></div>
       </div>
@@ -45,12 +46,11 @@
   {
 
   }
-console.log("any")
-  /* onMounted(() => {
-    if (route.name !== user.value.role) {
+  onMounted(() => {
+    if (route.name !== user.value.role + 'Profile') {
       router.push({
-        name: user.value.role,
+        name: user.value.role + 'Profile',
       })
     }
-  }); */
+  });
 </script>
