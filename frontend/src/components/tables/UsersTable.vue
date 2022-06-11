@@ -51,6 +51,13 @@
             :rules="[ requiredSelectRule ]"
             label="Роль"
           />
+          <q-select
+            v-if = "userData.role?.value == Roles.Owner"
+            v-model="userData.owner"
+            :options="ownerList"
+            :rules="[ requiredSelectRule ]"
+            label="Предприятие"
+          />
           <q-input
             v-model="userData.password"
             :rules="[ requiredStringRule ]"
@@ -104,18 +111,18 @@
 <script setup lang="ts">
 
   import { computed, ref } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
   import AuthService from '../../services/auth.service';
   import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from '../../common/rules';
   import { Roles } from '../../constants';
-  import { userStore } from '../../stores/userStore';
-
+  import { ownerStore } from '../../stores';
+  import { storeToRefs } from 'pinia';
 
   const userData = ref({
     name: '',
     secondName: '',
     email: '',
     role: '',
+    owner: '',
     password: '',
     confirmPassword: '',
   });
@@ -134,9 +141,10 @@
       second_name: userData.value.secondName,
       email: userData.value.email,
       role: userData.value.role.value,
+      owner: userData.value.owner.value,
       password: userData.value.password
     });
-    if(response) isOpen.value = false/* router.push({ name: 'home' }) */;
+    if(response) isOpen.value = false;
   }
   /**
    * Отправить запрос можно только при наличии всех значений
@@ -146,6 +154,7 @@
       || !userData.value.secondName
       || !userData.value.email
       || !userData.value.role
+      || (userData.value.role?.value == Roles.Owner && !userData.value.owner)
       || !userData.value.password
       || !userData.value.confirmPassword
       || userData.value.password !== userData.value.confirmPassword;
@@ -171,6 +180,7 @@
       secondName: '',
       email: '',
       role: '',
+      owner: '',
       password: '',
       confirmPassword: '',
     };
@@ -180,15 +190,8 @@
   {
     isOpen.value = false
   }
-  /* for(let i = 0; i < 100; i++)
-  {
-    usersTable.rows.push({
-      name: i,
-      second_name: i,
-      email: i,
-    })
-  } */
 
+  const { ownerList } = storeToRefs(ownerStore());
   async function onApply(e: any)
   {
     console.log('Apply', e)

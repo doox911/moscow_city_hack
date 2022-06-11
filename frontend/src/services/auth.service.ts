@@ -9,7 +9,7 @@ export class AuthService {
    * Запрос пользователя, если есть токен
    */
   async init() {
-    if(this.isAuthenticated)
+    if (this.isAuthenticated)
       await this.updateUserInfo();
   }
   /**
@@ -45,6 +45,7 @@ export class AuthService {
     second_name,
     email,
     role,
+    owner,
     password
   }: UserDataForSave): Promise<ResponseTokens | null> {
     return await apiSignupUser({
@@ -71,7 +72,7 @@ export class AuthService {
     this.clearToken();
 
     const { removeUser } = userStore();
-    
+
     removeUser();
   }
   /**
@@ -89,6 +90,7 @@ interface UserDataForSave {
   second_name: string;
   email: string;
   role: string;
+  owner?: string;
   password: string;
 }
 
