@@ -14,8 +14,8 @@ export async function apiMenuList(
     }
   }) */
   menu = [
-    { title: 'Домой', name: '', iconName: 'material-icons-outlined', to: '/admin', priority: 0 },
-    { title: 'Профиль', name: 'Профиль', iconName: 'material-icons-outlined', to: '/admin/profile', priority: 1 },
+    { title: 'Домой', name: 'Дом', iconName: 'home', to: '/admin', priority: 0 },
+    { title: 'Профиль', name: 'Профиль', iconName: 'perm_identity', to: '/admin/profile', priority: 1 },
   ]
   return menu;
 }

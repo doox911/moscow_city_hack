@@ -13,7 +13,6 @@ export const menuStore = defineStore('menuList', () => {
   const menuList = ref<MenuListItem[]>([]);
 
   async function setMenu(u: MenuListItem[]) {
-    u.sort((a, b) => a.priority - b.priority);
     menuList.value = u;
   }
 
