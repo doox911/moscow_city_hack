@@ -32,7 +32,7 @@ class FNSParser extends AbstractParser implements IParser {
     return json_decode($res_json->getBody())->items;
   }
 
-  public function searchGroupInfo(array $inn) {
+  public function searchGroupInfo(array $inn): Collection {
     $url = config('services.fns.url') . "multinfo?req=" . implode(',', $inn) . "&key=" . config('services.fns.secret');
 
     $res_json = $this->client->request('GET', $url);
