@@ -1,21 +1,19 @@
+import ApiRequest, { ApiResponse } from './ApiRequest';
 import { AxiosRequestConfig } from 'axios';
 import { MenuListItem } from '../stores/menuStore';
+import { requestWrapper } from '../common/wrappers';
 
 /**
  * Получение списка меню
  */
-export async function apiMenuList(
-  config?: AxiosRequestConfig,
-): Promise<MenuListItem[]> {
+export async function apiMenuList(config?: AxiosRequestConfig): Promise<MenuListItem[]> {
   let menu: MenuListItem[] = [];
-  /* await requestWrapper({
+
+  await requestWrapper({
     success: async () => {
-      menu = (await new ApiRequest(config).post<MenuListItem[]>('api/get_menu') as ApiResponse<MenuListItem[]>).content;
+      menu = (await new ApiRequest(config).post<MenuListItem[]>('api/menu') as ApiResponse<MenuListItem[]>).content;
     }
-  }) */
-  menu = [
-    { title: 'Домой', name: '', iconName: 'material-icons-outlined', to: '/admin', priority: 0 },
-    { title: 'Профиль', name: 'Профиль', iconName: 'material-icons-outlined', to: '/admin/profile', priority: 1 },
-  ]
+  });
+  
   return menu;
 }

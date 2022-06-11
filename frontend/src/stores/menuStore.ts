@@ -2,18 +2,20 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export type MenuListItem = {
-  priority: number,
-  name: string;
-  title: string;
   iconName: string;
+  name: string;
+  order: number,
+  seporator: boolean
+  title: string;
   to: string;
 };
 
-export const menuStore = defineStore('menuList', () => {
+export const menuStore = defineStore('menuStore', () => {
   const menuList = ref<MenuListItem[]>([]);
 
   async function setMenu(u: MenuListItem[]) {
-    u.sort((a, b) => a.priority - b.priority);
+    u.sort((a, b) => a.order - b.order);
+
     menuList.value = u;
   }
 
