@@ -13,6 +13,7 @@ class Counterparty extends Model {
     'id',
     'user_id',
     'name',
+    'full_name',
     'inn',
     'ogrn',
     'address',

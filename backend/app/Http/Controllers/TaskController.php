@@ -74,19 +74,40 @@ class TaskController extends Controller {
    *
    * @param \App\Http\Requests\StoreTaskRequest $request
    * @param \App\Models\Task $task
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function update(Request $request, Task $task) {
 
-    $data = $request->all();
-
+    $data = $request->only(['is_accepted', 'comment']);
+    $new_model = null;
+    $row_is_updated = 0;
     if ($data['is_accepted']) {
 
+      $method = $task->value['method'];
+      $new_data = $task->value['data'];
+
+      if ($method === 'update') {
+        $row_is_updated = $task->entity->update($new_data);
+      } elseif ($method === 'store') {
+        $model = new($task->entity_type);
+        $new_model = $model::create($new_data);
+      }
     }
 
-    $task->update($data);
+    $task->comment = $data['comment'];
+    $task->is_accepted = $data['is_accepted'];
     $task->is_moderated = true;
     $task->save();
+
+    return response()->json([
+      'content' => [
+        'row_is_updated' => $row_is_updated,
+        'created_model' => $new_model,
+      ],
+      'messages' => [
+        'Задача обработана'
+      ]
+    ]);
   }
 
   /**
@@ -96,6 +117,6 @@ class TaskController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function destroy(Task $task) {
-    //
+    // todo realise
   }
 }
