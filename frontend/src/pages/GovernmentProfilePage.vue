@@ -1,7 +1,8 @@
 <template>
-  <q-page>
-    Личная страница госслужащего
-  </q-page>
+  Личная страница госслужащего
+  <q-page-container>
+    <router-view />
+  </q-page-container>
 </template>
 
 <script setup lang="ts">
