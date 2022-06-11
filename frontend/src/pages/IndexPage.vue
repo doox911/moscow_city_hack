@@ -167,7 +167,7 @@
     if (route.name !== user.role) {
       router.push({
         name: user.role === Roles.Guest
-          ? 'home'
+          ? 'loginPage'
           : user.role,
       })
     }

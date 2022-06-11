@@ -15,11 +15,12 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/' + Roles.Admin + '/profile',
-        name: Roles.Admin + 'Profile',
         component: () => import('pages/AdminProfilePage.vue'),
+        redirect: { name: Roles.Admin + 'Profile' },
         children: [
           {
             path: '',
+            name: Roles.Admin + 'Profile',
             component: () => import('pages/profile/ProfilePage.vue'),
           },
           {
