@@ -53,16 +53,31 @@
   const tasks = ref<Task[]>([]);
   const counterpart = ref<Counterpart[]>([]);
 
-  const counterpartPagination = {
-    rowsNumber: 0,
-    rowsPerPage: 10
-  }
+  const rowsNumber = ref(0);
+  const rowsPerPage = ref(10);
 
   const loading = ref(false)
 
-  function onRequestOwner(e: any)
+  async function onRequestOwner({ page, size }: { page: number, size: number })
   {
-    console.log(e)
+    loading.value = true;
+    const { counterparties, pages_count, total_rows } = await apiCounterparties({
+      params: {
+        page,
+        item_per_page: size,
+        filters: {
+          search_string: '',
+          columns: {
+            name: 'asc',
+            inn: 'desc'
+          }
+        }
+      }
+    });
+    rowsPerPage.value = pages_count;
+    rowsNumber.value = total_rows;
+    counterpart.value = counterparties.data;
+    loading.value = false;
   }
 
   onMounted(async () => {
@@ -74,22 +89,10 @@
         filter: {
           search_string: '',
           columns: {},
-        }
+        },
       }
     });
-    const { data } = await apiCounterparties({
-      params: {
-        item_per_page: counterpartPagination.rowsPerPage,
-        filters: {
-          search_string: '',
-          columns: {
-            name: 'asc',
-            inn: 'desc'
-          }
-        }
-      }
-    });
-    counterpart.value = data;
+    onRequestOwner({ page: 1, size: rowsPerPage.value })
     loading.value = false;
   })
 </script>

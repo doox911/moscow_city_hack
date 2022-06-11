@@ -54,6 +54,7 @@
   import type { QTableOnRequestProps } from 'src/types';
   import type { QTableProps } from 'quasar';
   import { Counterpart } from '../../api/owner';
+  import { setDateAndTimeToDateTimeComponent } from 'Src/common';
 
 
   type Button = {
@@ -118,11 +119,13 @@
       field: 'created_at',
       label: 'создано',
       name: 'created_at',
+      format: (val, row) => setDateAndTimeToDateTimeComponent(val),
     },
     {
       field: 'updated_at',
       label: 'обновлено',
       name: 'updated_at',
+      format: (val, row) => setDateAndTimeToDateTimeComponent(val),
     },
   ];
 
