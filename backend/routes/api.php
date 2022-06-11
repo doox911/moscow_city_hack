@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
   Route::prefix('tasks')->group(static function () {
     // CRUD
-    Route::get('', [TaskController::class, 'index'])->middleware('role:admin|owner');
+    Route::get('', [TaskController::class, 'index'])->middleware('role:admin');
 
     Route::prefix('{task}')->group(static function () {
       Route::put('', [TaskController::class, 'update']);

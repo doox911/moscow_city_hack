@@ -150,6 +150,6 @@ class CounterpartyController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function destroy(Counterparty $counterparty) {
-    //
+    // todo realise
   }
 }
