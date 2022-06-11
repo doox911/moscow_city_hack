@@ -14,7 +14,19 @@ export type Task = {
 
 export type TaskResponce = {
   content: {
-    tasks: Task[],
+    pages_count: number
+    tasks: {
+      current_page: number
+      data: Task[]
+      first_page_url: string
+      from: string
+      next_page_url: string
+      path: string
+      per_page: string
+      prev_page_url: string
+      to: string
+    }
+    total_rows: 0
   },
   message: string;
 }
@@ -33,7 +45,7 @@ export async function apiTasks(config?: AxiosRequestConfig) {
           search_string: '',
           columns: {},
         }
-      }) as TaskResponce).content.tasks;
+      }) as TaskResponce).content.tasks.data;
     }
   });
 
