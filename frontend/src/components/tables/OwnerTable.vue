@@ -1,94 +1,193 @@
 <template>
-  <q-table
-    title="Предприятия"
-    :columns="columns"
-    :rows="rows"
-    :pagination-label="paginationLabel"
-    :selected-rows-label="selectedRowsLabel"
-    row-key="id"
-  >
-    <template v-slot:body-cell-edit="props">
-      <q-td :props="props">
-        <q-btn icon="edit" @click="onEdit(props.row)"></q-btn>
-      </q-td>
-    </template>
-    <template v-slot:body-cell-delete="props">
-      <q-td :props="props">
-        <q-btn icon="delete" @click="onDelete(props.row)"></q-btn>
-      </q-td>
-    </template>
-  </q-table>
-  <q-btn
-    color="primary float-right"
-    label="Добавить"
-    style="margin-top: 10px"
-    type="reset"
-    :loading="loading"
-    @request="onRequest"
-    @click="appendNewOwner"
-  />
+  <div class="q-pa-none">
+    <q-table
+      v-model:pagination="pagination"
+      v-model:selected="s"
+      :columns="columns"
+      :loading="loading"
+      :pagination-label="paginationLabel"
+      :rows="rows"
+      :selected-rows-label="selectedRowsLabel"
+      binary-state-sort
+      class="no-shadow"
+      row-key="id"
+      rows-per-page-label="Предприятий на странице"
+      selection="multiple"
+      @request="onRequest"
+    >
+      <template v-slot:body-cell-actions="props">
+        <q-td :props="props">
+          <div class="col q-gutter justify-center">
+            <IconBtn
+              v-for="(button, index) of buttons"
+              :key="index"
+              :color="button.color"
+              :icon="button.icon"
+              :tooltip-text="button.tooltip"
+              hover-color="primary"
+              @click="$emit(button.event, { ...props.row })"
+            />
+          </div>
+        </q-td>
+      </template>
+    </q-table>
+  </div>
+  <TaskEventLogDialog v-model="task_event_dialog" :task="selected_task" />
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { computed, ref, watch } from 'vue';
 
   /**
-   * Store
+   * Components
    */
-  import { ownerStore, User } from '../../stores';
-  import { storeToRefs } from 'pinia';
+  import IconBtn from 'Components/common/IconBtn.vue'
 
   /**
    * Common
    */
   import { selectedRowsLabel, paginationLabel} from 'Src/common'
-  import { apiGetAllOwner } from '../../api/owner';
 
-  /** 
-   * Открыть окно редактирования пользователя
+  /**
+   * Types
    */
-  function appendNewOwner() {
-    /* isOpen.value = true;
-    userData.value = {
-      id: null,
-      name: '',
-      secondName: '',
-      email: '',
-      role: '',
-      owner: '',
-      password: '',
-      confirmPassword: '',
+  import type { QTableOnRequestProps } from 'src/types';
+  import type { QTableProps } from 'quasar';
+  import type { Task } from 'Src/api/task';
+  import { Owner } from '../../api/owner';
+
+
+  type Button = {
+    color: string;
+    event: 'edit' | 'delete';
+    icon: string;
+    tooltip: string;
+  };
+
+  const columns: QTableProps['columns'] = [
+    {
+      align: 'center',
+      field: 'user_id',
+      label: 'Пользователь',
+      name: 'user_id',
+      sortable: true,
+    },
+    {
+      align: 'center',
+      field: 'is_moderated',
+      label: 'Статус',
+      name: 'is_moderated',
+      sortable: true,
+    },
+    {
+      align: 'center',
+      field: 'is_accepted',
+      label: 'Статус',
+      name: 'is_accepted',
+      sortable: true,
+    },
+    {
+      align: 'center',
+      field: 'comment',
+      label: 'Статус',
+      name: 'comment',
+      sortable: true,
+    },
+    {
+      align: 'center',
+      field: '',
+      label: 'Управление',
+      name: 'actions',
+    },
+  ];
+
+  const buttons: Button[] = [
+    {
+      color: 'green',
+      event: 'edit',
+      icon: 'edit',
+      tooltip: 'Редактировать',
+    },
+    {
+      color: 'red',
+      event: 'delete',
+      icon: 'delete',
+      tooltip: 'Удалить',
+    },
+  ];
+
+  const emit = defineEmits([
+    'onLoadCSV',
+    'onRemigrate',
+    'onRequest',
+    'onSelectedTimeline',
+    'onStart',
+    'onStop',
+    'update:selected',
+  ]);
+
+  const props = withDefaults(
+    defineProps<{
+      loading?: boolean;
+      rowsNumber?: number;
+      selected?: Owner[];
+      owner?: Owner[];
+    }>(),
+    {
+      loading: false,
+      rowsNumber: 0,
+      selected: () => [],
+      owner: () => [],
+    },
+  );
+
+  const task_event_dialog = ref(false);
+
+  const rows = computed(() => props.owner);
+
+  const selected_task = ref<Owner | undefined>(undefined);
+
+  const pagination = ref({
+    sortBy: '',
+    descending: true,
+    page: 1,
+    rowsPerPage: 10,
+    rowsNumber: props.rowsNumber,
+  });
+
+  const s = computed({
+    get() {
+      return props.selected;
+    },
+    set(v: Owner[]) {
+      return emit('update:selected', v);
+    },
+  });
+
+  watch(
+    () => props.rowsNumber,
+    (v: number) => {
+      pagination.value.rowsNumber = v;
+    },
+  );
+
+
+  function onRequest(ps: QTableOnRequestProps) {
+    const { page, rowsPerPage, sortBy, descending } = ps.pagination;
+
+    pagination.value = {
+      ...pagination.value,
+      page,
+      rowsPerPage,
+      sortBy,
+      descending,
     };
-    modalMode.value = 'new'; */
+
+    emit('onRequest', {
+      page: page,
+      size: rowsPerPage,
+      sort: [`${sortBy},${descending ? 'desc' : 'asc'}`],
+    });
   }
 
-  const columns: any = [
-    { name: 'name', align: 'center', label: 'Имя', field: 'name', sortable: true },
-    { name: 'edit', label: '' },
-    { name: 'delete', label: '' },
-  ]
-  const rows = ref([]);
-  const loading = ref(false);
-  const { ownerList } = storeToRefs(ownerStore());
-
-  async function onRequest()
-  {
-    loading.value = true;
-
-    const owner = await apiGetAllOwner();
-
-    rows.value.splice(0, rows.value.length, ...owner);
-
-    loading.value = false
-  }
-  onRequest();
-
-  async function onApply(e: any)
-  {
-    console.log('Apply', e)
-  }
-  async function onCancel(e: any)
-  {
-    console.log('Cancel', e)
-  }
 </script>

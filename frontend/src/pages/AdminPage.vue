@@ -12,7 +12,7 @@
     </div>
     <div class="row" style="margin-top:10px;">
       <div class="col">
-        <OwnerTable />
+        <OwnerTable :owner="owner" :loading="loading" @on-request="onRequestOwner"/>
       </div>
     </div>
   </q-page>
@@ -42,17 +42,44 @@
    * Types
    */
   import type { Task } from 'Src/api/task';
+  import { apiOwner, Owner } from '../api/owner';
 
   useUserPageGuard();
 
   const tasks = ref<Task[]>([])
+  const owner = ref<Owner[]>([])
 
   const loading = ref(false)
+
+  function onRequestOwner(e: any)
+  {
+    console.log(e)
+  }
 
   onMounted(async () => {
     loading.value = true;
 
-    tasks.value = await apiTasks();
+    tasks.value = await apiTasks({
+      params: {
+        item_per_page: 15,
+        filter: {
+          search_string: '',
+          columns: {},
+        }
+      }
+    });
+    owner.value = await apiOwner({
+      params: {
+        item_per_page: 15,
+        filters: {
+          search_string: '',
+          columns: {
+            name: 'asc',
+            inn: 'desc'
+          }
+        }
+      }
+    });
 
     loading.value = false;
   })
