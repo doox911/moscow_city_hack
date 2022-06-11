@@ -13,9 +13,11 @@ class StoreTaskRequest extends FormRequest {
    */
   public function rules() {
     return [
-      'entity_id' => 'numeric|required',
+      'entity_id' => 'numeric|present',
       'entity_type' => 'string|required',
       'value' => 'array|required',
+      'value.method' => 'string|required',
+      'value.data' => 'array|required'
     ];
   }
 

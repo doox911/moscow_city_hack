@@ -62,7 +62,7 @@ class TaskController extends Controller {
    * @return \App\Models\Task
    */
   public function store(StoreTaskRequest $request): Task {
-    $data = $request->validated();
+    $data = $request->all();
 
     return Task::create($data);
   }

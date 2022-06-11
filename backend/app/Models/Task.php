@@ -19,7 +19,7 @@ class Task extends Model {
     'is_accepted'
   ];
 
-  protected $appends = [
+  protected $with = [
     'user',
   ];
 
@@ -38,7 +38,7 @@ class Task extends Model {
    * @return array
    */
   public function getValueAttribute($value): array {
-    return json_decode($value);
+    return json_decode($value, true);
   }
 
   /**
@@ -48,6 +48,6 @@ class Task extends Model {
    * @throws JsonException
    */
   public function setValueAttribute(array $value): void {
-    $this->attributes['params'] = json_encode($value, JSON_THROW_ON_ERROR, 512);
+    $this->attributes['value'] = json_encode($value, JSON_THROW_ON_ERROR, 512);
   }
 }
