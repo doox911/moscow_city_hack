@@ -21,19 +21,18 @@ export default class ApiRequest {
 
   public headers: Map<string, string> = new Map();
 
-  constructor(public config: AxiosRequestConfig = {}) {}
+  constructor(public config: AxiosRequestConfig = {}) { }
 
-  public async get<R>(url: string, params?: any ) {
+  public async get<R>(url: string) {
     ApiRequest.beforeRequest(this);
 
     const completeConfig: AxiosRequestConfig = {
       url,
       ...this.getCompleteConfig(),
       method: 'get',
-      data: { data: null },
-      params,
+      data: { data: null }
     }
-
+    console.log(completeConfig)
     return this.request<R>(completeConfig)
   }
 
@@ -78,11 +77,11 @@ export default class ApiRequest {
     // this.store.commit(`${ModuleName}/${MutationNames.ClearError}`)
 
     /* try { */
-      const response = await api.request(config);
+    const response = await api.request(config);
 
-      return response
-        ? response.data
-        : null
+    return response
+      ? response.data
+      : null
     /* } catch (e) {
       const error = e as AxiosError<unknown>
 
@@ -108,4 +107,4 @@ export default class ApiRequest {
     return completeConfig;
   }
 
- }
+}

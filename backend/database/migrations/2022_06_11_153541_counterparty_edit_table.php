@@ -12,7 +12,7 @@ return new class extends Migration {
    */
   public function up() {
     Schema::table('counterparties', function (Blueprint $table) {
-      $table->string('full_name');
+      $table->string('full_name')->after('name');
       $table->string('ogrn')->nullable()->change();
       $table->string('address')->nullable()->change();
     });
