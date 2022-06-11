@@ -3,21 +3,37 @@ import { AxiosRequestConfig } from 'axios';
 import { MenuListItem } from '../stores/menuStore';
 import { requestWrapper } from '../common/wrappers';
 
-export type MenuResponse = ApiResponse<{
-  menus: MenuListItem[]
-}>
+export type Owner = {
+  id: number,
+  user_id: number,
+  name: string,
+  full_name: string,
+  inn: string,
+  ogrn: string,
+  adress: string,
+  email: boolean,
+  phone: string,
+  site: string,
+};
+
+export type OwnerResponce = {
+  content: {
+    owner: Owner[],
+  },
+  message: string;
+}
 
 /**
- * Получение списка меню
+ * Получение списка предприятий
  */
-export async function apiGetAllOwner(config?: AxiosRequestConfig) {
-  let menu: MenuListItem[] = [];
-
+export async function apiCounterparties(config?: AxiosRequestConfig) {
+  let owner: Owner[] = [];
+  console.log(config)
   await requestWrapper({
     success: async () => {
-      menu = (await new ApiRequest(config).get('api/menu') as MenuResponse).content.menus;
+      owner = (await new ApiRequest(config).get('api/counterparties') as OwnerResponce).content.owner;
     }
   });
 
-  return menu;
+  return owner;
 }

@@ -16,7 +16,7 @@ class Good extends Model {
     'name',
   ];
 
-  /**
+  /**§1
    * @return MorphMany
    */
   public function activities(): MorphMany {
