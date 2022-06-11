@@ -28,7 +28,9 @@ class CounterpartyController extends Controller {
     $filters = request()->input('filters');
 
     foreach ($filters['columns'] as $column => $sort_direction) {
-      $counterparties->orWhere($column, 'like', "%{$filters['search_string']}%");
+      if (!empty($filters['search_string'])) {
+        $counterparties->orWhere($column, 'like', "%{$filters['search_string']}%");
+      }
 
       $counterparties->orderBy($column, $sort_direction);
     }
