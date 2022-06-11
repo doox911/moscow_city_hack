@@ -72,5 +72,7 @@
     dialog.value = true;
     selectCounterparty.value = counterparty.value;
   }
-  load(3);
+
+  if(user.value.company)
+    load(user.value.company);
 </script>
