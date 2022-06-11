@@ -22,6 +22,8 @@ class CounterpartyResource extends JsonResource {
     /** @var Counterparty */
     $counterparty = $this->resource;
 
+    $data_source = $counterparty->data_source ? DataSourceResource::make($counterparty->data_source) : null;
+
     return [
       'id' => $counterparty->id,
       'user_id' => $counterparty->user_id,
@@ -35,7 +37,10 @@ class CounterpartyResource extends JsonResource {
       'site' => $counterparty->site,
       'created_at' => $counterparty->created_at,
       'updated_at' => $counterparty->updated_at,
-      'base64_logo' => $counterparty->getPNGBase64Logo(),
+
+      'data_source' => $data_source, // источник данных (например: адрес сайта, Excel файл)
+      'base64_logo' => $counterparty->getPNGBase64Logo(), // логотип компании
+      'base64_photos' => $counterparty->getPNGBase64Photos(), // галерея фотографий компании
     ];
   }
 }

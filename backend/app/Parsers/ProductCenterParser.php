@@ -39,8 +39,10 @@ class ProductCenterParser extends AbstractParser {
 
     foreach ($search_page_document->find('div.card_item') as $result_text) {
       $produced_id = $result_text->first('.to_favorites')->attr('data-item-id');
+
+      // TODO: проверить, возможно это изображение брать надёжнее чем из галереи компании
       $image_path = $result_text->first('.image img')->attr('src');
-      $producer_name = $result_text->first('.text .link')->text();
+
       $producer_page_path = $result_text->first('.text .link')->attr('href');
       $city_name = $result_text->first('.item_info .ii_city a')->text();
 
@@ -50,18 +52,59 @@ class ProductCenterParser extends AbstractParser {
 
       $producer_page = new Document($response_html_producer_page);
 
+      // фотографии галереи и логотип
+      $photos_urls = [];
+      $logo_url = null;
+      foreach ($producer_page->find('.imgs_slider li') as $i => $li_node) {
+        $photo_href = $li_node->attr('href');
+
+        // логотип
+        if ($i === 0) {
+          $logo_url = self::$base_url . $photo_href;
+
+          continue;
+        }
+
+        // фотографии галереи
+        if (strripos($photo_href, 'images') !== false) {
+          $photos_urls[] = self::$base_url . $photo_href;
+        }
+      }
+
+      // название компании
+      $producer_name = $producer_page->first('.tc_contacts meta[itemprop="name"]')->attr('content');
+
+      // описание компании
       $producer_description = $producer_page->first('.iv_bottom .iv_text')->text();
 
+      // ключевые слова для поиска компании
+      $keywords_for_search = [];
+      foreach ($producer_page->find('.crumbs_list li meta[itemprop="name"]') as $i => $keyword_node) {
+        if ($i > 2) {
+          $keywords_for_search[] = $keyword_node->attr('content');
+        }
+      }
+
+
+      //dd($keywords_for_search);
+      $email = '';
+      $phone = '';
+      $site = '';
 
       $producer_vo = new CompanyFromParserValueObject([
+        'name' => $producer_name,
         'description' => $producer_description,
-        'logo_url' => self::$base_url . $image_path,
+        'logo_url' => $logo_url,
+        'photos_urls' => $photos_urls,
+        'keywords_for_search' => $keywords_for_search,
       ]);
 
 
       // сохранение логотипа
       // $counterparty = Counterparty::where('id', 100)->first();
       // $counterparty->saveLogoFromUrl($producer_vo->logo_url);
+      // $counterparty->savePhotosFromUrlArray($producer_vo->photos_urls);
+
       dd($producer_vo);
       $producers->push($producer_vo);
     }

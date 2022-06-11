@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +22,8 @@ class Counterparty extends Model implements HasMedia {
 
   protected $fillable = [
     'id',
+    'data_source_id',
+    'data_source_item_id',
     'user_id',
     'name',
     'full_name',
@@ -40,6 +43,13 @@ class Counterparty extends Model implements HasMedia {
   }
 
   /**
+   * @return BelongsTo
+   */
+  public function data_source(): BelongsTo {
+    return $this->belongsTo(DataSource::class);
+  }
+
+  /**
    * @return string
    */
   public function getDirectory(): string {
@@ -47,11 +57,15 @@ class Counterparty extends Model implements HasMedia {
   }
 
   /**
+   * Сохраняет логотип компании
+   *
    * @param string $url
    * @throws FileCannotBeAdded
    */
   public function saveLogoFromUrl(string $url): void {
-    $this->getMedia('company_logo')->each->forceDelete();
+    $collection = 'company_logo';
+
+    $this->getMedia($collection)->each->forceDelete();
 
     // добавляем время в название файла, для уникальности,
     // если в один день загрузят несколько файлов чтобы они не затирали друг друга
@@ -64,14 +78,43 @@ class Counterparty extends Model implements HasMedia {
         ->addMediaFromUrl($url)
         ->usingName($filename)
         ->usingFileName($filename)
-        ->toMediaCollection('company_logo');
+        ->toMediaCollection($collection);
     } catch (FileDoesNotExist | FileIsTooBig $e) {
       Log::info($e->getMessage());
     }
   }
 
   /**
-   * PNG-изображение в формате base64
+   * Сохраняет фотографии компании
+   *
+   * @param array $urls
+   * @throws FileCannotBeAdded
+   */
+  public function savePhotosFromUrlArray(array $urls): void {
+    $collection = 'photos';
+    $this->getMedia($collection)->each->forceDelete();
+
+    foreach ($urls as $url) {
+      // добавляем время в название файла, для уникальности,
+      // если в один день загрузят несколько файлов чтобы они не затирали друг друга
+      $current_time = Carbon::now()->format('H_i');
+      $path_info = pathinfo($url);
+      $filename = $path_info['filename'] . "_$current_time." . $path_info['extension'];
+
+      try {
+        $this
+          ->addMediaFromUrl($url)
+          ->usingName($filename)
+          ->usingFileName($filename)
+          ->toMediaCollection($collection);
+      } catch (FileDoesNotExist | FileIsTooBig $e) {
+        Log::info($e->getMessage());
+      }
+    }
+  }
+
+  /**
+   * Логотип компании в формате base64
    *
    * @return string
    * @throws Exception
@@ -86,5 +129,26 @@ class Counterparty extends Model implements HasMedia {
     }
 
     return $image_content;
+  }
+
+  /**
+   * Фотографии компании в формате base64
+   *
+   * @return array
+   * @throws Exception
+   */
+  public function getPNGBase64Photos(): array {
+    $media_photos = $this->getMedia('company_logo');
+    $images_base64 = [];
+
+    foreach ($media_photos as $media_photo) {
+      if (file_exists($media_photo->getPath())) {
+        $file = new File(['path' => $media_photo->getPath(), 'use_binary' => true]);
+
+        $images_base64[] = 'data:image/png;base64,' . $file->getBase64Content();
+      }
+    }
+
+    return $images_base64;
   }
 }
