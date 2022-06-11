@@ -14,7 +14,7 @@ abstract class AbstractParser implements IParser {
   protected static string $url = '';
 
   /**
-   * @var \GuzzleHttp\Client
+   * @var Client
    */
   protected Client $client;
 

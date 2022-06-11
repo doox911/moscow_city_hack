@@ -14,12 +14,26 @@ use Spatie\Permission\Models\Role;
 class AuthController extends Controller {
 
   /**
+   * Получить всех пользователей
+   *
+   * @return JsonResponse
+   */
+  public function getAll(): JsonResponse {
+    $result = [
+      'messages' => ['Список пользователей получен'],
+      'content' => UserResource::collection(User::all()),
+    ];
+
+    return response()->json($result);
+  }
+
+  /**
    * @param Request $request
    * @return JsonResponse
    */
   public function getUser(Request $request): JsonResponse {
     $result = [
-      'messages' => ['Действия произведены'],
+      'messages' => ['Пользователь получен'],
       'content' => UserResource::make($request->user()),
     ];
 
