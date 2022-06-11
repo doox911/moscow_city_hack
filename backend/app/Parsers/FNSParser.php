@@ -14,6 +14,7 @@ class FNSParser extends AbstractParser implements IParser {
 
   /**
    * @inheritDoc
+   * @throws GuzzleException
    */
   public function parse(): Collection {
     $companies = $this->searchCompanies();

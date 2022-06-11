@@ -14,8 +14,8 @@ class Activity extends Model {
   protected $fillable = [
     'id',
     'counterparty_id',
-    'activity_id',
-    'activity_type',
+    'activity_id', // good_id
+    'activity_type', // good_class
     'is_active'
   ];
 
