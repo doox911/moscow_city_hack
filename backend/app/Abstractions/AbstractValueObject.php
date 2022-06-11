@@ -151,11 +151,7 @@ abstract class AbstractValueObject implements IValueObject, JsonSerializable {
 
       // TODO: добавить валидацию на произвольные тип типа Collection
 
-      /**
-       * @tutorial https://www.php.net/manual/ru/reflectionproperty.hasdefaultvalue.php
-       */
-      $has_default_value = false;
-      if ($has_default_value === false) {
+      if ($property->hasDefaultValue() === false) {
         $rule .= 'present|';
       }
 

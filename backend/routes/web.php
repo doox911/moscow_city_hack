@@ -1,10 +1,17 @@
 <?php
 
+use App\Parsers\ProductCenterParser;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
   return view('welcome');
 });
+
+
+Route::get('/parser', function () {
+  (new ProductCenterParser)->parse('молоко');
+});
+
 
 Route::get('/test', function () {
   /*
