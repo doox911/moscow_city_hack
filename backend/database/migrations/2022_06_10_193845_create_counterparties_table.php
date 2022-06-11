@@ -17,8 +17,9 @@ return new class extends Migration {
       $table->string('inn');
       $table->string('ogrn');
       $table->string('address');
-      $table->string('email');
-      $table->string('phone');
+      $table->string('email')->nullable();
+      $table->string('phone')->nullable();
+      $table->string('site')->nullable();
       //todo возможно еще какие то поля нужны
       $table->timestamps();
       $table->softDeletes();
