@@ -1,11 +1,16 @@
 <template>
-  Личная страница госслужащего
-  <q-page-container>
-    <router-view />
-  </q-page-container>
+  <q-page class="q-ma-md">
+    <UserProfile />
+  </q-page>
 </template>
 
 <script setup lang="ts">
+
+  /**
+   * Components
+   */
+  import UserProfile from 'Components/user/UserProfile.vue'
+  
   /**
    * Hooks
    */
