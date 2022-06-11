@@ -27,7 +27,12 @@ export async function apiTasks(config?: AxiosRequestConfig) {
 
   await requestWrapper({
     success: async () => {
-      menu = (await new ApiRequest(config).post('api/tasks') as TaskResponce).content.tasks;
+      menu = (await new ApiRequest(config).get('api/tasks', {
+        filter: {
+          search_string: '',
+          columns: {},
+        }
+      }) as TaskResponce).content.tasks;
     }
   });
 
