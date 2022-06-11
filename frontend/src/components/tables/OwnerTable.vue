@@ -1,13 +1,4 @@
 <template>
-  <q-btn
-    color="primary"
-    label="Добавить"
-    style="margin-bottom: 10px"
-    type="reset"
-    :loading="loading"
-    @request="onRequest"
-    @click="appendNewOwner"
-  />
   <q-table
     title="Предприятия"
     :columns="columns"
@@ -27,6 +18,15 @@
       </q-td>
     </template>
   </q-table>
+  <q-btn
+    color="primary float-right"
+    label="Добавить"
+    style="margin-top: 10px"
+    type="reset"
+    :loading="loading"
+    @request="onRequest"
+    @click="appendNewOwner"
+  />
 </template>
 
 <script setup lang="ts">

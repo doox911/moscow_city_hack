@@ -60,7 +60,7 @@
             v-if = "userData.role?.value == Roles.Owner"
             v-model="userData.owner"
             :options="ownerList"
-            :rules="[ requiredSelectRule ]"
+            :rules="[ (e) => e !== undefined ]"
             label="Предприятие"
           />
           <q-input
@@ -79,6 +79,7 @@
             </template>
           </q-input>
           <q-input
+            v-if="modalMode == 'new'"
             v-model="userData.confirmPassword"
             :rules="[ requiredStringRule, (v) => requiredPasswordRule(v, userData.password) ]"
             :type="isPwd ? 'password' : 'text'"
@@ -194,13 +195,14 @@
    * Отправить запрос можно только при наличии всех значений
    */
   const disabled = computed(() => {
+    if(modalMode.value == 'update') return false;
     return !userData.value.name
       || !userData.value.secondName
       || !userData.value.email
       || !userData.value.role
       || (userData.value.role?.value == Roles.Owner && !userData.value.owner)
-      || (modalMode.value == 'new' && !userData.value.password)
-      || (modalMode.value == 'new' && !userData.value.confirmPassword)
+      || !userData.value.password
+      || !userData.value.confirmPassword
       || userData.value.password !== userData.value.confirmPassword;
   })
 
