@@ -23,34 +23,11 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted } from 'vue';
 
   /**
-   * Routers
+   * Hooks
    */
-  import { useRoute, useRouter } from 'vue-router';
+  import { useUserProfilePageGuard } from 'Src/hooks';
 
-  /**
-   * Store
-   */
-  import { storeToRefs } from 'pinia'
-  import { userStore } from '../stores/userStore';
-
-  const route = useRoute();
-
-  const router = useRouter();
-
-  const { user } = storeToRefs(userStore());
-
-  async function onSubmit()
-  {
-
-  }
-  onMounted(() => {
-    if (route.name !== user.value.role + 'Profile') {
-      router.push({
-        name: user.value.role + 'Profile',
-      })
-    }
-  });
+  useUserProfilePageGuard();
 </script>

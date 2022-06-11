@@ -38,9 +38,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/OwnerPage.vue'),
       },
       {
-        path: '/' + Roles.Government + '/profile',
-        name: Roles.Government + 'Profile',
-        component: () => import('pages/GovernmentProfilePage.vue'),
+        path: '/' + Roles.Owner + '/profile',
+        name: Roles.Owner + 'Profile',
+        component: () => import('pages/OwnerProfilePage.vue'),
       },
     ]
   },

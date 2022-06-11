@@ -1,30 +1,10 @@
 <template>Government page</template>
 
 <script setup lang="ts">
-  import { onMounted } from 'vue';
-
   /**
-   * Routers
+   * Hooks
    */
-  import { useRoute, useRouter } from 'vue-router';
+  import { useUserPageGuard } from 'Src/hooks';
 
-  /**
-   * Store
-   */
-  import { storeToRefs } from 'pinia'
-  import { userStore } from '../stores/userStore';
-
-  const route = useRoute();
-
-  const router = useRouter();
-
-  const { user } = storeToRefs(userStore());
-
-  onMounted(() => {
-    if (route.name !== user.value.role) {
-      router.push({
-        name: user.value.role,
-      })
-    }
-  });
+  useUserPageGuard();
 </script>
