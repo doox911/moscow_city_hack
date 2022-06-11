@@ -12,7 +12,39 @@ class ServiceController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function index() {
-    //
+    $services = Service::query();
+    $items_per_page = request()->input('item_per_page');
+
+    /**
+     * [
+     *  search_string => "",
+     *  columns => [
+     *   column_name =>"asc|desc"
+     *  ]
+     * ]
+     */
+    $filters = request()->input('filters');
+
+    foreach ($filters['columns'] as $column => $sort_direction) {
+      if (!empty($filters['search_string'])) {
+        $services->orWhere($column, 'like', "%{$filters['search_string']}%");
+      }
+
+      $services->orderBy($column, $sort_direction);
+    }
+
+    $total_rows = $services->count();
+
+    $pages_count = ceil($total_rows / $items_per_page);
+
+    return response()->json([
+      'content' => [
+        'goods' => $services->simplePaginate($items_per_page),
+        'pages_count' => $pages_count,
+        'total_rows' => $total_rows,
+      ],
+      'messages' => ['Список товаров успешно загружен'],
+    ]);
   }
 
   /**
