@@ -10,8 +10,10 @@
   />
   <q-table
     title="Пользователи"
-    :rows="rows"
     :columns="columns"
+    :rows="rows"
+    :pagination-label="paginationLabel"
+    :selected-rows-label="selectedRowsLabel"
     row-key="id"
   >
     <template v-slot:body-cell-edit="props">
@@ -108,10 +110,23 @@
 
   import { computed, ref } from 'vue';
   import AuthService from '../../services/auth.service';
-  import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from '../../common/rules';
   import { Roles, RolesDescription } from '../../constants';
+
+  /**
+   * Store
+   */
   import { ownerStore, User } from '../../stores';
   import { storeToRefs } from 'pinia';
+
+  /**
+   * Common
+   */
+  import { selectedRowsLabel, paginationLabel} from 'Src/common'
+  import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from 'Src/common/rules';
+
+  /**
+   * Api
+   */
   import { apiGetAllUsers, apiUpdateUserInfo } from '../../api/users';
 
   const userData = ref({
@@ -126,15 +141,15 @@
   });
   let modalMode = ref<'new' | 'update'>('new');
 
-  let isPwd = ref(true);
-
   const roleList = ref([
     { value: Roles.Admin, label: RolesDescription[Roles.Admin] },
     { value: Roles.Government, label: RolesDescription[Roles.Government] },
     { value: Roles.Owner, label: RolesDescription[Roles.Owner] },
     { value: Roles.Guest, label: RolesDescription[Roles.Guest] },
   ])
-
+  /**
+   * Зарегистрировать пользователя
+   */
   async function registration() {
     const response = await AuthService.registration({
       name: userData.value.name,
@@ -149,6 +164,9 @@
       onRequest();
     }
   }
+  /**
+   * Изменить пользователя
+   */
   async function updateUser() {
     const response = await apiUpdateUserInfo({
       id: userData.value.id,
@@ -179,6 +197,9 @@
       || userData.value.password !== userData.value.confirmPassword;
   })
 
+  /** 
+   * Открыть окно редактирования пользователя
+   */
   function appendNewUser() {
     isOpen.value = true;
     userData.value = {
@@ -194,18 +215,51 @@
     modalMode.value = 'new';
   }
 
+  /**
+   * Закрыть модальное окно
+   */
   function onCancelModal() {
     isOpen.value = false
   }
-
+  /**
+   * Заголовки таблицы
+   */
   const columns = [
-    { name: 'name', align: 'left', label: 'Имя', field: 'name', sortable: true },
-    { name: 'second_name', align: 'left', label: 'Фамилия', field: 'second_name', sortable: true },
-    { name: 'email', align: 'left', label: 'email', field: 'email', sortable: true },
-    { name: 'role', align: 'left', label: 'role', field: 'role', sortable: true },
-    { name: 'edit', label: '' },
+    {
+      name: 'name',
+      align: 'left',
+      label: 'Имя',
+      field: 'name', 
+      sortable: true
+    },
+    {
+      name: 'second_name',
+      align: 'left',
+      label: 'Фамилия',
+      field: 'second_name',
+      sortable: true
+    },
+    {
+      name: 'email',
+      align: 'left',
+      label: 'email',
+      field: 'email',
+      sortable: true
+    },
+    {
+      name: 'role',
+      align: 'left',
+      label: 'Роль',
+      field: 'role',
+      sortable: true
+    },
+    {
+      name: 'edit',
+      label: ''
+    },
   ];
   const isOpen = ref(false);
+  let isPwd = ref(true);
   const rows = ref<User[]>([]);
   const loading = ref(false);
   const { ownerList } = storeToRefs(ownerStore());
