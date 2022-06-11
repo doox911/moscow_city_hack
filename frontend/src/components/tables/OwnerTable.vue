@@ -15,21 +15,7 @@
       selection="multiple"
       @request="onRequest"
     >
-      <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-          <div class="col q-gutter justify-center">
-            <IconBtn
-              v-for="(button, index) of buttons"
-              :key="index"
-              :color="button.color"
-              :icon="button.icon"
-              :tooltip-text="button.tooltip"
-              hover-color="primary"
-              @click="$emit(button.event, { ...props.row })"
-            />
-          </div>
-        </q-td>
-      </template>
+
     </q-table>
   </div>
   <TaskEventLogDialog v-model="task_event_dialog" :task="selected_task" />
@@ -37,11 +23,6 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue';
-
-  /**
-   * Components
-   */
-  import IconBtn from 'Components/common/IconBtn.vue'
 
   /**
    * Common
@@ -53,16 +34,9 @@
    */
   import type { QTableOnRequestProps } from 'src/types';
   import type { QTableProps } from 'quasar';
-  import { Counterpart } from '../../api/owner';
+  import { Counterparty } from 'Src/api/counterparty';
   import { setDateAndTimeToDateTimeComponent } from 'Src/common';
 
-
-  type Button = {
-    color: string;
-    event: 'edit' | 'delete';
-    icon: string;
-    tooltip: string;
-  };
 
   const columns: QTableProps['columns'] = [
     {
@@ -133,7 +107,7 @@
       field: 'created_at',
       label: 'создано',
       name: 'created_at',
-      format: (val, row) => setDateAndTimeToDateTimeComponent(val),
+      format: (val) => setDateAndTimeToDateTimeComponent(val),
       sortable: true,
     },
     {
@@ -141,23 +115,8 @@
       field: 'updated_at',
       label: 'обновлено',
       name: 'updated_at',
-      format: (val, row) => setDateAndTimeToDateTimeComponent(val),
+      format: (val) => setDateAndTimeToDateTimeComponent(val),
       sortable: true,
-    },
-  ];
-
-  const buttons: Button[] = [
-    {
-      color: 'green',
-      event: 'edit',
-      icon: 'edit',
-      tooltip: 'Редактировать',
-    },
-    {
-      color: 'red',
-      event: 'delete',
-      icon: 'delete',
-      tooltip: 'Удалить',
     },
   ];
 
@@ -175,8 +134,8 @@
     defineProps<{
       loading?: boolean;
       rowsNumber?: number;
-      selected?: Counterpart[];
-      counterpart?: Counterpart[];
+      selected?: Counterparty[];
+      counterpart?: Counterparty[];
       rowsPerPage?: number;
     }>(),
     {
@@ -192,7 +151,7 @@
 
   const rows = computed(() => props.counterpart);
 
-  const selected_task = ref<Counterpart | undefined>(undefined);
+  const selected_task = ref<Counterparty | undefined>(undefined);
 
   const pagination = ref({
     sortBy: '',
@@ -206,7 +165,7 @@
     get() {
       return props.selected;
     },
-    set(v: Counterpart[]) {
+    set(v: Counterparty[]) {
       return emit('update:selected', v);
     },
   });
