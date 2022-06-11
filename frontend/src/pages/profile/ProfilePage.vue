@@ -4,6 +4,7 @@
 
     <h4>{{ user.name }}</h4>
     <h4>{{ user.second_name }}</h4>
+    <hr>
     <div>
         <div>Роль: {{ user.role }}</div>
         <div>email: {{ user.email }}</div>
@@ -32,7 +33,5 @@
   const router = useRouter();
 
   const { user } = storeToRefs(userStore());
-
-  console.log("main")
 
 </script>

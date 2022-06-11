@@ -10,7 +10,6 @@
             </q-item-section>
           </q-item>
           <q-list dense bordered padding class='rounded-borders'>
-
             <q-item clickable to='/admin/profile/request'>
               <q-item-section>
                 Заявки
@@ -42,9 +41,14 @@
 <script setup lang="ts">
 
   /**
+   * Routers
+   */
+  import { useRoute, useRouter } from 'vue-router';
+  /**
    * Hooks
    */
   import { useUserProfilePageGuard } from 'Src/hooks';
 
   useUserProfilePageGuard();
+
 </script>
