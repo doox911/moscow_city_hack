@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTaskRequest;
 use App\Models\Counterparty;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -53,10 +54,46 @@ class CounterpartyController extends Controller {
    * Store a newly created resource in storage.
    *
    * @param \Illuminate\Http\Request $request
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function store(Request $request) {
     $data = $request->all();
+
+    if ($request->user()->isOwnerRole()) {
+      $tc = new TaskController;
+      $req = new StoreTaskRequest;
+      $req->replace([
+        'user_id' => $request->user()->id,
+        'entity_id' => null,
+        'entity_type' => Counterparty::class,
+        'value' => [
+          'method' => 'store',
+          'data' => $data,
+        ]
+      ]);
+
+      $new_task = $tc->store($req);
+
+      return response()->json([
+        'content' => [
+          'task_id' => $new_task->id,
+        ],
+        'messages' => [
+          'Запрос на добавление данных отправлен'
+        ]
+      ]);
+    }
+
+    $counterparty = Counterparty::create($data);
+
+    return response()->json([
+      'content' => [
+        'counterparty' => $counterparty->refresh(),
+      ],
+      'messages' => [
+        'Запись о компании создана'
+      ]
+    ]);
   }
 
   /**
@@ -64,10 +101,46 @@ class CounterpartyController extends Controller {
    *
    * @param \Illuminate\Http\Request $request
    * @param \App\Models\Counterparty $counterparty
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse|void
    */
   public function update(Request $request, Counterparty $counterparty) {
-    //
+    $data = $request->all();
+
+    if ($request->user()->isOwnerRole()) {
+      $tc = new TaskController;
+      $req = new StoreTaskRequest;
+      $req->replace([
+        'user_id' => $request->user()->id,
+        'entity_id' => $counterparty->id,
+        'entity_type' => $counterparty::class,
+        'value' => [
+          'method' => 'update',
+          'data' => $data,
+        ]
+      ]);
+
+      $new_task = $tc->store($req);
+
+      return response()->json([
+        'content' => [
+          'task_id' => $new_task->id,
+        ],
+        'messages' => [
+          'Запрос на модерацию данных отправлен'
+        ]
+      ]);
+    }
+
+    $counterparty->update($data);
+
+    return response()->json([
+      'content' => [
+        'counterparty' => $counterparty->refresh(),
+      ],
+      'messages' => [
+        'Информация о компании обновлена'
+      ]
+    ]);
   }
 
   /**
@@ -77,6 +150,6 @@ class CounterpartyController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function destroy(Counterparty $counterparty) {
-    //
+    // todo realise
   }
 }
