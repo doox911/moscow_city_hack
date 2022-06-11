@@ -148,6 +148,6 @@ class GoodController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function destroy(Good $good) {
-    //
+    // todo realise
   }
 }

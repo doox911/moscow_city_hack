@@ -28,7 +28,6 @@
           :rules="[ requiredStringRule ]"
           :type="isPwd ? 'password' : 'text'"
           label="Пароль"
-          ref="fldPasswordChange"
         >
           <template v-slot:append>
             <q-icon

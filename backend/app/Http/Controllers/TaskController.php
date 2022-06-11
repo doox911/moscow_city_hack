@@ -75,7 +75,10 @@ class TaskController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function update(StoreTaskRequest $request, Task $task) {
-    //
+
+    $data = $request->all();
+
+    dd($data);
   }
 
   /**
