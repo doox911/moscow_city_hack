@@ -98,4 +98,11 @@ class User extends Authenticatable implements HasMedia {
   public function counterparty(): HasOne {
     return $this->hasOne(Counterparty::class);
   }
+
+  /**
+   * @return string
+   */
+  public function getDirectory(): string {
+    return 'user/' . $this->id . '/';
+  }
 }
