@@ -67,10 +67,10 @@
 <script setup lang="ts">
   import { computed, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
-  import AuthService from '../services/auth.service';
-  import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from '../common/rules';
-  import { Roles } from '../constants';
-  import { userStore } from '../stores/userStore';
+  import AuthService from '../../services/auth.service';
+  import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from '../../common/rules';
+  import { Roles } from '../../constants';
+  import { userStore } from '../../stores/userStore';
 
   const { user } = userStore();
   const router = useRouter();
@@ -80,7 +80,7 @@
 
   const userData = ref({
     name: '',
-    secondName: "",
+    secondName: '',
     email: '',
     role: '',
     password: '',
@@ -103,7 +103,7 @@
       role: userData.value.role.value,
       password: userData.value.password
     });
-    if(response) router.push({ name: "home" });
+    if(response) router.push({ name: 'home' });
   }
   /**
    * Отправить запрос можно только при наличии всех значений
