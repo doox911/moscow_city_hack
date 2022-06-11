@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -20,7 +21,17 @@ class Service extends Model implements HasMedia {
     'name',
   ];
 
-  public function activities() {
+  /**
+   * @return MorphMany
+   */
+  public function activities(): MorphMany {
     return $this->morphMany(Activity::class, 'activity');
+  }
+
+  /**
+   * @return string
+   */
+  public function getDirectory(): string {
+    return 'service/' . $this->id . '/';
   }
 }

@@ -3,6 +3,7 @@
 namespace App\Parsers;
 
 use App\Abstractions\AbstractParser;
+use App\Models\Counterparty;
 use App\ValueObjects\CompanyFromParserValueObject;
 use Carbon\Carbon;
 use DiDom\Document;
@@ -52,35 +53,36 @@ class ProductCenterParser extends AbstractParser {
 
       $producer_page = new Document($response_html_producer_page);
 
-
       $producer_description = $producer_page->first('.iv_bottom .iv_text')->text();
 
 
       $producer_vo = new CompanyFromParserValueObject([
         'description' => $producer_description,
       ]);
-dd($producer_vo);
 
-      // $preorder->getMedia('preorder_packing_files')->each->delete();
-      //
-      // foreach ($invoice_files as $file) {
-      //   $filepath = (string)$file;
-      //
-      //   // добавляем время в название файла, для уникальности,
-      //   // если в один день загрузят несколько файлов чтобы они не затирали друг друга
-      //   $current_time = Carbon::now()->format('H_i');
-      //   $path_info = pathinfo($filepath);
-      //   $filename = $path_info['filename'] . "_$current_time." . $path_info['extension'];
-      //
-      //   try {
-      //     $preorder
-      //       ->addMedia($filepath)
-      //       ->usingName($filename)
-      //       ->usingFileName($filename)
-      //       ->toMediaCollection('preorder_packing_files');
-      //   } catch (FileDoesNotExist | FileIsTooBig $e) {
-      //     Log::channel('preorder')->info($e->getMessage());
-      //   }
+
+      $counterparty = Counterparty::where('id', 100)->first();
+      $counterparty->getMedia('company_logo')->each->forceDelete();
+
+      $filepath = self::$base_url .$image_path;;
+
+      // добавляем время в название файла, для уникальности,
+      // если в один день загрузят несколько файлов чтобы они не затирали друг друга
+      $current_time = Carbon::now()->format('H_i');
+      $path_info = pathinfo($filepath);
+      $filename = $path_info['filename'] . "_$current_time." . $path_info['extension'];
+
+      try {
+        $counterparty
+          ->addMediaFromUrl($filepath)
+          ->usingName($filename)
+          ->usingFileName($filename)
+          ->toMediaCollection('company_logo');
+      } catch (FileDoesNotExist | FileIsTooBig $e) {
+        dd($e->getMessage());
+        //Log::channel('preorder')->info($e->getMessage());
+      }
+      dd($producer_vo);
       $producers->push($producer_vo);
     }
 

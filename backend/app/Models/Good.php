@@ -18,11 +18,18 @@ class Good extends Model implements HasMedia {
     'name',
   ];
 
-  /**§1
+  /**
    *
    * @return MorphMany
    */
   public function activities(): MorphMany {
     return $this->morphMany(Activity::class, 'activity');
+  }
+
+  /**
+   * @return string
+   */
+  public function getDirectory(): string {
+    return 'good/' . $this->id . '/';
   }
 }

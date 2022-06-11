@@ -31,4 +31,11 @@ class Counterparty extends Model implements HasMedia {
   public function activities(): HasMany {
     return $this->hasMany(Counterparty::class);
   }
+
+  /**
+   * @return string
+   */
+  public function getDirectory(): string {
+    return '/counterparty/' . $this->id . '/';
+  }
 }
