@@ -4,22 +4,19 @@
     label="Добавить"
     style="margin-bottom: 10px"
     type="reset"
+    :loading="loading"
+    @request="onRequest"
     @click="appendNewUser"
   />
   <q-table
     title="Пользователи"
-    :rows="usersTable.rows"
-    :columns="usersTable.columns"
+    :rows="rows"
+    :columns="columns"
     row-key="id"
   >
     <template v-slot:body-cell-edit="props">
       <q-td :props="props">
-        <q-btn icon="edit" @click="onCancel(props.row)"></q-btn>
-      </q-td>
-    </template>
-    <template v-slot:body-cell-delete="props">
-      <q-td :props="props">
-        <q-btn icon="delete" @click="onCancel(props.row)"></q-btn>
+        <q-btn flat icon="edit" @click="onEdit(props.row)"></q-btn>
       </q-td>
     </template>
   </q-table>
@@ -27,7 +24,8 @@
     v-model="isOpen">
       <q-card style="width: 500px; padding: 10px;">
         <q-card-section>
-          Добавить нового пользователя
+          <template v-if = "modalMode == 'new'">Добавить нового пользователя</template>
+          <template v-if = "modalMode == 'update'">Изменить пользователя</template>
         </q-card-section>
         <q-card-section>
           <q-input
@@ -48,6 +46,7 @@
           <q-select
             v-model="userData.role"
             :options="roleList"
+            option-label="label"
             :rules="[ requiredSelectRule ]"
             label="Роль"
           />
@@ -88,22 +87,19 @@
             </template>
           </q-input>
         </q-card-section>
-        <q-card-section>
-          <q-btn
-            color="primary float-right"
-            label="Зарегистрировать"
-            :disable="disabled"
-            style="margin-top: 20px"
-            @click="registration"
-          />
-          <q-btn
-            color="white float-right"
-            text-color="black"
-            label="Отмена"
-            style="margin-top: 20px; margin-right: 10px;"
-            @click="onCancelModal"
-          />
-        </q-card-section>
+        <q-btn
+          color="primary float-right"
+          :label="modalMode == 'new' ? 'Зарегистрировать' : 'Изменить'"
+          :disable="disabled"
+          @click="modalMode == 'new' ? registration() : updateUser()"
+        />
+        <q-btn
+          color="white float-right"
+          text-color="black"
+          label="Отмена"
+          style="margin-right: 10px;"
+          @click="onCancelModal"
+        />
       </q-card>
   </q-dialog>
 </template>
@@ -113,11 +109,13 @@
   import { computed, ref } from 'vue';
   import AuthService from '../../services/auth.service';
   import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from '../../common/rules';
-  import { Roles } from '../../constants';
-  import { ownerStore } from '../../stores';
+  import { Roles, RolesDescription } from '../../constants';
+  import { ownerStore, User } from '../../stores';
   import { storeToRefs } from 'pinia';
+  import { apiGetAllUsers, apiUpdateUserInfo } from '../../api/users';
 
   const userData = ref({
+    id: null,
     name: '',
     secondName: '',
     email: '',
@@ -126,13 +124,15 @@
     password: '',
     confirmPassword: '',
   });
+  let modalMode = ref<'new' | 'update'>('new');
 
   let isPwd = ref(true);
 
   const roleList = ref([
-    { value: Roles.Admin, label: 'Администратор' },
-    { value: Roles.Government, label: 'Правительственный персонал' },
-    { value: Roles.Owner, label: 'Собственник компании' },
+    { value: Roles.Admin, label: RolesDescription[Roles.Admin] },
+    { value: Roles.Government, label: RolesDescription[Roles.Government] },
+    { value: Roles.Owner, label: RolesDescription[Roles.Owner] },
+    { value: Roles.Guest, label: RolesDescription[Roles.Guest] },
   ])
 
   async function registration() {
@@ -141,10 +141,29 @@
       second_name: userData.value.secondName,
       email: userData.value.email,
       role: userData.value.role.value,
-      owner: userData.value.owner.value,
+      owner: userData.value.owner?.value,
       password: userData.value.password
     });
-    if(response) isOpen.value = false;
+    if(response) {
+      isOpen.value = false;
+      onRequest();
+    }
+  }
+  async function updateUser() {
+    const response = await apiUpdateUserInfo({
+      id: userData.value.id,
+      name: userData.value.name,
+      second_name: userData.value.secondName,
+      email: userData.value.email,
+      role: userData.value.role.value,
+      owner: userData.value.owner?.value,
+      password: userData.value.password
+    });
+
+    if(response) {
+      isOpen.value = false;
+      onRequest();
+    }
   }
   /**
    * Отправить запрос можно только при наличии всех значений
@@ -159,23 +178,11 @@
       || !userData.value.confirmPassword
       || userData.value.password !== userData.value.confirmPassword;
   })
-  const usersTable: any = {
-    columns: [
-      { name: 'name', align: 'center', label: 'Имя', field: 'name', sortable: true },
-      { name: 'second_name', align: 'center', label: 'Имя', field: 'second_name', sortable: true },
-      { name: 'email', align: 'center', label: 'email', field: 'email', sortable: true },
-      { name: 'edit', label: '' },
-      { name: 'delete', label: '' },
-    ],
-    rows: []
-  }
 
-  const isOpen = ref(false);
-
-  function appendNewUser()
-  {
+  function appendNewUser() {
     isOpen.value = true;
     userData.value = {
+      id: null,
       name: '',
       secondName: '',
       email: '',
@@ -184,20 +191,44 @@
       password: '',
       confirmPassword: '',
     };
+    modalMode.value = 'new';
   }
 
-  function onCancelModal()
-  {
+  function onCancelModal() {
     isOpen.value = false
   }
 
+  const columns = [
+    { name: 'name', align: 'left', label: 'Имя', field: 'name', sortable: true },
+    { name: 'second_name', align: 'left', label: 'Фамилия', field: 'second_name', sortable: true },
+    { name: 'email', align: 'left', label: 'email', field: 'email', sortable: true },
+    { name: 'role', align: 'left', label: 'role', field: 'role', sortable: true },
+    { name: 'edit', label: '' },
+  ];
+  const isOpen = ref(false);
+  const rows = ref<User[]>([]);
+  const loading = ref(false);
   const { ownerList } = storeToRefs(ownerStore());
-  async function onApply(e: any)
+
+  async function onRequest()
   {
-    console.log('Apply', e)
+    loading.value = true;
+
+    const users = await apiGetAllUsers();
+
+    rows.value.splice(0, rows.value.length, ...users);
+
+    loading.value = false
   }
-  async function onCancel(e: any)
+  onRequest();
+
+  async function onEdit(user: User)
   {
-    console.log('Cancel', e)
+    appendNewUser();
+    userData.value = {
+      ...user,
+      role: { value: user.role, label: RolesDescription[user.role] }
+    };
+    modalMode.value = 'update';
   }
 </script>
