@@ -5,7 +5,8 @@
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
 
         <div class="non-selectable ">
-          <span class="text-weight-bold text-green">М</span>ос<span class="text-weight-bold text-green">И</span>порт<span class="text-weight-bold text-green">М</span>ониторинг
+          <span class="text-weight-bold text-green">М</span>ос<span
+            class="text-weight-bold text-green">И</span>порт<span class="text-weight-bold text-green">М</span>ониторинг
         </div>
 
         <q-space />
@@ -22,23 +23,28 @@
     </q-header>
 
     <q-drawer v-model="drawer" :width="200" :breakpoint="500" overlay bordered class="bg-grey-3">
-       <q-scroll-area class="fit">
-          <q-list>
+      <q-scroll-area class="fit">
+        <q-list>
 
-            <template v-for="(menuItem, index) in menuList" :key="index">
-              <q-item>
-                <q-item-section avatar>
-                  <q-icon :name="menuItem.icon_name" />
-                </q-item-section>
-                <q-item-section>
-                  {{ menuItem.name }}
-                </q-item-section>
-              </q-item>
-              <!-- <q-separator :key="'sep' + index"  v-if="menuItem.separator" /> -->
-            </template>
+          <template v-for="(menuItem, index) in menuList" :key="index">
+            <q-item 
+              :active="menuItem.to === route.path"
+              :clickable="menuItem.to !== route.path" 
+              class="non-selectable" 
+              @click="router.push(menuItem.to)"
+            >
+              <q-item-section avatar>
+                <q-icon :name="menuItem.icon_name" />
+              </q-item-section>
+              <q-item-section>
+                {{ menuItem.name }}
+              </q-item-section>
+            </q-item>
+            <!-- <q-separator :key="'sep' + index"  v-if="menuItem.separator" /> -->
+          </template>
 
-          </q-list>
-        </q-scroll-area>
+        </q-list>
+      </q-scroll-area>
     </q-drawer>
 
     <q-page-container>
@@ -64,7 +70,7 @@
   /**
    * Routers
    */
-  import { useRouter } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
 
   /**
    * Store
@@ -75,6 +81,8 @@
    * Services
    */
   import AuthService from '../services/auth.service';
+
+  const route = useRoute();
 
   const router = useRouter();
 
@@ -102,7 +110,7 @@
       : ''
 
     return `${n} ${sn} ${p}`;
-     
+
   })
 
   async function logout() {
@@ -116,4 +124,5 @@
   }
 
   const { menuList } = storeToRefs(menuStore());
+
 </script>
