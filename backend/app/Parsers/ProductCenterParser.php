@@ -4,10 +4,14 @@ namespace App\Parsers;
 
 use App\Abstractions\AbstractParser;
 use App\ValueObjects\CompanyFromParserValueObject;
+use Carbon\Carbon;
 use DiDom\Document;
 use DiDom\Exceptions\InvalidSelectorException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 /**
  * @description Парсинг информации с сайта "Интернет-выставка Производство России"
@@ -19,7 +23,7 @@ class ProductCenterParser extends AbstractParser {
 
   /**
    * @param string $query
-   * @return Collection
+   * @return Collection of CompanyFromParserValueObject
    * @throws InvalidSelectorException
    * @throws GuzzleException
    */
@@ -40,7 +44,6 @@ class ProductCenterParser extends AbstractParser {
       $image_path = $result_text->first('.image img')->attr('src');
       $producer_name = $result_text->first('.text .link')->text();
       $producer_page_path = $result_text->first('.text .link')->attr('href');
-      //$producer_page_path = urldecode($result_text->first('.text .link')->attr('href'));
       $city_name = $result_text->first('.item_info .ii_city a')->text();
 
 
@@ -58,10 +61,28 @@ class ProductCenterParser extends AbstractParser {
       ]);
 dd($producer_vo);
 
-
-      //$producers->push($url);
+      // $preorder->getMedia('preorder_packing_files')->each->delete();
+      //
+      // foreach ($invoice_files as $file) {
+      //   $filepath = (string)$file;
+      //
+      //   // добавляем время в название файла, для уникальности,
+      //   // если в один день загрузят несколько файлов чтобы они не затирали друг друга
+      //   $current_time = Carbon::now()->format('H_i');
+      //   $path_info = pathinfo($filepath);
+      //   $filename = $path_info['filename'] . "_$current_time." . $path_info['extension'];
+      //
+      //   try {
+      //     $preorder
+      //       ->addMedia($filepath)
+      //       ->usingName($filename)
+      //       ->usingFileName($filename)
+      //       ->toMediaCollection('preorder_packing_files');
+      //   } catch (FileDoesNotExist | FileIsTooBig $e) {
+      //     Log::channel('preorder')->info($e->getMessage());
+      //   }
+      $producers->push($producer_vo);
     }
-
 
     return $producers;
   }

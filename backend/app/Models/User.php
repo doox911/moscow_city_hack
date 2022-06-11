@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles as SpatieHasRoles;
 
 /**
@@ -17,8 +19,8 @@ use Spatie\Permission\Traits\HasRoles as SpatieHasRoles;
  * @method getRoleNames(): Collection
  * @method getAllPermissions(): Collection
  */
-class User extends Authenticatable {
-  use HasApiTokens, HasFactory, Notifiable, SpatieHasRoles;
+class User extends Authenticatable implements HasMedia {
+  use HasApiTokens, HasFactory, Notifiable, SpatieHasRoles, InteractsWithMedia;
 
   /**
    * The attributes that are mass assignable.
