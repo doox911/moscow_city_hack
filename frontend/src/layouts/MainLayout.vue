@@ -28,7 +28,7 @@
             <template v-for="(menuItem, index) in menuList" :key="index">
               <q-item>
                 <q-item-section avatar>
-                  <q-icon :name="menuItem.iconName" />
+                  <q-icon :name="menuItem.icon_name" />
                 </q-item-section>
                 <q-item-section>
                   {{ menuItem.name }}
