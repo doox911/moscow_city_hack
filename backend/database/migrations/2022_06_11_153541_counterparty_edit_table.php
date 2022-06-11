@@ -11,7 +11,7 @@ return new class extends Migration {
    * @return void
    */
   public function up() {
-    Schema::create('counterparties', function (Blueprint $table) {
+    Schema::table('counterparties', function (Blueprint $table) {
       $table->string('full_name');
       $table->string('ogrn')->nullable()->change;
       $table->string('address')->nullable();
