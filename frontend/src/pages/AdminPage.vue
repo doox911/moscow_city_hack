@@ -1,4 +1,8 @@
-<template>Admin page</template>
+<template>
+  <q-page padding>
+    Admin page
+  </q-page>
+</template>
 
 <script setup lang="ts">
   import { onMounted } from 'vue';

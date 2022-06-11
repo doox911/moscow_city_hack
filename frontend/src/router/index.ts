@@ -9,7 +9,6 @@ import AuthService from '../services/auth.service';
 import { userStore } from '../stores/userStore';
 import routes from './routes';
 import { storeToRefs } from 'pinia'
-import { Roles } from '../constants';
 
 /*
  * If not building with SSR mode, you can
@@ -39,19 +38,19 @@ export default route(function (/* { store, ssrContext } */) {
     ),
   });
 
-  Router.beforeEach((to, from) => {
+  Router.beforeEach((to) => {
     const { user } = storeToRefs(userStore());
 
     if (AuthService.isAuthenticated) {
-      if (to.path === '/') {
+      if (to.path === '/' || to.path === '/login') {
         return {
           name: user.value.role,
         }
       }
     } else {
-      if (to.path !== '/') {
+      if (to.path !== '/login') {
         return {
-          name: 'home',
+          name: 'loginPage',
         }
       }
     } 

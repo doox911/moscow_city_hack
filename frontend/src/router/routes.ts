@@ -5,24 +5,13 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'index',
-    component: () => import('layouts/WelcomeLayout.vue'),
+    component: () => import('layouts/MainLayout.vue'),
     meta: { guest: true },
     children: [
-      {
-        path: '/',
-        name: 'home',
-        component: () => import('pages/IndexPage.vue'),
-      },
-      {
-        path: '/' + Roles.Guest,
-        name: Roles.Guest,
-        component: () => import('pages/IndexPage.vue'),
-      },
       {
         path: '/' + Roles.Admin,
         name: Roles.Admin,
         component: () => import('pages/AdminPage.vue'),
-        meta: { role: Roles.Admin },
       },
       {
         path: '/registration',
@@ -32,14 +21,29 @@ const routes: RouteRecordRaw[] = [
         path: '/' + Roles.Government,
         name: Roles.Government,
         component: () => import('pages/GovernmentPage.vue'),
-        meta: { role: Roles.Government },
       },
       {
         path: '/' + Roles.Owner,
         name: Roles.Owner,
         component: () => import('pages/OwnerPage.vue'),
-        meta: { role: Roles.Owner },
       },
+    ]
+  },
+  {
+    path: '/login' ,
+    name: 'login',
+    component: () => import('layouts/WelcomeLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'loginPage',
+        component: () => import('pages/IndexPage.vue'),
+      },
+      {
+        path: '/' + Roles.Guest,
+        name: Roles.Guest,
+        component: () => import('pages/IndexPage.vue'),
+      }
     ]
   },
   // Always leave this as last one,
