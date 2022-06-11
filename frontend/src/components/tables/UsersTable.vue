@@ -1,13 +1,4 @@
 <template>
-  <q-btn
-    color="primary"
-    label="Добавить"
-    style="margin-bottom: 10px"
-    type="reset"
-    :loading="loading"
-    @request="onRequest"
-    @click="appendNewUser"
-  />
   <q-table
     title="Пользователи"
     :columns="columns"
@@ -22,6 +13,15 @@
       </q-td>
     </template>
   </q-table>
+  <q-btn
+    color="primary float-right"
+    label="Добавить"
+    style="margin-top: 10px"
+    type="reset"
+    :loading="loading"
+    @request="onRequest"
+    @click="appendNewUser"
+  />
   <q-dialog
     v-model="isOpen">
       <q-card style="width: 500px; padding: 10px;">
@@ -31,14 +31,18 @@
         </q-card-section>
         <q-card-section>
           <q-input
+            v-model="userData.secondName"
+            :rules="[ requiredStringRule ]"
+            label="Фамилия"
+          />
+          <q-input
             v-model="userData.name"
             :rules="[ requiredStringRule ]"
             label="Имя"
           />
           <q-input
-            v-model="userData.secondName"
-            :rules="[ requiredStringRule ]"
-            label="Фамилия"
+            v-model="userData.patronymic"
+            label="Отчество"
           />
           <q-input
             v-model="userData.email"
@@ -127,10 +131,11 @@
   /**
    * Api
    */
-  import { apiGetAllUsers, apiUpdateUserInfo } from '../../api/users';
+  import { apiGetAllUsers, apiSignupUser, apiUpdateUserInfo } from '../../api/users';
 
   const userData = ref({
     id: null,
+    patronymic: '',
     name: '',
     secondName: '',
     email: '',
@@ -148,12 +153,13 @@
     { value: Roles.Guest, label: RolesDescription[Roles.Guest] },
   ])
   /**
-   * Зарегистрировать пользователя
+   * Осуществляется запрос регистрации пользователя
    */
   async function registration() {
-    const response = await AuthService.registration({
-      name: userData.value.name,
+    const response = await apiSignupUser({
       second_name: userData.value.secondName,
+      name: userData.value.name,
+      patronymic: userData.value.patronymic,
       email: userData.value.email,
       role: userData.value.role.value,
       owner: userData.value.owner?.value,
@@ -170,8 +176,9 @@
   async function updateUser() {
     const response = await apiUpdateUserInfo({
       id: userData.value.id,
-      name: userData.value.name,
       second_name: userData.value.secondName,
+      name: userData.value.name,
+      patronymic: userData.value.patronymic,
       email: userData.value.email,
       role: userData.value.role.value,
       owner: userData.value.owner?.value,
@@ -192,8 +199,8 @@
       || !userData.value.email
       || !userData.value.role
       || (userData.value.role?.value == Roles.Owner && !userData.value.owner)
-      || !userData.value.password
-      || !userData.value.confirmPassword
+      || (modalMode.value == 'new' && !userData.value.password)
+      || (modalMode.value == 'new' && !userData.value.confirmPassword)
       || userData.value.password !== userData.value.confirmPassword;
   })
 
