@@ -53,8 +53,7 @@
    */
   import type { QTableOnRequestProps } from 'src/types';
   import type { QTableProps } from 'quasar';
-  import type { Task } from 'Src/api/task';
-  import { Owner } from '../../api/owner';
+  import { Counterpart } from '../../api/owner';
 
 
   type Button = {
@@ -73,31 +72,57 @@
       sortable: true,
     },
     {
-      align: 'center',
-      field: 'is_moderated',
-      label: 'Статус',
-      name: 'is_moderated',
+      field: 'name',
+      label: 'Название',
+      name: 'name',
       sortable: true,
     },
     {
-      align: 'center',
-      field: 'is_accepted',
-      label: 'Статус',
-      name: 'is_accepted',
+      field: 'full_name',
+      label: 'Полное название',
+      name: 'full_name',
       sortable: true,
     },
     {
-      align: 'center',
-      field: 'comment',
-      label: 'Статус',
-      name: 'comment',
+      field: 'inn',
+      label: 'ИНН',
+      name: 'inn',
       sortable: true,
     },
     {
-      align: 'center',
-      field: '',
-      label: 'Управление',
-      name: 'actions',
+      field: 'ogrn',
+      label: 'ОГРН',
+      name: 'ogrn',
+    },
+    {
+      field: 'address',
+      label: 'Адрес',
+      name: 'address',
+    },
+    {
+      field: 'email',
+      label: 'Почта',
+      name: 'email',
+    },
+    {
+      field: 'phone',
+      label: 'телефон',
+      name: 'phone',
+    },
+    {
+      field: 'site',
+      label: 'сайт',
+      name: 'site',
+    },
+    {
+      field: 'created_at',
+      label: 'создано',
+      name: 'created_at',
+    },
+    {
+      field: 'updated_at',
+      label: 'обновлено',
+      name: 'updated_at',
     },
   ];
 
@@ -130,22 +155,22 @@
     defineProps<{
       loading?: boolean;
       rowsNumber?: number;
-      selected?: Owner[];
-      owner?: Owner[];
+      selected?: Counterpart[];
+      counterpart?: Counterpart[];
     }>(),
     {
       loading: false,
       rowsNumber: 0,
       selected: () => [],
-      owner: () => [],
+      counterpart: () => [],
     },
   );
 
   const task_event_dialog = ref(false);
 
-  const rows = computed(() => props.owner);
+  const rows = computed(() => props.counterpart);
 
-  const selected_task = ref<Owner | undefined>(undefined);
+  const selected_task = ref<Counterpart | undefined>(undefined);
 
   const pagination = ref({
     sortBy: '',
@@ -159,7 +184,7 @@
     get() {
       return props.selected;
     },
-    set(v: Owner[]) {
+    set(v: Counterpart[]) {
       return emit('update:selected', v);
     },
   });
