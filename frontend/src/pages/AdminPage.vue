@@ -25,6 +25,7 @@
    * Api
    */
   import { apiTasks } from 'Src/api/task';
+  import { apiCounterparties, Owner } from '../api/owner';
 
   /**
    * Hooks
@@ -42,7 +43,6 @@
    * Types
    */
   import type { Task } from 'Src/api/task';
-  import { apiOwner, Owner } from '../api/owner';
 
   useUserPageGuard();
 
@@ -68,7 +68,7 @@
         }
       }
     });
-    owner.value = await apiOwner({
+    owner.value = await apiCounterparties({
       params: {
         item_per_page: 15,
         filters: {

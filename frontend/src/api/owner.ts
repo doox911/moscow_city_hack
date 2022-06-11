@@ -26,7 +26,7 @@ export type OwnerResponce = {
 /**
  * Получение списка предприятий
  */
-export async function apiOwner(config?: AxiosRequestConfig) {
+export async function apiCounterparties(config?: AxiosRequestConfig) {
   let owner: Owner[] = [];
   console.log(config)
   await requestWrapper({
