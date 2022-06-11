@@ -26,6 +26,10 @@ class GoodController extends Controller {
      */
     $filters = request()->input('filters');
 
+    if (is_string($filters)) {
+      $filters = json_decode($filters, true);
+    }
+
     foreach ($filters['columns'] as $column => $sort_direction) {
       if (!empty($filters['search_string'])) {
         $goods->orWhere($column, 'like', "%{$filters['search_string']}%");

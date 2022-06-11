@@ -33,6 +33,10 @@ class TaskController extends Controller {
       ]
     ];
 
+    if (is_string($filters)) {
+      $filters = json_decode($filters, true);
+    }
+
     $filters['columns'] = [...$default_sort['columns'], ...($filters['columns'] ?? [])];
 
     foreach ($filters['columns'] as $column => $sort_direction) {
