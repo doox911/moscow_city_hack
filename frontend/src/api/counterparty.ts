@@ -7,7 +7,7 @@ import { requestWrapper } from '../common/wrappers';
  */
 import type { PaginationCount, LaravelPagination } from 'Src/types';
 
-export type Counterparty = {
+export type Counterpart = {
   id: number,
   user_id: number,
   name: string,
@@ -22,7 +22,7 @@ export type Counterparty = {
 
 export type CounterpartyResponce = {
   content: PaginationCount & {
-    counterparties: LaravelPagination<Counterparty>,
+    counterparties: LaravelPagination<Counterpart>,
   },
   message: string;
 }
@@ -31,13 +31,22 @@ export type CounterpartyResponce = {
  * Получение списка предприятий
  */
 export async function apiCounterparties(config?: AxiosRequestConfig) {
-  let owner: Counterparty[] = [];
-  console.log(config)
+  let pagination: LaravelPagination<Counterpart> = {
+    current_page: 1,
+    data: [],
+    first_page_url: '',
+    from: '',
+    next_page_url: '',
+    path: '',
+    per_page: '',
+    prev_page_url: '',
+    to: ''
+  };
   await requestWrapper({
     success: async () => {
-      owner = (await new ApiRequest(config).get('api/counterparties') as CounterpartyResponce).content.counterparties.data;
+      pagination = (await new ApiRequest(config).get('api/counterparties') as CounterpartyResponce).content.counterparties;
     }
   });
 
-  return owner;
+  return pagination;
 }

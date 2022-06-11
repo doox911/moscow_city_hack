@@ -12,7 +12,11 @@
     </div>
     <div class="row" style="margin-top:10px;">
       <div class="col">
-        <OwnerTable :owner="owner" :loading="loading" @on-request="onRequestOwner"/>
+        <OwnerTable
+          :counterpart="counterpart"
+          :loading="loading"
+          :rowsNumber="rowsNumber"
+          @on-request="onRequestOwner"/>
       </div>
     </div>
   </q-page>
@@ -25,7 +29,7 @@
    * Api
    */
   import { apiTasks } from 'Src/api/task';
-  import { apiCounterparties, Counterparty } from '../api/counterparty';
+  import { apiCounterparties, Counterpart } from '../api/counterparty';
 
   /**
    * Hooks
@@ -46,8 +50,13 @@
 
   useUserPageGuard();
 
-  const tasks = ref<Task[]>([])
-  const owner = ref<Counterparty[]>([])
+  const tasks = ref<Task[]>([]);
+  const counterpart = ref<Counterpart[]>([]);
+
+  const counterpartPagination = {
+    rowsNumber: 0,
+    rowsPerPage: 10
+  }
 
   const loading = ref(false)
 
@@ -68,9 +77,9 @@
         }
       }
     });
-    owner.value = await apiCounterparties({
+    const { data } = await apiCounterparties({
       params: {
-        item_per_page: 15,
+        item_per_page: counterpartPagination.rowsPerPage,
         filters: {
           search_string: '',
           columns: {
@@ -80,7 +89,7 @@
         }
       }
     });
-
+    counterpart.value = data;
     loading.value = false;
   })
 </script>

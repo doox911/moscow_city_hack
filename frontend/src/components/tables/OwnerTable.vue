@@ -157,10 +157,12 @@
       rowsNumber?: number;
       selected?: Counterpart[];
       counterpart?: Counterpart[];
+      rowsPerPage?: number;
     }>(),
     {
       loading: false,
       rowsNumber: 0,
+      rowsPerPage: 10,
       selected: () => [],
       counterpart: () => [],
     },
@@ -176,7 +178,7 @@
     sortBy: '',
     descending: true,
     page: 1,
-    rowsPerPage: 10,
+    rowsPerPage: props.rowsPerPage,
     rowsNumber: props.rowsNumber,
   });
 
