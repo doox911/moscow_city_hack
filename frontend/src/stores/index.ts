@@ -18,3 +18,6 @@ export default store((/* { ssrContext } */) => {
 
   return pinia;
 });
+
+export * from './userStore';
+export * from './menuStore';
