@@ -15,31 +15,8 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/' + Roles.Admin + '/profile',
+        name: Roles.Admin + 'Profile',
         component: () => import('pages/AdminProfilePage.vue'),
-        redirect: { name: Roles.Admin + 'Profile' },
-        children: [
-          {
-            path: '',
-            name: Roles.Admin + 'Profile',
-            component: () => import('pages/profile/ProfilePage.vue'),
-          },
-          {
-            path: 'request',
-            component: () => import('pages/profile/RequestPage.vue'),
-          },
-          {
-            path: 'edit',
-            component: () => import('pages/profile/EditPage.vue'),
-          },
-          {
-            path: 'owner',
-            component: () => import('pages/profile/OwnerPage.vue'),
-          },
-          {
-            path: 'registration',
-            component: () => import('pages/profile/RegistrationPage.vue'),
-          },
-        ]
       },
       {
         path: '/' + Roles.Government,
@@ -48,15 +25,8 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/' + Roles.Government + '/profile',
+        name: Roles.Government + 'Profile',
         component: () => import('pages/GovernmentProfilePage.vue'),
-        redirect: { name: Roles.Government + 'Profile' },
-        children: [
-          {
-            path: '',
-            name: Roles.Government + 'Profile',
-            component: () => import('pages/profile/ProfilePage.vue'),
-          }
-        ]
       },
       {
         path: '/' + Roles.Owner,
