@@ -10,7 +10,10 @@
 
         <q-space />
 
-        <div>{{ getUserInfo }}</div>
+        <q-btn flat @click="goToProfile">
+          {{ getUserInfo }}
+          <Tooltip v-model="profileTooltip" text="Просмотр профиля" />
+        </q-btn>
 
         <q-btn flat @click="logout" round dense icon="logout">
           <Tooltip v-model="tooltip" text="Выход" />
@@ -81,6 +84,8 @@
 
   const tooltip = ref(false);
 
+  const profileTooltip = ref(false);
+
   const getUserInfo = computed(() => {
     const { name, second_name, patronymic } = user.value;
 
@@ -104,6 +109,10 @@
     await AuthService.logout();
 
     router.push('/login');
+  }
+
+  function goToProfile() {
+    router.push(`/${user.value.role}/profile`);
   }
 
   const { menuList } = storeToRefs(menuStore());
