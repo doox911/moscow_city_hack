@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue';
-  import { Counterparty } from '../../api/counterparty';
+  import { apiCreateCounterparty, apiUpdateCounterparty, Counterparty } from '../../api/counterparty';
 
   /**
    * Components
@@ -72,36 +72,25 @@
   import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue';
 
   const emit = defineEmits(['onCancel', 'onSuccess', 'update:modelValue']);
+  let dialogMode = 'new';
 
   const props = withDefaults(
     defineProps<{
       counterparty: Counterparty | null;
       modelValue: boolean;
       textHeader: string;
-      buttonSuccessTooltip: string;
-      buttonSuccessLabel: string;
     }>(),
     {
       modelValue: false,
       textHeader: 'Редактирование предприятия',
       counterparty: null,
-      buttonSuccessTooltip: 'Изменить',
-      buttonSuccessLabel: 'Изменить'
     },
   );
 
-  const counterpartyData = ref({
-    id: null,
-    user_id: null,
-    name: '',
-    full_name: '',
-    inn: '',
-    ogrn: '',
-    adress: '',
-    email: '',
-    phone: '',
-    site: '',
-  })
+  let buttonSuccessTooltip = ref('Изменить');
+  let buttonSuccessLabel = ref('Изменить');
+
+  const counterpartyData = ref({})
 
   const dialog = computed({
     get() {
@@ -115,7 +104,14 @@
   watch(
     () => props.counterparty,
     (counterparty: Counterparty | null) => {
-      counterpartyData.value = counterparty;
+
+      let out = {};
+      for(let key in counterparty)
+        out[key] = counterparty[key];
+
+      counterpartyData.value = out;
+      buttonSuccessTooltip.value = buttonSuccessLabel.value = counterparty.id ? 'Изменить' : 'Создать';
+      dialogMode = counterparty.id ? 'update' : 'new';
     },
   );
 
@@ -125,9 +121,12 @@
     emit('onCancel');
   };
 
-  const success = () => {
+  const success = async () => {
     dialog.value = false;
 
+    if(dialogMode == 'update')
+      await apiUpdateCounterparty(counterpartyData.value);
+    else await apiCreateCounterparty(counterpartyData.value);
     emit('onSuccess', true);
   };
 </script>
