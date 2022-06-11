@@ -1,10 +1,18 @@
 /**
+ * Constants
+ */
+import { Roles, RolesDescription } from 'Src/constants';
+
+/**
  * первый символ в верхний регистр
  */
 export function capitalizeFirstLetter(v: string) {
   return v.charAt(0).toUpperCase() + v.slice(1);
 }
 
+/**
+ * Инициалы
+ */
 export function getUserName(user: { name: string, second_name: string, patronymic: string }) {
   const { name, second_name, patronymic } = user;
 
@@ -23,3 +31,7 @@ export function getUserName(user: { name: string, second_name: string, patronymi
   return `${n} ${sn} ${p}`;
 
 };
+
+export function getRoleDescription(name: Roles) {
+  return RolesDescription[name];
+}

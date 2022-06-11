@@ -1,10 +1,16 @@
 <template>
-  <q-page>
-    Личная страница компании(й)
+  <q-page class="q-ma-md">
+    <UserProfile />
   </q-page>
 </template>
 
 <script setup lang="ts">
+
+  /**
+   * Components
+   */
+  import UserProfile from 'Components/user/UserProfile.vue'
+
   /**
    * Hooks
    */
