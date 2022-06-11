@@ -80,7 +80,13 @@ class TaskController extends Controller {
 
     $data = $request->all();
 
-    dd($data, $task);
+    if ($data['is_accepted']) {
+
+    }
+
+    $task->update($data);
+    $task->is_moderated = true;
+    $task->save();
   }
 
   /**
