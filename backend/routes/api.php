@@ -3,6 +3,7 @@
 use App\Http\Controllers\CounterpartyController;
 use App\Http\Controllers\GoodController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OkvedController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
@@ -59,6 +60,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('api')->group(static function () {
       Route::put('', [TaskController::class, 'update']);
     });
+  });
+
+  Route::prefix('okved')->middleware('role:admin|owner')->group(static function () {
+    // CRUD
+    Route::get('', [OkvedController::class, 'index']);
   });
 
   Route::post('/register', [AuthController::class, 'register'])->middleware('role:admin');

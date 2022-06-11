@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Exceptions\CommonException;
+use App\Helpers\ConsoleProgressBar;
 use App\Models\Counterparty;
 use App\Services\CompanyService;
 use Illuminate\Console\Command;
@@ -12,6 +13,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Component\Finder\SplFileInfo;
 
 class FillCompaniesFromExcel extends Command {
+
   /**
    * The name and signature of the console command.
    *
@@ -46,7 +48,12 @@ class FillCompaniesFromExcel extends Command {
       );
     }
 
+    ConsoleProgressBar::setTotal($companies->count());
+
+    $i = 0;
     foreach ($companies as $company) {
+      ConsoleProgressBar::updateProgress($i, "ИНН компании $company->inn, Наименование: " . $company->name);
+
       Counterparty::updateOrCreate([
         'inn' => $company->inn,
       ], [
@@ -56,6 +63,10 @@ class FillCompaniesFromExcel extends Command {
         'ogrn' => '',
         'address' => '',
       ]);
+
+      ConsoleProgressBar::updateProgress(++$i);
     }
+
+    echo "Импорт компаний из Excel файла успешно произведён\t\n";
   }
 }
