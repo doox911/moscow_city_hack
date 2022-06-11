@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\CounterpartyController;
+use App\Http\Controllers\GoodController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -23,6 +26,37 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('{counterparty}')->group(static function () {
       Route::put('', [CounterpartyController::class, 'update']);
       Route::delete('', [CounterpartyController::class, 'destroy']);
+    });
+  });
+
+  Route::prefix('goods')->group(static function () {
+    // CRUD
+    Route::get('', [GoodController::class, 'index'])->middleware('role:admin|owner');
+    Route::post('', [GoodController::class, 'store']);
+
+    Route::prefix('{good}')->group(static function () {
+      Route::put('', [GoodController::class, 'update']);
+      Route::delete('', [GoodController::class, 'destroy']);
+    });
+  });
+
+  Route::prefix('services')->group(static function () {
+    // CRUD
+    Route::get('', [ServiceController::class, 'index'])->middleware('role:admin|owner');
+    Route::post('', [ServiceController::class, 'store']);
+
+    Route::prefix('{service}')->group(static function () {
+      Route::put('', [ServiceController::class, 'update']);
+      Route::delete('', [ServiceController::class, 'destroy']);
+    });
+  });
+
+  Route::prefix('tasks')->group(static function () {
+    // CRUD
+    Route::get('', [TaskController::class, 'index'])->middleware('role:admin|owner');
+
+    Route::prefix('{task}')->group(static function () {
+      Route::put('', [TaskController::class, 'update']);
     });
   });
 
