@@ -37,25 +37,6 @@ export class AuthService {
 
     await this.updateUserInfo();
   }
-  /**
-   * Осуществляется запрос регистрации пользователя
-   */
-  async registration({
-    name,
-    second_name,
-    email,
-    role,
-    owner,
-    password
-  }: UserDataForSave): Promise<ResponseTokens | null> {
-    return await apiSignupUser({
-      name,
-      second_name,
-      email,
-      role,
-      password,
-    });
-  }
   async updateUserInfo() {
     const data = await apiGetUserInfo();
 
@@ -86,8 +67,9 @@ export class AuthService {
 export default new AuthService();
 
 interface UserDataForSave {
-  name: string;
   second_name: string;
+  name: string;
+  patronymic: string;
   email: string;
   role: string;
   owner?: string;

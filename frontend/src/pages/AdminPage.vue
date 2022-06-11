@@ -10,13 +10,11 @@
         <UsersTable />
       </div>
     </div>
-      <!-- <div class='col-12 col-md-3'>
-        <UsersTable/>
+    <div class="row" style="margin-top:10px;">
+      <div class="col">
+        <OwnerTable />
       </div>
-      <div class='col-12 col-md-3'>
-        <OwnerTable/>
-      </div>
-    </div> -->
+    </div>
   </q-page>
 </template>
 
