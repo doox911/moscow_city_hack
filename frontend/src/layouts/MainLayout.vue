@@ -10,7 +10,7 @@
 
         <q-space />
 
-        <div>{{ getUserInfo }}</div>
+        <q-btn flat no-caps :label="getUserInfo" color="white" to='/admin/profile' :active="false"/>
 
         <q-btn flat @click="logout" round dense icon="logout">
           <Tooltip v-model="tooltip" text="Выход" />
