@@ -2,19 +2,21 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Okved;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OkvedResource extends JsonResource {
   /**
    * Transform the resource into an array.
    *
-   * @param \Illuminate\Http\Request $request
+   * @param Request $request
    * @return array
    */
-  public function toArray($request) {
+  public function toArray($request): array {
 
     /**
-     * @var \App\Models\Okved $okved
+     * @var Okved $okved
      */
     $okved = $this->resource;
 

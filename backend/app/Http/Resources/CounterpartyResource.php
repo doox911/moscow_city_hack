@@ -35,6 +35,7 @@ class CounterpartyResource extends JsonResource {
       'site' => $counterparty->site,
       'created_at' => $counterparty->created_at,
       'updated_at' => $counterparty->updated_at,
+      'base64_logo' => $counterparty->getPNGBase64Logo(),
     ];
   }
 }
