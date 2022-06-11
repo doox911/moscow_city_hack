@@ -35,7 +35,7 @@ export async function apiCounterparties(config?: AxiosRequestConfig) {
   console.log(config)
   await requestWrapper({
     success: async () => {
-      owner = (await new ApiRequest(config).get('api/counterparties') as CounterpartyResponce).content.counterparties.data;
+      owner = (await new ApiRequest(config).get('/api/counterparties') as CounterpartyResponce).content.counterparties.data;
     }
   });
 

@@ -3,14 +3,12 @@
     v-model="dialog" 
     button-text="Выбрать компанию"
     header-text="Выбрать компанию"
-    @on-close="onClose"
     @on-reset="onReset"
-    @on-success="onSuccess"
   >
     <div class="col">
       <div class="row">
         <div class="col">
-          <q-input v-model="filter" placeholder="Фильтр по компаниям">
+          <q-input v-model="filter" :loading="loading" placeholder="Фильтр по компаниям">
             <template v-slot:append>
               <q-icon name="search" @click="getCompany" class="cursor-pointer"/>
             </template>
@@ -19,7 +17,13 @@
       </div>
       <div class="row">
         <div class="col">
-          <q-select v-model="selected_company" :options="counterparties" label="Выбрать компанию" />
+          <q-select 
+            v-model="selected"
+            :loading="loading"
+            :options="counterparties"
+            label="Выбрать компанию"
+            option-label="name"
+          />
         </div>
       </div>
     </div>
@@ -27,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
 
   /**
    * Api
@@ -39,43 +43,77 @@
    */
   import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue'
 
-  let page = 1;
+  const emit = defineEmits(['update:modelValue']);
+
+  const props = withDefaults(defineProps<{
+    modelValue?: Counterparty;
+  }>(), {
+    modelValue: undefined,
+  });
+
+  const page = ref(1);
+
+  const item_per_page = ref(15);
 
   const dialog = ref(false);
+
+  const loading = ref(false);
 
   const filter = ref('');
 
   const counterparties = ref<Counterparty[]>([]);
 
-  const selected_company = ref<Counterparty | null>(null);
-
-  async function getCompany() {
-    console.log('getCompany');
-
-  }
-
-  const onClose = () => {
-  };
+  const selected = computed({
+    get() {
+      return props.modelValue;
+    },
+    set(v?: Counterparty | undefined) {
+      emit('update:modelValue', v);
+    }
+  })
 
   const onReset = () => {
     filter.value  = '';
   };
 
-  const onSuccess = async () => {
-
-  };
-
-  onMounted(async () => {
-    counterparties.value = await apiCounterparties({
+  async function updateCounterparty(s = '') {
+    const c = await apiCounterparties({
       params: {
-        item_per_page: 15,
-        page,
+        item_per_page: item_per_page.value,
+        page: page.value,
         filters: {
-          search_string: '',
+          search_string: 'ввв',
           columns: {}
         }
       }
     });
+
+    counterparties.value = c.map(e => {
+      return {
+        ...e,
+        name: e.name.length > 50 
+          ? e.name.slice(0, 50) + '...'
+          : e.name,
+      };
+    })
+  }
+
+  async function getCompany() {
+    selected.value = undefined;
+
+    loading.value = true;
+
+    await updateCounterparty(filter.value);
+
+    loading.value = false;
+  }
+
+  onMounted(async () => {
+    loading.value = true;
+    
+    await updateCounterparty();
+
+    loading.value = false;
   });
 
 </script>
