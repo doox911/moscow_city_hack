@@ -40,7 +40,8 @@ export async function apiSignupUser(
   await requestWrapper({
     success: async () => {
       tokens = (await new ApiRequest(config).post<ResponseTokens>('api/register', data) as ApiResponse<ResponseTokens>).content;
-    }
+    },
+    success_message: 'Добавлен новый пользователь',
   })
   return tokens;
 }
