@@ -14,7 +14,7 @@ import { requestWrapper } from '../common/wrappers';
 /**
  * Информация о пользователе
  */
- export async function apiGetUserInfo(
+export async function apiGetUserInfo(
   config?: AxiosRequestConfig,
 ) {
   let user = null;
@@ -28,6 +28,40 @@ import { requestWrapper } from '../common/wrappers';
   return user;
 }
 
+/**
+ * Информация о всех пользователях
+ */
+export async function apiGetAllUsers(
+  config?: AxiosRequestConfig,
+) {
+  let users: User[] = [];
+  await requestWrapper({
+    success: async () => {
+      users = (await new ApiRequest(config).get<User[]>('api/user/all') as ApiResponse<User[]>).content;
+    },
+    error_message: 'Ошибка получения информации о пользователях',
+  })
+
+  return users;
+}
+
+/**
+ * Изменить данные пользователя
+ */
+export async function apiUpdateUserInfo(
+  user: User,
+  config?: AxiosRequestConfig,
+) {
+  let response = null;
+  await requestWrapper({
+    success: async () => {
+      response = (await new ApiRequest(config).put<User>('api/user', user) as ApiResponse<User>).content;
+    },
+    error_message: 'Ошибка изменения информации о пользователях',
+  })
+
+  return response;
+}
 
 /**
  * Регистрация обычного пользователя

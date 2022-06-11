@@ -52,9 +52,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
   });
 
-  Route::prefix('tasks')->group(static function () {
+  Route::prefix('tasks')->middleware('role:admin')->group(static function () {
     // CRUD
-    Route::get('', [TaskController::class, 'index'])->middleware('role:admin');
+    Route::get('', [TaskController::class, 'index']);
 
     Route::prefix('api')->group(static function () {
       Route::put('', [TaskController::class, 'update']);
