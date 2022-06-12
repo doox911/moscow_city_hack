@@ -6,6 +6,8 @@
 
 # Инструкция для демонстрации
 
+## Сборка
+
 ## Backend
 
 ### Linux and MacOS:
@@ -22,6 +24,11 @@ docker run --rm \
     composer install --ignore-platform-reqs
 
 ./vendor/bin/sail up
+
+# Выполняем миграции и сидеры
+
+./vendor/bin/sail artisan migrate
+./vendor/bin/sail artisan db:seed
 ```
 ### Windows:
 
@@ -43,6 +50,18 @@ docker build -t moscow_hack ./frontend --no-cache
 docker run -p 5000:80  moscow_hack
 ```
 
+## Доступы
+
+```bash
+# Логины
+admin@rosgosplan.ru
+government@rosgosplan.ru
+owner@rosgosplan.ru
+guest@rosgosplan.ru
+
+# Пароль от всех пользователей
+password
+```
 # Инструкция для разработки
 
 ## Backend
