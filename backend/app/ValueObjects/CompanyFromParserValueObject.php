@@ -36,6 +36,8 @@ use JsonException;
  *
  * @property array $photos_urls
  * @property array $keywords_for_search
+ * @property string|null $general_activity
+ * @property array $activities
  *
  * @description Объект позиции для быстрого ввода
  * @package Preorder
@@ -180,6 +182,19 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
    * @var array
    */
   protected array $keywords_for_search = [];
+
+  /**
+   * @description Основной ОКВЭД (вид деятельности)
+   * @var string|null
+   */
+  protected ?string $general_activity = null;
+
+  /**
+   * @description Дополнительные ОКВЭД (виды деятельности)
+   * @var array
+   */
+  protected array $activities = [];
+
 
 
   /**

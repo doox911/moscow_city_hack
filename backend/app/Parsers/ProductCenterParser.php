@@ -4,6 +4,7 @@ namespace App\Parsers;
 
 use App\Abstractions\AbstractParser;
 use App\Exceptions\ValidationException;
+use App\Services\MainService;
 use App\ValueObjects\CompanyFromParserValueObject;
 use Carbon\Carbon;
 use DiDom\Document;
@@ -35,7 +36,6 @@ class ProductCenterParser extends AbstractParser {
   /**
    * @param string $query
    * @return Collection of CompanyFromParserValueObject
-   * @throws InvalidSelectorException
    * @throws GuzzleException
    */
   public function parse(string $query = ''): Collection {
@@ -76,13 +76,13 @@ class ProductCenterParser extends AbstractParser {
 
   /**
    * @param Document $search_page_document
-   * @return Collection
+   * @return void
    * @throws GuzzleException
    * @throws InvalidSelectorException
    * @throws ValidationException
    * @throws JsonException
    */
-  private function parsePage(Document $search_page_document) {
+  private function parsePage(Document $search_page_document): void {
     foreach ($search_page_document->find('div.card_item') as $result_text) {
       $producer_id = $result_text->first('.to_favorites')->attr('data-item-id');
 
@@ -99,7 +99,7 @@ class ProductCenterParser extends AbstractParser {
       $longitude_center = null;
       $latitude_center = null;
 
-      preg_match('/center: \[(.*?), (.*?)\]/ui', $response_html_producer_page,$found);
+      preg_match('/center: \[(.*?), (.*?)\]/ui', $response_html_producer_page, $found);
       if (count($found)) {
         [, $longitude_center, $latitude_center] = $found;
         $longitude_center = (float)$longitude_center;
@@ -109,7 +109,7 @@ class ProductCenterParser extends AbstractParser {
       $longitude = null;
       $latitude = null;
 
-      preg_match('/coordinates: \[(.*?), (.*?)\]/ui', $response_html_producer_page,$found);
+      preg_match('/coordinates: \[(.*?), (.*?)\]/ui', $response_html_producer_page, $found);
       if (count($found)) {
         [, $longitude, $latitude] = $found;
         $longitude = (float)$longitude;
@@ -224,8 +224,22 @@ class ProductCenterParser extends AbstractParser {
       }
 
 
-      // виды деятельности - делятся на 2 типа (Основной ОКВЭД, Дополнительные ОКВЭД)
+      // Основной ОКВЭД (вид деятельности)
+      $general_activity = null;
+
+      // Дополнительные ОКВЭД (виды деятельности)
       $activities = [];
+
+      // виды деятельности
+      foreach ($producer_page->find('.tc_contacts .company_activities span') as $i => $node) {
+        if ($i === 0) {
+          $general_activity = $node->text();
+        } else {
+          if ($node->attr('class') === 'hidden' && !empty($node->text())) {
+            $activities[] = $node->text();
+          }
+        }
+      }
 
       $producer_vo = new CompanyFromParserValueObject([
         //'data_source_id' => $data_source_id,
@@ -251,6 +265,9 @@ class ProductCenterParser extends AbstractParser {
         'latitude_center' => $latitude_center,
         'longitude' => $longitude,
         'latitude' => $latitude,
+
+        'general_activity' => $general_activity,
+        'activities' => $activities,
       ]);
 
 

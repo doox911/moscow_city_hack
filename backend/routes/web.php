@@ -1,6 +1,7 @@
 <?php
 
 use App\Parsers\ProductCenterParser;
+use App\Services\MainService;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -9,6 +10,7 @@ Route::get('/', function () {
 
 
 Route::get('/parser', function () {
+  MainService::setUnlimitExecutionResources();
   $producers = (new ProductCenterParser)->parse('молоко');
 
   dd($producers);
