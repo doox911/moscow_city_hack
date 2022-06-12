@@ -10,6 +10,10 @@
 
 ## Backend
 
+### Windows:
+
+Используем `wsl` и затем выполняем команды ниже.
+
 ### Linux and MacOS:
 ```bash
 cd backend 
@@ -23,25 +27,22 @@ docker run --rm \
     laravelsail/php81-composer:latest \
     composer install --ignore-platform-reqs
 
-./vendor/bin/sail up
+./vendor/bin/sail up -d
 
 # Выполняем миграции и сидеры
 
 ./vendor/bin/sail artisan migrate
 ./vendor/bin/sail artisan db:seed
 ```
-### Windows:
 
-Используем `wsl`
-
-> Может попросить **сгенерировать ключ**, кнопка в правом верхнем углу.
+> Заходим на http://localhost или (http://0.0.0.0) и убеждаемся, что Laravel Sail работает. Может попросить **сгенерировать ключ**, кнопка в правом верхнем углу.
 
 ## Frontend
 
 Windows, Linux, MacOS:
 
 ```bash
-docker build -t moscow_hack ./frontend --no-cache
+docker build -t moscow_hack ./frontend
 ```
 
 ### Запускаем:
