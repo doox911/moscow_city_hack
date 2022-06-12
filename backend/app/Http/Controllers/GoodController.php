@@ -183,7 +183,7 @@ class GoodController extends Controller {
   public function getGood(Good $good): JsonResponse {
     return response()->json([
       'content' => [
-        'counterparty' => GoodResource::make($good),
+        'good' => GoodResource::make($good),
       ],
       'messages' => [
         'Информация о товаре получена'
