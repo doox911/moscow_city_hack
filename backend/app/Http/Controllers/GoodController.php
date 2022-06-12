@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class GoodController extends Controller {
+
   /**
    * Display a listing of the resource.
    *
@@ -160,13 +161,11 @@ class GoodController extends Controller {
    * @return void
    */
   public static function massAttachToCounterparty(array $goods, Counterparty $counterparty): void {
-
     foreach ($goods as $good) {
       $good = Good::updateOrCreate([
         'name' => $good['name'],
         'brand' => $good['brand'],
       ]);
-
 
       Activity::updateOrCreate([
         'counterparty_id' => $counterparty->id,
@@ -175,6 +174,21 @@ class GoodController extends Controller {
         'is_active' => true,
       ]);
     }
+  }
+
+  /**
+   * @param Good $good
+   * @return JsonResponse
+   */
+  public function getGood(Good $good): JsonResponse {
+    return response()->json([
+      'content' => [
+        'counterparty' => GoodResource::make($good),
+      ],
+      'messages' => [
+        'Информация о товаре получена'
+      ]
+    ]);
   }
 
   /**

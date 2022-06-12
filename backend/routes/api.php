@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('', [GoodController::class, 'store']);
 
     Route::prefix('{good}')->group(static function () {
+      Route::get('', [GoodController::class, 'getGood']);
       Route::put('', [GoodController::class, 'update']);
       Route::delete('', [GoodController::class, 'destroy']);
     });
