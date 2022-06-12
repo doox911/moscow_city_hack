@@ -250,6 +250,13 @@
       field: 'keywords_for_search',
       label: 'Уставной капитал',
       name: 'keywords_for_search',
+      format: (val) => {
+        if (val !== null) {
+          return Object.entries(val).map(e => e[1]).join(', ')
+        }
+        
+        return val;
+      },
       sortable: false,
     },
     {
