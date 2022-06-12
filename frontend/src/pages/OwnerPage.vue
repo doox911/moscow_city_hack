@@ -36,43 +36,67 @@
     <q-separator />
 
   </q-page>
-  <CounterpartyDialog v-model="dialog" :counterparty="selectCounterparty"/>
+  <CounterpartyDialog 
+    v-model="dialog" 
+    v-model:counterparty="selectCounterparty"
+  />
 </template>
 
 <script setup lang="ts">
+  import { ref, watch, computed} from 'vue';
+  
+  /**
+   * Api
+   */
+  import { apiCounterparty, Counterparty } from 'Src/api/counterparty';
+  
+  /**
+   * Common
+   */
+  import { getDefaultCounterparty } from 'Src/common';
+
+  /**
+   * Components
+   */
+  import CounterpartyDialog from 'Components/counterparty/CounterpartyDialog.vue';
+
   /**
    * Hooks
    */
   import { useUserPageGuard } from 'Src/hooks';
-  import { apiCounterparty } from '../api/counterparty';
 
+  /**
+   * Store
+   */
   import { storeToRefs } from 'pinia'
   import { userStore } from 'Src/stores';
-  import { ref } from 'vue';
-  import CounterpartyDialog from 'Components/counterparty/CounterpartyDialog.vue';
 
   useUserPageGuard();
 
   const { user } = storeToRefs(userStore());
+
+  const dialog = ref(false);
+
+  const counterparty = ref<Counterparty>(getDefaultCounterparty());
+
+  const selectCounterparty = ref<Counterparty|undefined>();
+
+  watch(user, async (u) => {
+    if (u.id > 0) {
+      const response = await apiCounterparty(u.id);
+
+      if(response) {
+        counterparty.value = response;
+      }
+    }
+  });
   
-  const counterparty = ref({});
-
-  let dialog = ref(false);
-
-  async function load(company: number)
-  {
-    let response = await apiCounterparty(company);
-    if(response)
-      counterparty.value = response;
-  }
-
-  let selectCounterparty = ref({});
-  function openEditDialog()
-  {
+  function openEditDialog() {
     dialog.value = true;
     selectCounterparty.value = counterparty.value;
   }
 
   if(user.value.company)
     load(user.value.company);
+
 </script>
