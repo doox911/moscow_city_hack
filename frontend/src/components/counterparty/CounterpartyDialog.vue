@@ -58,11 +58,14 @@
         label="Сайт"
       />
     </div>
+    <div v-if="isAdmin" style = "width: 100%">
+      <SelectUser v-model="selectedUser"/>
+    </div>
   </DialogCommonWrapper>
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue';
+  import { computed, ref, watch } from 'vue';
 
   /**
    * Api
@@ -73,6 +76,13 @@
    * Components
    */
   import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue';
+  import SelectUser from 'Components/user/SelectUser.vue';
+
+  /**
+   * Store
+   */
+  import { User, userStore } from '../../stores';
+  import { Roles } from '../../constants';
 
   const emit = defineEmits([
     'onCancel',
@@ -125,6 +135,15 @@
       ? 'Изменить предприятие'
       : 'Создать предприятие';
   });
+
+  const selectedUser = ref<User | undefined>();
+  watch(selectedUser, (user?: User) => {
+    if(user)
+      counterpartyData.value.user_id = user.id;
+  });
+
+  const { user } = userStore();
+  const isAdmin = ref(user.role == Roles.Admin);
 
   const cancel = () => {
     dialog.value = false;
