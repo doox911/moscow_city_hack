@@ -29,6 +29,7 @@
               v-for="(counterparty, index) in resultSearch.companies"
               :key="index"
               :counterparty="counterparty"
+              @on-open-map="openMapDialog"
             />
           </div>
         </div>
@@ -69,6 +70,12 @@
       </div>
     </div>
   </div>
+  <MapDialog
+    v-model="mapDialog"
+    v-model:coordinate="coordinate"
+    :successButton="false"
+    :resetButton="false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -80,6 +87,7 @@
   import SelectOkved from 'Components/SelectOkved.vue';
   import GoodElement from '../components/good/GoodElement.vue';
   import CounterpartyElement from '../components/counterparty/CounterpartyElement.vue';
+  import MapDialog from '../components/counterparty/MapDialog.vue';
 
   /**
    * Hooks
@@ -98,6 +106,10 @@
   const loading = ref(false);
 
   const isEmpty = ref(false);
+
+  const mapDialog = ref(false);
+
+  const coordinate = ref<Coordinate>({ lat: 55.751244, lon: 37.618423 });
 
   const selectedOKVED = ref({
     code: '',
@@ -130,6 +142,16 @@
     isEmpty.value = !companies.length && !goods.length && !services.length;
 
     loading.value = false;
+  }
+
+  function openMapDialog(value: Counterparty) {
+    mapDialog.value = true;
+
+    coordinate.value = {
+      lat: value.latitude || 55.751244,
+      lon: value.longitude || 37.618423,
+      title: value.name,
+    };
   }
 </script>
 

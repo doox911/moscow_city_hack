@@ -36,7 +36,17 @@
     </div>
     <div class="content">
       <div class="title">Название:</div>
-      <div>{{ counterparty.name }}</div>
+      <div>
+        {{ counterparty.name }}
+        <IconBtn
+          v-if="counterparty.coordinate"
+          color="positive"
+          icon="public"
+          tooltip-text="Посмотреть на карте"
+          hover-color="primary"
+          @click="emit('onOpenMap', { ...counterparty.coordinate })"
+        />
+      </div>
       <div class="title">ИНН:</div>
       <div>{{ counterparty.inn }}</div>
       <div class="title">ОГРН:</div>
@@ -61,6 +71,15 @@
    * Api
    */
   import { Counterparty } from 'Src/api/counterparty';
+
+  /**
+   * Components
+   */
+  import IconBtn from 'Components/common/IconBtn.vue';
+
+  const emit = defineEmits([
+    'onOpenMap',
+  ]);
 
   withDefaults(
     defineProps<{
