@@ -24,7 +24,7 @@
             >
               <q-img
                 class="rounded-borders col-12 full-height"
-                :src="`data:image/png;base64,${encodedImage}`"
+                :src="`${encodedImage}`"
               />
             </div>
           </q-carousel-slide>
@@ -65,7 +65,7 @@
 
 <style scoped lang="scss">
   .good-block {
-    min-width: 220px;
+    width: 250px;
     color: #000;
     background-color: #fff;
     border-radius: 4px;
