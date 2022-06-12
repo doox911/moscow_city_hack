@@ -14,21 +14,20 @@
       <p class="q-my-xs"><b class="q-pr-sm">Роль:</b>{{ user_role }}</p>
       <p class="q-my-xs"><b class="q-pr-sm">Создан:</b>{{ user_created }}</p>
       <p class="q-my-xs"><b class="q-pr-sm">Обновлён:</b>{{ user_updated }}</p>
-
-      <q-btn
-        color="primary float-right"
-        label="Изменить"
-        style="margin-top: 10px"
-        type="reset"
-        @click="openDialog"
-      />
     </div>
   </div>
-  <UserDialog v-model="dialog" :user="userData"/>
+  <UserDialog 
+    v-model="dialog"
+    v-model:user="u"
+    :loading="loading"
+    :use-reset="false"
+    @on-success="onSuccess"
+  />
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from 'vue';
+  import { computed, ref, watch } from 'vue';
+  import AuthService from 'src/services/auth.service';
 
   /**
    * Common
@@ -36,12 +35,20 @@
   import { getRoleDescription, setDateAndTimeToDateTimeComponent } from 'Src/common';
 
   /**
+   * Components
+   */
+  import UserDialog from './UserDialog.vue';
+
+  /**
    * Store
    */
   import { storeToRefs } from 'pinia'
   import { userStore } from 'Src/stores';
 
-  import UserDialog from './UserDialog.vue';
+  /**
+   * Types
+   */  
+  import type { User } from 'Src/stores';
 
   const { user } = storeToRefs(userStore());
 
@@ -51,15 +58,23 @@
 
   const user_updated = computed(() => setDateAndTimeToDateTimeComponent(user.value.updated_at));
 
-  let dialog = ref(false);
-  let userData = ref({})
+  const dialog = ref(false);
 
-  function openDialog()
-  {
-    dialog.value = true;
-    userData.value = user.value;
+  const loading = ref(false);
+
+  const u = ref<User>({...user.value});
+  
+  watch(user, (_u: User) => {
+    u.value = { ..._u };
+  });
+
+  async function onSuccess() {
+    loading.value = true;
+
+    await AuthService.updateUserInfo();
+
+    loading.value = false;
   }
-
 </script>
 
 <style lang="scss" scoped>

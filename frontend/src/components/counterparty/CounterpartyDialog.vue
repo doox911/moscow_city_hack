@@ -138,6 +138,7 @@
   });
 
   const selectedUser = ref<User | undefined>();
+
   watch(selectedUser, (user?: User) => {
     if(user)
       counterpartyData.value.user_id = user.id;
@@ -148,6 +149,7 @@
   }, { deep: true})
 
   const { user } = userStore();
+  
   const isAdmin = ref(user.role == Roles.Admin);
 
   const cancel = () => {
