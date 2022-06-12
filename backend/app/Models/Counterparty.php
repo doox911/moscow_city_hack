@@ -33,6 +33,11 @@ class Counterparty extends Model implements HasMedia {
     'email',
     'phone',
     'site',
+
+    'longitude_center',
+    'latitude_center',
+    'longitude',
+    'latitude',
   ];
 
   /**

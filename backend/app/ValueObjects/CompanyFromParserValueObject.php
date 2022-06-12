@@ -29,6 +29,11 @@ use JsonException;
  * @property string|null $inn
  * @property string|null $kpp
  *
+ * @property float|null $longitude_center
+ * @property float|null $latitude_center
+ * @property float|null $longitude
+ * @property float|null $latitude
+ *
  * @property array $photos_urls
  * @property array $keywords_for_search
  *
@@ -86,7 +91,6 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
    */
   protected ?string $legal_address = null;
 
-
   /**
    * @description Количество сотрудников
    * @var int|null
@@ -140,6 +144,30 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
    * @var string|null
    */
   protected ?string $logo_url = null;
+
+  /**
+   * @description Долгота (для центрирования карты)
+   * @var float|null
+   */
+  protected ?float $longitude_center = null;
+
+  /**
+   * @description Широта (для центрирования карты)
+   * @var float|null
+   */
+  protected ?float $latitude_center = null;
+
+  /**
+   * @description Долгота (для точки на карте)
+   * @var float|null
+   */
+  protected ?float $longitude = null;
+
+  /**
+   * @description Широта (для точки на карте)
+   * @var float|null
+   */
+  protected ?float $latitude = null;
 
   /**
    * @description Массив URL фотографий компании

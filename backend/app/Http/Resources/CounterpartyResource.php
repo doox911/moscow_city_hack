@@ -41,6 +41,11 @@ class CounterpartyResource extends JsonResource {
       'data_source' => $data_source, // источник данных (например: адрес сайта, Excel файл)
       'base64_logo' => $counterparty->getPNGBase64Logo(), // логотип компании
       'base64_photos' => $counterparty->getPNGBase64Photos(), // галерея фотографий компании
+
+      'longitude_center' => $counterparty->longitude_center,
+      'latitude_center' => $counterparty->latitude_center,
+      'longitude' => $counterparty->longitude,
+      'latitude' => $counterparty->latitude,
     ];
   }
 }

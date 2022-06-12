@@ -4,7 +4,6 @@ namespace App\Parsers;
 
 use App\Abstractions\AbstractParser;
 use App\Exceptions\ValidationException;
-use App\Models\Counterparty;
 use App\ValueObjects\CompanyFromParserValueObject;
 use Carbon\Carbon;
 use DiDom\Document;
@@ -12,10 +11,7 @@ use DiDom\Exceptions\InvalidSelectorException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use JsonException;
-use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
-use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 use Throwable;
 
 /**
@@ -43,7 +39,7 @@ class ProductCenterParser extends AbstractParser {
    * @throws GuzzleException
    */
   public function parse(string $query = ''): Collection {
-    for ($page = 1; $page <= 15; $page++) {
+    for ($page = 1; $page <= 40; $page++) {
       $url = self::$base_url . str_replace('#query#', $query, self::$search_url);
       $url = str_replace('#page_number#', $page, $url);
 
@@ -70,7 +66,7 @@ class ProductCenterParser extends AbstractParser {
 
           $this->parsePage($search_page_document);
         } catch (Throwable $e) {
-          dd($page, $response_json);
+          //dd($page, $response_json);
         }
       }
     }
@@ -97,7 +93,28 @@ class ProductCenterParser extends AbstractParser {
 
       // переходим на страницу производителя
       $res = $this->client->request('GET', self::$base_url . $producer_page_path);
-      $response_html_producer_page = (string)$res->getBody();
+      $response_html_producer_page = $res->getBody()->getContents();
+
+      // получаем координаты точки на карте
+      $longitude_center = null;
+      $latitude_center = null;
+
+      preg_match('/center: \[(.*?), (.*?)\]/ui', $response_html_producer_page,$found);
+      if (count($found)) {
+        [, $longitude_center, $latitude_center] = $found;
+        $longitude_center = (float)$longitude_center;
+        $latitude_center = (float)$latitude_center;
+      }
+
+      $longitude = null;
+      $latitude = null;
+
+      preg_match('/coordinates: \[(.*?), (.*?)\]/ui', $response_html_producer_page,$found);
+      if (count($found)) {
+        [, $longitude, $latitude] = $found;
+        $longitude = (float)$longitude;
+        $latitude = (float)$latitude;
+      }
 
       $producer_page = new Document($response_html_producer_page);
 
@@ -229,10 +246,15 @@ class ProductCenterParser extends AbstractParser {
         'orgn' => $orgn,
         'inn' => $inn,
         'kpp' => $kpp,
+
+        'longitude_center' => $longitude_center,
+        'latitude_center' => $latitude_center,
+        'longitude' => $longitude,
+        'latitude' => $latitude,
       ]);
 
 
-      // сохранение логотипа
+      // сохранение логотипа и фотографий галереи
       // $counterparty = Counterparty::where('id', 100)->first();
       // $counterparty->saveLogoFromUrl($producer_vo->logo_url);
       // $counterparty->savePhotosFromUrlArray($producer_vo->photos_urls);
