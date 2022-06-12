@@ -23,13 +23,15 @@ class ProductCenterParser extends AbstractParser {
   protected static string $base_url = 'https://productcenter.ru';
   protected static string $search_url = '/search/r-moskovskaia-obl-191?q=#query#&filter=producers&ajax=1&page=#page_number#';
   protected Collection $producers;
+  private int $limit_rows;
 
   /**
    * Инициализация парсера
    */
-  public function __construct() {
+  public function __construct(int $limit_rows = 0) {
     parent::__construct();
 
+    $this->limit_rows = $limit_rows;
     $this->producers = collect();
   }
 
@@ -40,6 +42,10 @@ class ProductCenterParser extends AbstractParser {
    */
   public function parse(string $query = ''): Collection {
     for ($page = 1; $page <= 40; $page++) {
+      if ($this->limit_rows > 0 && $this->producers->count() === $this->limit_rows) {
+        break;
+      }
+
       $url = self::$base_url . str_replace('#query#', $query, self::$search_url);
       $url = str_replace('#page_number#', $page, $url);
 
@@ -79,13 +85,18 @@ class ProductCenterParser extends AbstractParser {
    *
    * @param Document $search_page_document
    * @return void
-   * @throws GuzzleException
-   * @throws InvalidSelectorException
-   * @throws ValidationException
-   * @throws JsonException
+   * @throws \App\Exceptions\ValidationException
+   * @throws \DiDom\Exceptions\InvalidSelectorException
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws \JsonException
    */
   private function parsePage(Document $search_page_document): void {
+    $counter = 0;
     foreach ($search_page_document->find('div.card_item') as $result_text) {
+      // для ускорения запросов можно не вытаскивать все, а ограничиваться каким-то лимитом
+      if ($this->limit_rows > 0 && ++$counter === $this->limit_rows) {
+        break;
+      }
       $producer_id = $result_text->first('.to_favorites')->attr('data-item-id');
 
       // TODO: проверить, возможно это изображение брать надёжнее чем из галереи компании
