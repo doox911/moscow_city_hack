@@ -27,7 +27,7 @@ class SearchController extends Controller {
       ->orWhere('brand', 'like', "%$query%")
       ->get();
 
-    $companies = $companies->merge($search_goods->flatMap->companies);
+    $companies = $companies->merge($search_goods->flatMap->activities->map->counterparty);
     $goods = $goods->merge($search_goods);
 
     // затем разбиваем по словам и ищем для каждого слова
@@ -39,7 +39,7 @@ class SearchController extends Controller {
           ->orWhere('brand', 'like', "%$word%")
           ->get();
 
-        $companies = $companies->merge($search_goods->flatMap->companies);
+        $companies = $companies->merge($search_goods->flatMap->activities->map->counterparty);
         $goods = $goods->merge($search_goods);
       }
     }

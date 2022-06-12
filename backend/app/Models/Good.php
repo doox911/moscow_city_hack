@@ -58,15 +58,6 @@ class Good extends Model implements HasMedia {
   }
 
   /**
-   * Компании которые производят товар
-   *
-   * @return HasManyThrough
-   */
-  public function companies(): HasManyThrough {
-    return $this->hasManyThrough(Counterparty::class, Activity::class);
-  }
-
-  /**
    * @return string
    */
   public function getDirectory(): string {
