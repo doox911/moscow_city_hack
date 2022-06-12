@@ -2,8 +2,8 @@
   <h4 class="non-selected q-ma-none text-grey-9">
     {{ is_parsing ? 'Парсинг данных' : 'Запуск парсинга' }}
   </h4>
-  <div class="row">
-    <div class="cols-auto">
+  <div class="row" style="display:grid; grid-template-columns: 1fr auto auto;">
+    <div>
       <q-input
         v-model="search"
         :loading="loading"
@@ -15,7 +15,7 @@
         </template>
       </q-input>
     </div>
-    <div class="cols-auto">
+    <div>
       <IconBtn
         :disabled="disabled || !search.length"
         :loading="is_parsing || loading"
@@ -26,7 +26,7 @@
         @click="searching"
       />
     </div>
-    <div class="cols-auto">
+    <div>
       <IconBtn
         :disabled="disabled || !is_parsing"
         :loading="is_parsing || loading"
