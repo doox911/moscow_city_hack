@@ -18,7 +18,9 @@
         </div>
       </div>
     </div>
+    
     <q-separator />
+
     <div class="row">
       <div v-for="service in servicesRef">
         <q-chip icon="home_repair_service" color="deep-orange" text-color="white">{{ service.name }}</q-chip>

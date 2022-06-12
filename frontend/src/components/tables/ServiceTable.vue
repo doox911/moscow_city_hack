@@ -206,8 +206,8 @@
       selected?: Service[];
       service?: Service[];
       rowsPerPage?: number;
-      isAttach: boolean;
-      isSearch: boolean;
+      isAttach?: boolean;
+      isSearch?: boolean;
     }>(),
     {
       loading: false,
