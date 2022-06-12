@@ -47,7 +47,7 @@ export async function apiGoods(config?: AxiosRequestConfig) {
     pages_count: 0,
     total_rows: 0,
     goods: []
-  };;
+  };
   await requestWrapper({
     success: async () => {
       data = (await new ApiRequest(config).get('/api/goods') as GoodsResponce).content;
