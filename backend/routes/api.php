@@ -8,6 +8,7 @@ use App\Http\Controllers\ParseController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TaskController;
+use App\Http\Resources\CounterpartyResource;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -83,7 +84,14 @@ Route::middleware('auth:sanctum')->group(function () {
   });
 
   Route::get('check_parse_status', function () {
-    return Cache::get('parsing_' . request()->user()->id);
+    return response()->json([
+      'content' => [
+        'status' => (bool)Cache::get('parsing_' . request()->user()->id),
+      ],
+      'messages' => [
+        'Статус задания на сбор информации получен'
+      ]
+    ]);
   })->middleware('role:government|admin');
 
   Route::post('/register', [AuthController::class, 'register'])->middleware('role:admin');
