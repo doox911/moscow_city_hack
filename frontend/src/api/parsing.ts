@@ -19,7 +19,6 @@ import type { DefaultApiResponse } from 'Src/types';
  */
 export async function apiRunParsing(
   str: string,
-  timeinterval_id: ReturnType<typeof setInterval> | null,
   config?: AxiosRequestConfig,
 ) {
   await requestWrapper({
@@ -27,12 +26,7 @@ export async function apiRunParsing(
       await new ApiRequest(config).post(`api/parse/${str}`);
     },
     error_message: 'Ошибка запуска парсинга',
-    success_message: 'Парсинг успешно запущен',
-    error: () => {
-      if (timeinterval_id) {
-        clearInterval(timeinterval_id);
-      }
-    },
+    success_message: 'Парсинг успешно запущен'
   });
 }
 

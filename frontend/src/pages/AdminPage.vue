@@ -2,8 +2,7 @@
   <q-page class="q-ma-md justify-end">
     <div>
       <div class="row q-mb-md">
-        <q-space />
-        <div>
+        <div class="col-12">
           <Parsing />
         </div>
       </div>
