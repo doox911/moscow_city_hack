@@ -134,6 +134,14 @@ class ParseController extends Controller {
               'properties' => (object)$good_vo->properties,
             ]);
 
+            Activity::updateOrCreate([
+              'counterparty_id' => $counterparty->id,
+              'activity_id' => $good->id,
+              'activity_type' => Good::class,
+            ], [
+              'is_active' => true,
+            ]);
+
             $good->savePhotosFromUrlArray($good_vo->photos_urls);
           }
         }
