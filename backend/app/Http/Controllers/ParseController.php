@@ -20,7 +20,7 @@ class ParseController extends Controller {
   private array $parsers;
 
   /**
-   * Конструктор контроллера счета
+   * Конструктор контроллера
    */
   public function __construct() {
     $parsers = [];
@@ -38,7 +38,9 @@ class ParseController extends Controller {
    * @return void
    */
   public function parse(string $query) {
+    // сохраняем пометку в кеш о том что уже производится парсинг от имени текущего пользователя
     Cache::forever('parsing_' . request()->user()->id, true);
+
     $rows = [];
     $inns = [];
     $names = [];
@@ -49,6 +51,7 @@ class ParseController extends Controller {
         /**
          * @var CompanyFromParserValueObject $company
          */
+
         if (empty($company->inn)) {
           $fns_company = $fns->search($company->name);
           $inns[] = $fns_company->{'ИНН'};
@@ -128,7 +131,9 @@ class ParseController extends Controller {
     //
     // }
 
+    // после завершения парсинга убираем флаг
     Cache::forget('parsing_' . request()->user()->id);
+
     dd($inns);
 
   }

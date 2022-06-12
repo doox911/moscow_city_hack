@@ -44,6 +44,8 @@ class Counterparty extends Model implements HasMedia {
   ];
 
   /**
+   * Все виды товаров и услуг которые предоставляет производитель
+   *
    * @return HasMany
    */
   public function activities(): HasMany {
@@ -61,7 +63,7 @@ class Counterparty extends Model implements HasMedia {
   }
 
   /**
-   * Деятельность компании
+   * Услуги компании
    *
    * @return HasMany
    */
