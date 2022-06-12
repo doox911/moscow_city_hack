@@ -5,7 +5,7 @@ import { requestWrapper } from '../common/wrappers';
 /**
  * Types
  */
-import type { PaginationCount, LaravelPagination } from 'Src/types';
+import type { PaginationCount } from 'Src/types';
 import { Good } from './good';
 import { getDefaultCounterparty } from '../common';
 import { Service } from './service';
@@ -25,6 +25,29 @@ export type Counterparty = {
   services?: Service[],
   created_at?: string;
   updated_at?: string;
+  
+  /**
+   * Ссылка на источник данных
+   */
+  data_source_item_url: string | null;
+  description?: string | null;
+  legal_address?: string | null;
+
+  /**
+   * Кол-во сотрудников
+   */
+  number_of_employees?: number | null;
+  
+  /**
+   * Уставной капитал, число с плавающей 
+   */
+  authorized_capital?: string | null;
+  
+  /**
+   * Дата регистрации в формате 2022-06-10
+   */
+  registration_date?: string | null;
+  keywords_for_search: {[key: string]: string};
 };
 
 export type CounterpartiesResponce = {

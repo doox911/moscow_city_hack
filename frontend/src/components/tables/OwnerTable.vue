@@ -196,6 +196,64 @@
     },
     {
       align: 'center',
+      field: 'data_source_item_url',
+      label: 'Источник',
+      name: 'data_source_item_url',
+      sortable: false,
+    },
+    {
+      align: 'center',
+      field: 'description',
+      label: 'Описание',
+      name: 'description',
+      sortable: false,
+    },
+    {
+      align: 'center',
+      field: 'legal_address',
+      label: 'Юридический адрес',
+      name: 'legal_address',
+      sortable: false,
+    },
+    {
+      align: 'center',
+      field: 'number_of_employees',
+      label: 'Количество сотрудников',
+      name: 'number_of_employees',
+      sortable: false,
+    },
+    {
+      align: 'center',
+      field: 'authorized_capital',
+      label: 'Уставной капитал',
+      name: 'authorized_capital',
+      sortable: false,
+    },
+    {
+      align: 'center',
+      field: 'registration_date',
+      label: 'Дата регистрации',
+      name: 'registration_date',
+      format: (val) => {
+        if (val) {
+          const {y, m, d} = val.split('')[0]
+
+          return `${d}.${m}.${y}`
+        }
+        
+        return val;
+      },
+      sortable: false,
+    },
+    {
+      align: 'center',
+      field: 'keywords_for_search',
+      label: 'Уставной капитал',
+      name: 'keywords_for_search',
+      sortable: false,
+    },
+    {
+      align: 'center',
       field: '',
       label: 'Управление',
       name: 'actions',
