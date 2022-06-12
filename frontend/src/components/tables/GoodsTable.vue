@@ -253,7 +253,6 @@
 
   function appendNewGood() {
     dialog.value = true;
-    console.log(GoodDialog)
     selectGood.value = getDefaultGood();
   }
   async function onCounterpartyAttachGoods()

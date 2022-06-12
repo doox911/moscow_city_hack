@@ -1,8 +1,8 @@
 <template>
   <q-page class="q-mx-md">
     <div class="row" style="margin-bottom:10px;">
-      <div class="row">
-        <div class="q-px-sm non-selectable text-weight-regular text-grey-9">
+      <div class="row col-12">
+        <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
           <p class="text-h5">Информация о компании</p>
           <q-separator />
           <p class="q-my-xs"><b class="q-pr-sm">Название:</b>{{ counterparty.name }}</p>
@@ -18,19 +18,24 @@
         </div>
       </div>
     </div>
-    
-    <q-separator />
-
-    <div class="row">
-      <div v-for="service in servicesRef">
-        <q-chip icon="home_repair_service" color="deep-orange" text-color="white">{{ service.name }}</q-chip>
-      </div>
-    </div>
-    <q-separator />
 
     <div class="row" style="margin-bottom:10px;">
-      <div class="row">
-        <div class="q-px-sm non-selectable text-weight-regular text-grey-9">
+      <div class="row col-12">
+        <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
+          <p class="text-h5">Услуги</p>
+          <q-separator />
+          <div class="row">
+            <div v-for="service in servicesRef">
+              <q-chip icon="home_repair_service" color="deep-orange" text-color="white">{{ service.name }}</q-chip>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-bottom:10px;">
+      <div class="row col-12">
+        <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
           <p class="text-h5">Товары</p>
           <q-separator />
           <div class="row" style = "gap:10px; padding:10px;">
@@ -47,8 +52,6 @@
         </div>
       </div>
     </div>
-  
-    <q-separator />
   </q-page>
 </template>
 
@@ -105,8 +108,6 @@
     {
       const { goods, services } = await apiCounterparty(user.value.company?.id);
 
-      console.log(goods)
-      console.log(services)
       goodsRef.value = goods;
       servicesRef.value = services;
     }
