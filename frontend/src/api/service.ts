@@ -14,35 +14,37 @@ export type Service = {
   code: string;
 };
 
-export type ServiceResponce = {
+export type ServiceResponse = {
   content: {
-    service: Service
-  }
+    service: Service;
+  };
   message: string;
-}
+};
 
-export type ServicesResponce = {
+export type ServicesResponse = {
   content: PaginationCount & {
-    services: Service[],
-  },
+    services: Service[];
+  };
   message: string;
-}
+};
 
 /**
  * Получение списка услуг
  */
 export async function apiServices(config?: AxiosRequestConfig) {
   let data: PaginationCount & {
-    services: Service[],
+    services: Service[];
   } = {
     pages_count: 0,
     total_rows: 0,
-    services: []
-  };;
+    services: [],
+  };
   await requestWrapper({
     success: async () => {
-      data = (await new ApiRequest(config).get('/api/services') as ServicesResponce).content;
-    }
+      data = (
+        (await new ApiRequest(config).get('/api/services')) as ServicesResponse
+      ).content;
+    },
   });
   return data;
 }

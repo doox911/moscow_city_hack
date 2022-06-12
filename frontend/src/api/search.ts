@@ -12,16 +12,48 @@ import { requestWrapper } from 'Src/common/wrappers';
  * Types
  */
 import type { AxiosRequestConfig } from 'axios';
-import type { DefaultApiResponse } from 'Src/types';
+import { Counterparty } from './counterparty';
+import { Good } from './good';
+
+export type Service = {
+  id?: number;
+  name: string;
+  additional_info: string;
+  code: string;
+};
+
+export type AllEntity = {
+  companies: Counterparty[];
+  goods: Good[];
+  services: Service[];
+};
+export type SearchResponse = {
+  content: AllEntity;
+  message: string;
+};
 
 /**
  * Поиск
  */
-export async function apiGlobalSearch(str: string, config?: AxiosRequestConfig) {
+export async function apiGlobalSearch(
+  str: string,
+  config?: AxiosRequestConfig,
+) {
+  let data: AllEntity = {
+    companies: [],
+    goods: [],
+    services: [],
+  };
   await requestWrapper({
     success: async () => {
-      await new ApiRequest(config).post(`api/search/${str}`);
+      data = (
+        (await new ApiRequest(config).post(
+          `api/search/${str}`,
+        )) as SearchResponse
+      ).content;
     },
     error_message: 'Ошибка запуска поиска',
   });
+
+  return data;
 }

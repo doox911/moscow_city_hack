@@ -1,4 +1,4 @@
-declare var ymaps: any;
+declare let ymaps: any;
 
 class YandexMap {
   private mapElement: HTMLElement = document.createElement('div');
@@ -8,43 +8,47 @@ class YandexMap {
     ymaps.ready(() => this.onMapInit());
     document.body.appendChild(this.mapElement);
   }
-  show(lat: number, lon: number, title: string = ''): HTMLElement {
+  show(lat: number, lon: number, title = ''): HTMLElement {
     (this.mapElement.style as any).display = null;
     this.map.setCenter([lat, lon]);
 
-    this.markers.forEach(marker => {
-      this.map
-        .geoObjects
-        .remove(marker);
+    this.markers.forEach((marker) => {
+      this.map.geoObjects.remove(marker);
     });
     if (title) {
-      const marker = new ymaps.Placemark([lat, lon], {
-        iconCaption: title
-      }, {
-        preset: 'islands#greenDotIconWithCaption'
-      })
-      this.map
-        .geoObjects
-        .add(marker);
+      const marker = new ymaps.Placemark(
+        [lat, lon],
+        {
+          iconCaption: title,
+        },
+        {
+          preset: 'islands#greenDotIconWithCaption',
+        },
+      );
+      this.map.geoObjects.add(marker);
       this.markers.push(marker);
     }
     return this.mapElement;
   }
   hide() {
-    this.mapElement.style.display = "none";
+    this.mapElement.style.display = 'none';
   }
 
   private onMapInit() {
-    this.mapElement.style.width = "560px";
-    this.mapElement.style.height = "460px";
-    this.mapElement.style.position = "relative";
-    this.mapElement.style.display = "none";
-    this.map = new ymaps.Map(this.mapElement, {
-      center: [55.76, 37.64],
-      zoom: 16
-    }, {
-      searchControlProvider: 'yandex#search'
-    });
+    this.mapElement.style.width = '560px';
+    this.mapElement.style.height = '460px';
+    this.mapElement.style.position = 'relative';
+    this.mapElement.style.display = 'none';
+    this.map = new ymaps.Map(
+      this.mapElement,
+      {
+        center: [55.76, 37.64],
+        zoom: 16,
+      },
+      {
+        searchControlProvider: 'yandex#search',
+      },
+    );
   }
 }
 

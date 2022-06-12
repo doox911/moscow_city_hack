@@ -27,12 +27,11 @@ export type User = {
 };
 
 export const userStore = defineStore('user', () => {
-
   const user = ref<User>(getDefaultUser());
 
   async function setUser(u: User) {
     user.value = u;
-    user.value.role = user.value.role || Roles.Guest
+    user.value.role = user.value.role || Roles.Guest;
   }
 
   function removeUser() {

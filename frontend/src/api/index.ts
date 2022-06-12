@@ -18,7 +18,7 @@ export type OKVED = {
   code: string;
   name: string;
   additional_info: string;
-}
+};
 
 /**
  * Получить список ОКВЭД
@@ -28,7 +28,11 @@ export async function apiOKVED(config?: AxiosRequestConfig) {
 
   await requestWrapper({
     success: async () => {
-      list = (await new ApiRequest(config).get('api/okved') as DefaultApiResponse<{ okved: OKVED[] }>).content.okved;
+      list = (
+        (await new ApiRequest(config).get('api/okved')) as DefaultApiResponse<{
+          okved: OKVED[];
+        }>
+      ).content.okved;
     },
     error_message: 'Ошибка загрузка ОКВЭД',
   });

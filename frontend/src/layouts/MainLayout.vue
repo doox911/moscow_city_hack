@@ -88,6 +88,7 @@
    * Store
    */
   import { userStore, menuStore } from '../stores';
+  import { okvedStore } from '../stores/okvedStore';
 
   /**
    * Services
@@ -126,6 +127,9 @@
 
     const { loadAllUser } = userStore();
     await loadAllUser();
+
+    const { loadOKVED } = okvedStore();
+    await loadOKVED();
   }
   getMenuList();
 </script>
