@@ -84,7 +84,7 @@ export function paginationLabel(
  */
 export function getDefaultCounterparty(): Counterparty {
   return {
-    adress: '',
+    address: '',
     authorized_capital: null,
     data_source_item_url: null,
     description: null,
