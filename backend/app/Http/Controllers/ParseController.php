@@ -52,6 +52,7 @@ class ParseController extends Controller {
         if (empty($company_vo->inn)) {
           continue;
           // dd($company_vo);
+          // todo по наименованию можно в ФНС найти inn
           $fns_company = $fns->search($company_vo->name);
 
           $inns[] = $fns_company->{'ИНН'};
@@ -131,10 +132,29 @@ class ParseController extends Controller {
 
     // dd($inns);
     // $additional_companies_info = $fns->searchGroupInfo($inns);
-
-    // dd($additional_companies_info);
-    // foreach ($additional_companies_info as $item) {
     //
+    // foreach ($additional_companies_info as $company) {
+    //   Counterparty::updateOrCreate([
+    //     'inn' => $founded_inn,
+    //   ], [
+    //     'name' => $company->{"НаимСокрЮЛ"} ?? "",
+    //     'full_name' => $company->{"НаимПолнЮЛ"} ?? $company->{"ФИОПолн"},
+    //     'ogrn' => $company->{"ОГРН"} ?? $company->{"ОГРНИП"},
+    //     'address' => $company->actual_address,
+    //     'legal_address' => $company->legal_address,
+    //     'number_of_employees' => $company->number_of_employees,
+    //     'authorized_capital' => $company->authorized_capital,
+    //     'registration_date' => $company->registration_date,
+    //     'keywords_for_search' => (object)$company->keywords_for_search,
+    //     'email' => $company->email,
+    //     'phone' => $company->phone,
+    //     'site' => $company->site,
+    //
+    //     'longitude_center' => $company->longitude_center,
+    //     'latitude_center' => $company->latitude_center,
+    //     'longitude' => $company->longitude,
+    //     'latitude' => $company->latitude,
+    //   ]);
     // }
 
     // после завершения парсинга убираем флаг
