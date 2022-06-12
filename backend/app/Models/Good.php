@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use JsonException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -52,7 +53,7 @@ class Good extends Model implements HasMedia {
   /**
    * Компании которые производят товар
    *
-   * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+   * @return HasManyThrough
    */
   public function companies(): HasManyThrough {
     return $this->hasManyThrough(Counterparty::class, Activity::class);
@@ -63,5 +64,37 @@ class Good extends Model implements HasMedia {
    */
   public function getDirectory(): string {
     return 'good/' . $this->id . '/';
+  }
+
+  /**
+   * @param $value
+   * @return object
+   */
+  public function getKeywordsForSearchAttribute($value): object {
+    return (object)json_decode($value);
+  }
+
+  /**
+   * @param object $value
+   * @throws JsonException
+   */
+  public function setKeywordsForSearchAttribute(object $value): void {
+    $this->attributes['keywords_for_search'] = json_encode($value, JSON_THROW_ON_ERROR, 512);
+  }
+
+  /**
+   * @param $value
+   * @return object
+   */
+  public function getPropertiesAttribute($value): object {
+    return (object)json_decode($value);
+  }
+
+  /**
+   * @param object $value
+   * @throws JsonException
+   */
+  public function setPropertiesAttribute(object $value): void {
+    $this->attributes['properties'] = json_encode($value, JSON_THROW_ON_ERROR, 512);
   }
 }

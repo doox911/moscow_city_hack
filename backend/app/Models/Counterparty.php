@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
@@ -180,5 +181,21 @@ class Counterparty extends Model implements HasMedia {
     }
 
     return $images_base64;
+  }
+
+  /**
+   * @param $value
+   * @return object
+   */
+  public function getKeywordsForSearchAttribute($value): object {
+    return (object)json_decode($value);
+  }
+
+  /**
+   * @param object $value
+   * @throws JsonException
+   */
+  public function setKeywordsForSearchAttribute(object $value): void {
+    $this->attributes['keywords_for_search'] = json_encode($value, JSON_THROW_ON_ERROR, 512);
   }
 }

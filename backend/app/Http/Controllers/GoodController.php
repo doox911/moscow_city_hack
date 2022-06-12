@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class GoodController extends Controller {
+
   /**
    * Display a listing of the resource.
    *
@@ -19,7 +20,7 @@ class GoodController extends Controller {
    */
   public function index(): JsonResponse {
     $goods = Good::query();
-    $items_per_page = request()->input('item_per_page');
+    $items_per_page = request()->input('item_per_page') ?? 1;
 
     /**
      * [
@@ -35,6 +36,7 @@ class GoodController extends Controller {
       $filters = json_decode($filters, true);
     }
 
+    $filters['columns'] = $filters['columns'] ?? [];
     foreach ($filters['columns'] as $column => $sort_direction) {
       if (!empty($filters['search_string'])) {
         $goods->orWhere($column, 'like', "%{$filters['search_string']}%");
@@ -160,13 +162,11 @@ class GoodController extends Controller {
    * @return void
    */
   public static function massAttachToCounterparty(array $goods, Counterparty $counterparty): void {
-
     foreach ($goods as $good) {
       $good = Good::updateOrCreate([
         'name' => $good['name'],
         'brand' => $good['brand'],
       ]);
-
 
       Activity::updateOrCreate([
         'counterparty_id' => $counterparty->id,
@@ -175,6 +175,21 @@ class GoodController extends Controller {
         'is_active' => true,
       ]);
     }
+  }
+
+  /**
+   * @param Good $good
+   * @return JsonResponse
+   */
+  public function getGood(Good $good): JsonResponse {
+    return response()->json([
+      'content' => [
+        'good' => GoodResource::make($good),
+      ],
+      'messages' => [
+        'Информация о товаре получена'
+      ]
+    ]);
   }
 
   /**

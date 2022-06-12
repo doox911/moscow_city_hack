@@ -7,6 +7,7 @@ use App\Models\Okved;
 use Illuminate\Http\JsonResponse;
 
 class OkvedController extends Controller {
+
   /**
    * Display a listing of the resource.
    *
