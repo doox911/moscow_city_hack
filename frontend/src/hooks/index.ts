@@ -1,6 +1,11 @@
 import { onMounted, ref } from 'vue';
 
 /**
+ * Constants 
+ */
+import { Roles } from 'Src/constants';
+
+/**
  * Routers
  */
 import { useRoute, useRouter } from 'vue-router';
@@ -57,6 +62,20 @@ export function useUserProfilePageGuard() {
 
   onMounted(() => {
     if (route.name !== user.value.role + 'Profile') {
+      router.push({
+        name: user.value.role + 'Profile',
+      })
+    }
+  });
+}
+
+export function useUserSearchPageGuard() {
+  const router = useRouter();
+
+  const { user } = storeToRefs(userStore());
+
+  onMounted(() => {
+    if (user.value.role !== Roles.Government && user.value.role !== Roles.Admin) {
       router.push({
         name: user.value.role + 'Profile',
       })

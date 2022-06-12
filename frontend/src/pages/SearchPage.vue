@@ -1,13 +1,12 @@
-<template>Main page</template>
+<template>Search</template>
 
-<script lang="ts">
-  import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
 
-  export default defineComponent({
-    name: 'MainPage',
-    components: {},
-    setup() {
-      return {};
-    },
-  });
+  /**
+   * Hooks
+   */
+  import { useUserSearchPageGuard } from 'Src/hooks';
+
+  useUserSearchPageGuard();
+
 </script>
