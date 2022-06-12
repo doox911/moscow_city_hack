@@ -52,6 +52,7 @@ class ParseController extends Controller {
          * @var CompanyFromParserValueObject $company
          */
 
+        // ищем ИНН компании в ФНС по
         if (empty($company->inn)) {
           $fns_company = $fns->search($company->name);
           $inns[] = $fns_company->{'ИНН'};
