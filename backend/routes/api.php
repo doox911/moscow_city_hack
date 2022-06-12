@@ -4,6 +4,7 @@ use App\Http\Controllers\CounterpartyController;
 use App\Http\Controllers\GoodController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OkvedController;
+use App\Http\Controllers\ParseController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TaskController;
@@ -74,6 +75,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
   Route::prefix('search/{string}')->middleware('role:government')->group(function () {
     Route::post('', [SearchController::class, 'search']);
+  });
+
+  Route::prefix('parse/{string}')->middleware('role:government')->group(function () {
+    Route::post('', [ParseController::class, 'parse']);
   });
 
   Route::post('/register', [AuthController::class, 'register'])->middleware('role:admin');

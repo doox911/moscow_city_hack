@@ -8,7 +8,6 @@ use App\Models\DataSource;
 use App\ValueObjects\CompanyFromParserValueObject;
 use App\ValueObjects\CompanyGoodFromParserValueObject;
 use Carbon\Carbon;
-use Dflydev\DotAccessData\Data;
 use DiDom\Document;
 use DiDom\Exceptions\InvalidSelectorException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -45,8 +44,8 @@ class ProductCenterParser extends AbstractParser {
    * @throws GuzzleException
    */
   public function parse(string $query = ''): Collection {
-    for ($page = 1; $page <= 1; $page++) {
-      if ($this->limit_rows > 0 && $this->producers->count() === $this->limit_rows) {
+    for ($page = 1; $page <= 40; $page++) {
+      if ($this->limit_rows > 0 && $this->producers->count() >= $this->limit_rows) {
         break;
       }
 
@@ -95,10 +94,9 @@ class ProductCenterParser extends AbstractParser {
    * @throws JsonException
    */
   private function parsePage(Document $search_page_document): void {
-    $counter = 0;
     foreach ($search_page_document->find('div.card_item') as $result_text) {
       // для ускорения запросов можно не вытаскивать все, а ограничиваться каким-то лимитом
-      if ($this->limit_rows > 0 && ++$counter === $this->limit_rows) {
+      if ($this->limit_rows > 0 && $this->producers->count() >= $this->limit_rows) {
         break;
       }
       $producer_id = $result_text->first('.to_favorites')->attr('data-item-id');

@@ -17,6 +17,7 @@
     </div>
   </div>
   <UserDialog 
+    v-if="user.role === Roles.Admin"
     v-model="dialog"
     v-model:user="u"
     :loading="loading"
@@ -39,6 +40,11 @@
    */
   import UserDialog from './UserDialog.vue';
 
+  /**
+   * Constants
+   */
+  import { Roles } from 'Src/constants';
+  
   /**
    * Store
    */

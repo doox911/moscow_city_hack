@@ -17,14 +17,29 @@
       selection="multiple"
       @request="onRequest"
     >
-      <template v-slot:body-cell-actions="props">
+      <template v-slot:body-cell-is_moderated="props">
+        <q-td :props="props">
+          {{ props.row.is_moderated === 0 ? 'В процессе' : 'Рассмтрена' }}
+        </q-td>
+      </template>
+      <template v-slot:body-cell-is_accepted="props">
+        <q-td :props="props">
+          {{ props.row.is_moderated === 0 
+            ? 'На рассмотрении' 
+            : props.row.is_accepted
+              ? 'Принята' 
+              : 'Отклонена'
+         }}
+        </q-td>
+      </template>
+      <template v-if="user.role === Roles.Admin" v-slot:body-cell-actions="props">
         <q-td :props="props">
           <div class="col q-gutter justify-center">
             <IconBtn
               v-for="(button, index) of buttons"
               :key="index"
               :color="button.color"
-              :disabled="!props.row.is_moderated"
+              :disabled="props.row.is_moderated === 1"
               :icon="button.icon"
               :tooltip-text="button.tooltip"
               hover-color="primary"
@@ -49,6 +64,16 @@
    * Common
    */
   import { selectedRowsLabel, paginationLabel} from 'Src/common'
+
+  /**
+   * Constants
+   */
+  import { Roles } from 'Src/constants'
+
+  /**
+   * Store
+   */
+  import { userStore } from 'Stores/userStore';
 
   /**
    * Types
@@ -76,7 +101,7 @@
     {
       align: 'center',
       field: 'is_moderated',
-      label: 'Статус',
+      label: 'Прогресс рассмотрения',
       name: 'is_moderated',
       sortable: true,
     },
@@ -90,7 +115,7 @@
     {
       align: 'center',
       field: 'comment',
-      label: 'Статус',
+      label: 'Комментарий',
       name: 'comment',
       sortable: true,
     },
@@ -107,12 +132,12 @@
       color: 'red',
       event: 'onCancel',
       icon: 'cancel',
-      tooltip: 'Отмена',
+      tooltip: 'Отклонить',
     },
     {
       color: 'green',
       event: 'onApply',
-      icon: 'ok',
+      icon: 'done',
       tooltip: 'Принять',
     },
   ];
@@ -139,9 +164,9 @@
     },
   );
 
+  const { user } = userStore();
 
   const rows = computed(() => props.tasks);
-
 
   const pagination = ref({
     sortBy: '',

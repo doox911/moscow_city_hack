@@ -3,8 +3,9 @@
     <div class="row">
       <div class="col">
         <TasksTable 
-          :tasks="tasks" 
+          :tasks="taskRef.data" 
           :loading="loading"
+          @on-request="onRequestTask"
           @on-apply="onTaskApply"
           @on-cancel="onTaskCancel"
       />
@@ -46,8 +47,8 @@
    * Api
    */
   import { apiTasks } from 'Src/api/task';
-  import { apiCounterparties } from 'Src/api/counterparty';
-  import { apiGoods } from '../api/good';
+  import { apiCounterparties, Counterparty } from 'Src/api/counterparty';
+  import { apiGoods, Good } from '../api/good';
 
   /**
    * Hooks
@@ -68,17 +69,27 @@
   import type { Task } from 'Src/api/task';
   import type { ImportSortColoumn } from 'Src/types';
 
+  type URef<T> = {
+    data: T,
+    rowsNumber: number,
+    loading: boolean,
+  }
+
   useUserPageGuard();
 
-  const tasks = ref<Task[]>([]);
-
-  const counterpartRef: any = ref({
+  const taskRef = ref<URef<Task[]> >({
     data: [],
     rowsNumber: 0,
     loading: false
   });
 
-  const goodsRef: any = ref({
+  const counterpartRef = ref<URef<Counterparty[]>>({
+    data: [],
+    rowsNumber: 0,
+    loading: false
+  });
+
+  const goodsRef= ref<URef<Good[]>>({
     data: [],
     rowsNumber: 0,
     loading: false
@@ -87,6 +98,25 @@
   const loading = ref(false);
 
   const selected = ref([]);
+
+  async function onRequestTask({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
+  {
+    taskRef.value.loading = true;
+    const { tasks, total_rows } = await apiTasks({
+      params: {
+        page,
+        item_per_page: size,
+        filters: {
+          search_string: searchText,
+          columns
+        }
+      }
+    });
+
+    taskRef.value.rowsNumber = total_rows;
+    taskRef.value.data = tasks;
+    taskRef.value.loading = false;
+  }
 
   async function onRequestOwner({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
   {
@@ -136,15 +166,12 @@
 
   onMounted(async () => {
     loading.value = true;
-
-    tasks.value = await apiTasks({
-      params: {
-        item_per_page: 15,
-        filter: {
-          search_string: '',
-          columns: {},
-        },
-      }
+    
+    onRequestTask({
+      page: 1,
+      size: 10,
+      columns: {},
+      searchText: ''
     });
 
     onRequestOwner({
@@ -153,6 +180,7 @@
       columns: {},
       searchText: ''
     });
+
     onRequestGoods({
       page: 1,
       size: 10,

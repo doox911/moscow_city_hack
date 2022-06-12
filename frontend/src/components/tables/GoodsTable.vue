@@ -42,6 +42,7 @@
             @click="appendNewGood"
           />
           <SelectCounterparty
+            v-if = "isAttach"
             style = "padding: 0; margin-left: 5px;"
             v-model="selectCounterparty"
             button-text="Привязать товар"
@@ -50,7 +51,8 @@
         </div>
       </template>
       <template v-slot:top-right>
-        <q-input 
+        <q-input
+          v-if="isSearch"
           v-model="searchText"
           borderless
           debounce="300"
@@ -194,6 +196,8 @@
       selected?: Good[];
       good?: Good[];
       rowsPerPage?: number;
+      isAttach?: boolean;
+      isSearch?: boolean;
     }>(),
     {
       loading: false,
@@ -201,6 +205,8 @@
       rowsPerPage: 10,
       selected: () => [],
       good: () => [],
+      isAttach: true,
+      isSearch: true
     },
   );
 
