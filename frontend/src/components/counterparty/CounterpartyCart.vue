@@ -97,8 +97,8 @@
    * Types
    */
   import { ImportSortColoumn } from '../types';
-  import { Service } from 'bonjour-service';
   import { Good } from '../../api/good';
+  import { Service } from '../../api/service';
 
   /** 
    * Components
@@ -135,8 +135,8 @@
     {
       const { goods, services, base64_photos } = await apiCounterparty(user.value.company?.id);
 
-      goodsRef.value = goods;
-      servicesRef.value = services;
+      goodsRef.value = goods || [];
+      servicesRef.value = services || [];
 
       photos.value = base64_photos;
     }
