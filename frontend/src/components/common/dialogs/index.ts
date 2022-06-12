@@ -85,6 +85,11 @@ export const dialogProps = {
   loading: false,
 
   /**
+   * Кнопка открытия диалого в режиме ожидания
+   */
+  loadingOpenDialog: false,
+
+  /**
    * Сделать диалог во весь экран
    */
   maximized: false,

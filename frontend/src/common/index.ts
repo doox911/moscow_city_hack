@@ -8,6 +8,7 @@ import { User } from '../stores';
  * Constants
  */
 import { Roles, RolesDescription } from 'Src/constants';
+import { Good } from '../api/good';
 
 /**
  * первый символ в верхний регистр
@@ -100,6 +101,7 @@ export function getDefaultCounterparty(): Counterparty {
 export function getDefaultUser(): User {
   return {
     id: -1,
+    company: null,
     name: '',
     second_name: '',
     patronymic: '',
@@ -107,5 +109,14 @@ export function getDefaultUser(): User {
     role: Roles.Guest,
     created_at: '',
     updated_at: '',
+  }
+}
+
+export function getDefaultGood(): Good {
+  return {
+    name: '',
+    brand: '',
+    created_at: '',
+    updated_at: ''
   }
 }

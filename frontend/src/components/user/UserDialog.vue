@@ -2,38 +2,40 @@
 <template>
   <DialogCommonWrapper
     v-model="dialog"
+    button-success-label="Сохранить"
+    button-text="Редактировать"
     :button-success-tooltip="buttonSuccessTooltip"
-    :button-success-label="buttonSuccessLabel"
+    :header-bg-color="headerColor"
     :header-text="textHeader"
-    :open-dialog-button="false"
-    :reset-button="false"
-    header-bg-color="warning"
+    :loading-open-dialog="loading"
+    :reset-button="useReset"
     @on-cancel="cancel"
+    @on-reset="onReset"
     @on-success="success"
   >
     <div style = "width: 100%">
       <q-input
-        v-model="userData.secondName"
+        v-model="u.second_name"
         :rules="[ requiredStringRule ]"
         label="Фамилия"
       />
     </div>
     <div style = "width: 100%">
       <q-input
-        v-model="userData.name"
+        v-model="u.name"
         :rules="[ requiredStringRule ]"
         label="Имя"
       />
     </div>
     <div style = "width: 100%">
       <q-input
-        v-model="userData.patronymic"
+        v-model="u.patronymic"
         label="Отчество"
       />
     </div>
     <div style = "width: 100%">
       <q-input
-        v-model="userData.email"
+        v-model="u.email"
         :rules="[ requiredStringRule ]"
         label="Email"
       />
@@ -41,28 +43,20 @@
     <div style = "width: 100%">
       <q-select
         v-if = "isAdmin"
-        v-model="userData.role"
+        :model-value="{ value: u.role, label: RolesDescription[u.role] }"
         :options="roleList"
-        option-label="label"
         :rules="[ requiredSelectRule ]"
         label="Роль"
-      />
-    </div>
-    <div style = "width: 100%">
-      <q-select
-        v-if = "userData.role?.value == Roles.Owner"
-        v-model="userData.owner"
-        :rules="[ (e) => e !== undefined ]"
-        label="Предприятие"
+        option-label="label"
+        @update:model-value="(e) => { u.role = e.value.value }"
       />
     </div>
     <div style = "width: 100%">
       <q-input
-        v-model="userData.password"
-        :rules="[ requiredStringRule ]"
+        v-model="u.password"
         :type="isPwd ? 'password' : 'text'"
+        autocomplete="false"
         label="Пароль"
-        ref="fldPasswordChange"
       >
         <template v-slot:append>
           <q-icon
@@ -77,51 +71,91 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue';
+  import { computed, ref } from 'vue';
+  
+  /**
+   * Api
+   */
+  import { apiSignupUser, apiUpdateUserInfo } from 'Src/api/users';
+
   /**
    * Components
    */
   import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue';
+  
+  /**
+   * Constants
+   */
+  import { Roles, RolesDescription } from 'Src/constants';
+
   /**
    * Rules
    */
   import { requiredStringRule, requiredSelectRule } from 'Src/common/rules';
-  import { User } from '../../stores';
-  import { apiSignupUser, apiUpdateUserInfo } from '../../api/users';
-  import { Roles, RolesDescription } from '../../constants';
+
+  /**
+   * Store
+   */
   import { userStore } from 'Src/stores';
   import { storeToRefs } from 'pinia';
 
-  const { user } = storeToRefs(userStore());
-  const isAdmin = ref(user.value.role == Roles.Admin);
+  /**
+   * Types
+   */
+  import type { User } from 'Src/stores';
 
-  const roleList = ref([
+  const { user,  } = storeToRefs(userStore());
+
+  const isAdmin = computed(() => user.value.role == Roles.Admin);
+
+  const roleList = [
     { value: Roles.Admin, label: RolesDescription[Roles.Admin] },
     { value: Roles.Government, label: RolesDescription[Roles.Government] },
     { value: Roles.Owner, label: RolesDescription[Roles.Owner] },
     { value: Roles.Guest, label: RolesDescription[Roles.Guest] },
-  ])
-  const emit = defineEmits(['onCancel', 'onSuccess', 'update:modelValue']);
-  let dialogMode = 'new';
+  ];
+
+  const emit = defineEmits([
+    'onCancel',
+    'onSuccess',
+    'update:modelValue',
+    'update:user',
+    'onReset',
+  ]);
 
   const props = withDefaults(
     defineProps<{
-      user: User | null;
-      modelValue: boolean;
-      textHeader: string;
+      user: User;
+      modelValue?: boolean;
+      useReset?: boolean;
+      loading?: boolean;
     }>(),
     {
-      user: null,
       modelValue: false,
-      textHeader: 'Редактирование пользователя',
+      useReset: true,
+      loading: false,
     },
   );
 
-  let buttonSuccessTooltip = ref('Изменить');
-  let buttonSuccessLabel = ref('Изменить');
+  const headerColor = computed(() => {
+    return user.value.id
+      ? 'warning'
+      : 'primary';
+  });
 
-  const userData = ref({})
-  let isPwd = ref(true);
+  const textHeader = computed(() => {
+    return user.value.id
+      ? 'Изменить пользователя'
+      : 'Создать пользователя';
+  });
+
+  const buttonSuccessTooltip = computed(() => {
+    return user.value.id
+      ? 'Изменить пользователя'
+      : 'Создать пользователя';
+  });
+
+  const isPwd = ref(true);
 
   const dialog = computed({
     get() {
@@ -132,23 +166,14 @@
     },
   });
 
-  watch(
-    () => props.user,
-    (user: User | null) => {
-      let out = {};
-      for(let key in user)
-      {
-        out[key] = user[key];
-        if(key == 'role')
-          out[key] = { value: user.role, label: RolesDescription[user.role] }
-      }
-
-      userData.value = out;
-      buttonSuccessTooltip.value = buttonSuccessLabel.value = user.id ? 'Изменить' : 'Создать';
-      dialogMode = user.id ? 'update' : 'new';
-
+  const u = computed({
+    get() {
+      return props.user;
     },
-  );
+    set(v: User) {
+      emit('update:user', v);
+    },
+  });
 
   const cancel = () => {
     dialog.value = false;
@@ -159,10 +184,17 @@
   const success = async () => {
     dialog.value = false;
 
-    if(dialogMode == 'update')
-      await apiUpdateUserInfo(userData.value);
-    else await apiSignupUser(userData.value);
+    if(u.value.id === null || u.value.id < 0) {
+      await apiSignupUser(u.value);
+    } else {
+      await apiUpdateUserInfo(u.value);
+    }
+
     emit('onSuccess', true);
   };
+
+  function onReset() {
+    emit('onReset', true);
+  }
 </script>
 

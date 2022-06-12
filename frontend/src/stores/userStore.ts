@@ -23,9 +23,11 @@ export type User = {
   role: Roles;
   second_name: string;
   updated_at: string;
+  password?: string;
 };
 
 export const userStore = defineStore('user', () => {
+
   const user = ref<User>(getDefaultUser());
 
   async function setUser(u: User) {
@@ -36,6 +38,7 @@ export const userStore = defineStore('user', () => {
   function removeUser() {
     user.value = {
       id: -1,
+      company: null,
       name: '',
       second_name: '',
       patronymic: '',
@@ -45,6 +48,7 @@ export const userStore = defineStore('user', () => {
       updated_at: '',
     };
   }
+
   function isAuthenticated() {
     return user.value.id !== -1;
   }
