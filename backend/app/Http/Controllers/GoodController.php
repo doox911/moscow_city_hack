@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Resources\GoodResource;
 use App\Models\Activity;
 use App\Models\Counterparty;
 use App\Models\Good;
@@ -47,7 +48,7 @@ class GoodController extends Controller {
 
     return response()->json([
       'content' => [
-        'goods' => $goods->simplePaginate($items_per_page),
+        'goods' => GoodResource::collection($goods->simplePaginate($items_per_page)),
         'pages_count' => $pages_count,
         'total_rows' => $total_rows,
       ],

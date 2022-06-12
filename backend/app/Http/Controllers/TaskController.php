@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -53,7 +54,7 @@ class TaskController extends Controller {
 
     return response()->json([
       'content' => [
-        'tasks' => $tasks->simplePaginate($items_per_page),
+        'tasks' => TaskResource::collection($tasks->simplePaginate($items_per_page)),
         'pages_count' => $pages_count,
         'total_rows' => $total_rows,
       ],
