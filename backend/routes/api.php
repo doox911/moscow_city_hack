@@ -70,7 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
   });
 
-  Route::prefix('okved')->middleware('role:admin|owner')->group(static function () {
+  Route::prefix('okved')->group(static function () {
     // CRUD
     Route::get('', [OkvedController::class, 'index']);
   });

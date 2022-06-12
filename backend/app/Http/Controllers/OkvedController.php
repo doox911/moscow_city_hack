@@ -14,9 +14,13 @@ class OkvedController extends Controller {
    * @return JsonResponse
    */
   public function index(): JsonResponse {
+    $okveds = Okved::all()->filter(function (Okved $okved) {
+      return preg_match("/[.|\d]+/",$okved->code);
+    })->values();
+
     return response()->json([
       'content' => [
-        'okved' => OkvedResource::collection(Okved::all()),
+        'okved' => OkvedResource::collection($okveds),
       ],
       'messages' => ['Список ОКВЭД успешно загружен'],
     ]);
