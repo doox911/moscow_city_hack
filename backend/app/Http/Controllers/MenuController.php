@@ -6,12 +6,13 @@ use App\Http\Resources\MenuResource;
 use App\Models\Menu;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class MenuController extends Controller {
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\JsonResponse
+   * @return JsonResponse
    */
   public function index(): JsonResponse {
     return response()->json([
@@ -25,31 +26,31 @@ class MenuController extends Controller {
   /**
    * Store a newly created resource in storage.
    *
-   * @param \Illuminate\Http\Request $request
-   * @return \Illuminate\Http\Response
+   * @param Request $request
+   * @return Response
    */
-  public function store(Request $request) {
+  public function store(Request $request): Response {
     //
   }
 
   /**
    * Update the specified resource in storage.
    *
-   * @param \Illuminate\Http\Request $request
-   * @param \App\Models\Menu $menu
-   * @return \Illuminate\Http\Response
+   * @param Request $request
+   * @param Menu $menu
+   * @return Response
    */
-  public function update(Request $request, Menu $menu) {
+  public function update(Request $request, Menu $menu): Response {
     //
   }
 
   /**
    * Remove the specified resource from storage.
    *
-   * @param \App\Models\Menu $menu
-   * @return \Illuminate\Http\Response
+   * @param Menu $menu
+   * @return Response
    */
-  public function destroy(Menu $menu) {
+  public function destroy(Menu $menu): Response {
     //
   }
 }

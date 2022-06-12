@@ -7,6 +7,7 @@ use App\Models\Good;
 use App\Parsers\FNSParser;
 use App\Parsers\ProductCenterParser;
 use App\ValueObjects\CompanyFromParserValueObject;
+use App\ValueObjects\CompanyGoodFromParserValueObject;
 use Illuminate\Support\Facades\Cache;
 
 class ParseController extends Controller {
@@ -42,10 +43,11 @@ class ParseController extends Controller {
     $inns = [];
     $names = [];
     $fns = new FNSParser;
+
     foreach ($this->parsers as $parser) {
       foreach ($parser->parse() as $company) {
         /**
-         * @var \App\ValueObjects\CompanyFromParserValueObject $company
+         * @var CompanyFromParserValueObject $company
          */
         if (empty($company->inn)) {
           $fns_company = $fns->search($company->name);
@@ -98,7 +100,7 @@ class ParseController extends Controller {
 
         foreach ($company->goods as $good) {
           /**
-           * @var \App\ValueObjects\CompanyGoodFromParserValueObject $good
+           * @var CompanyGoodFromParserValueObject $good
            */
 
           Good::create([

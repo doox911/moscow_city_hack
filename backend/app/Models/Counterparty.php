@@ -17,6 +17,9 @@ use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
+/**
+ * @description Модель сущности "Производитель/Контрагент"
+ */
 class Counterparty extends Model implements HasMedia {
   use HasFactory, SoftDeletes, InteractsWithMedia;
 
@@ -50,7 +53,7 @@ class Counterparty extends Model implements HasMedia {
   /**
    * Товары компании
    *
-   * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   * @return HasMany
    */
   public function goods(): HasMany {
     return $this->activities()
@@ -60,7 +63,7 @@ class Counterparty extends Model implements HasMedia {
   /**
    * Деятельность компании
    *
-   * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   * @return HasMany
    */
   public function services(): HasMany {
     return $this->activities()

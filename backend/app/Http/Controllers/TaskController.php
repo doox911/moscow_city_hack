@@ -5,15 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TaskController extends Controller {
+
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\JsonResponse
+   * @return JsonResponse
    */
-  public function index() {
+  public function index(): JsonResponse {
     $tasks = Task::query();
     $items_per_page = request()->input('item_per_page');
 
@@ -65,8 +68,8 @@ class TaskController extends Controller {
   /**
    * Store a newly created resource in storage.
    *
-   * @param \App\Http\Requests\StoreTaskRequest $request
-   * @return \App\Models\Task
+   * @param StoreTaskRequest $request
+   * @return Task
    */
   public function store(StoreTaskRequest $request): Task {
     $data = $request->all();
@@ -77,17 +80,16 @@ class TaskController extends Controller {
   /**
    * Update the specified resource in storage.
    *
-   * @param \App\Http\Requests\StoreTaskRequest $request
-   * @param \App\Models\Task $task
-   * @return \Illuminate\Http\JsonResponse
+   * @param StoreTaskRequest $request
+   * @param Task $task
+   * @return JsonResponse
    */
-  public function update(Request $request, Task $task) {
-
+  public function update(Request $request, Task $task): JsonResponse {
     $data = $request->only(['is_accepted', 'comment']);
     $new_model = null;
     $row_is_updated = 0;
-    if ($data['is_accepted']) {
 
+    if ($data['is_accepted']) {
       $method = $task->value['method'];
       $new_data = $task->value['data'];
 
@@ -122,10 +124,10 @@ class TaskController extends Controller {
   /**
    * Remove the specified resource from storage.
    *
-   * @param \App\Models\Task $task
-   * @return \Illuminate\Http\Response
+   * @param Task $task
+   * @return Response
    */
-  public function destroy(Task $task) {
+  public function destroy(Task $task): Response {
     // todo realise
   }
 }

@@ -4,15 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\OkvedResource;
 use App\Models\Okved;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class OkvedController extends Controller {
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\JsonResponse
+   * @return JsonResponse
    */
-  public function index() {
+  public function index(): JsonResponse {
     return response()->json([
       'content' => [
         'okved' => OkvedResource::collection(Okved::all()),

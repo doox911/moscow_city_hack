@@ -7,15 +7,17 @@ use App\Http\Resources\ServiceResource;
 use App\Models\Activity;
 use App\Models\Counterparty;
 use App\Models\Service;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ServiceController extends Controller {
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\JsonResponse
+   * @return JsonResponse
    */
-  public function index() {
+  public function index(): JsonResponse {
     $services = Service::query();
     $items_per_page = request()->input('item_per_page');
 
@@ -58,10 +60,10 @@ class ServiceController extends Controller {
   /**
    * Store a newly created resource in storage.
    *
-   * @param \Illuminate\Http\Request $request
-   * @return \Illuminate\Http\JsonResponse
+   * @param Request $request
+   * @return JsonResponse
    */
-  public function store(Request $request) {
+  public function store(Request $request): JsonResponse {
     $data = $request->all();
 
     if ($request->user()->isOwnerRole()) {
@@ -104,11 +106,11 @@ class ServiceController extends Controller {
   /**
    * Update the specified resource in storage.
    *
-   * @param \Illuminate\Http\Request $request
-   * @param \App\Models\Service $service
-   * @return \Illuminate\Http\JsonResponse
+   * @param Request $request
+   * @param Service $service
+   * @return JsonResponse
    */
-  public function update(Request $request, Service $service) {
+  public function update(Request $request, Service $service): JsonResponse {
     $data = $request->all();
 
     if ($request->user()->isOwnerRole()) {
@@ -152,7 +154,7 @@ class ServiceController extends Controller {
    * Массовая обработка массива услуг и создание записей о компании, которая производит эти услуги
    *
    * @param array $services
-   * @param \App\Models\Counterparty $counterparty
+   * @param Counterparty $counterparty
    * @return void
    */
   public static function massAttachToCounterparty(array $services, Counterparty $counterparty): void {
@@ -169,10 +171,10 @@ class ServiceController extends Controller {
   /**
    * Remove the specified resource from storage.
    *
-   * @param \App\Models\Service $service
-   * @return \Illuminate\Http\Response
+   * @param Service $service
+   * @return Response
    */
-  public function destroy(Service $service) {
+  public function destroy(Service $service): Response {
     // todo realise
   }
 }

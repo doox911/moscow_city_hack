@@ -15,7 +15,7 @@ class SearchController extends Controller {
    * На выходе должен быть массив с компаниями производителями
    *
    * @param string $query
-   * @return \Illuminate\Http\JsonResponse
+   * @return JsonResponse
    */
   public function search(string $query): JsonResponse {
     $goods = collect();
