@@ -44,3 +44,33 @@ export async function apiTasks(config?: AxiosRequestConfig) {
 
   return response;
 }
+
+/**
+ * Решить задачу
+ */
+ export async function resolveTask(args: {
+  is_accepted: number,
+  comment: string,
+  task_id: number,
+ }, config?: AxiosRequestConfig) {
+  type R =  {
+    content: unknown,
+    message: string,
+  };
+
+  let response: R = {
+    content: null,
+    message: '',
+  };
+
+  await requestWrapper({
+    success: async () => {
+      response = (await new ApiRequest(config).put(`api/tasks/${args.task_id}`, {
+        is_accepted: args.is_accepted,
+        comment: args.comment,
+      }) as R);
+    }
+  });
+
+  return response;
+}
