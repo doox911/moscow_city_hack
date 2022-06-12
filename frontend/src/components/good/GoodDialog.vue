@@ -82,13 +82,13 @@
 
   const textHeader = computed(() => {
     return goodData.value.id
-      ? 'Изменить предприятие'
-      : 'Создать предприятие';
+      ? 'Изменить товар'
+      : 'Создать товар';
   });
   const buttonSuccessTooltip = computed(() => {
     return goodData.value.id
-      ? 'Изменить предприятие'
-      : 'Создать предприятие';
+      ? 'Изменить товар'
+      : 'Создать товар';
   });
 
   const cancel = () => {
