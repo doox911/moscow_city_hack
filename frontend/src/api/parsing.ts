@@ -17,7 +17,7 @@ import type { DefaultApiResponse } from 'Src/types';
 /**
  * Запуск парсинга
  */
-export async function apiGetAllUsers(str: string, config?: AxiosRequestConfig) {
+export async function apiRunParsing(str: string, config?: AxiosRequestConfig) {
   await requestWrapper({
     success: async () => {
       await new ApiRequest(config).post(`api/parse/${str}`);
@@ -30,12 +30,12 @@ export async function apiGetAllUsers(str: string, config?: AxiosRequestConfig) {
 /**
  * Статус парсинга
  */
-export async function apiUpdateUserInfo(config?: AxiosRequestConfig) {
+export async function apiPingParsing(config?: AxiosRequestConfig) {
   let status = true;
 
   await requestWrapper({
     success: async () => {
-      status = (await new ApiRequest(config).get('api/user') as DefaultApiResponse<{status: boolean}>).content.status;
+      status = (await new ApiRequest(config).get('api/check_parse_status') as DefaultApiResponse<{status: boolean}>).content.status;
     },
   });
 
