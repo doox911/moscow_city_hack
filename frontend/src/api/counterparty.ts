@@ -7,6 +7,7 @@ import { requestWrapper } from '../common/wrappers';
  */
 import type { PaginationCount, LaravelPagination } from 'Src/types';
 import { Good } from './good';
+import { getDefaultCounterparty } from '../common';
 
 export type Counterparty = {
   id: number | null,
@@ -19,6 +20,7 @@ export type Counterparty = {
   email: string,
   phone: string,
   site: string,
+  goods?: Good[]
 };
 
 export type CounterpartiesResponce = {
@@ -72,7 +74,7 @@ export async function apiCounterparty(
   id: number,
   config?: AxiosRequestConfig
 ) {
-  let counterparty: Counterparty | null = null
+  let counterparty: Counterparty = getDefaultCounterparty();
   await requestWrapper({
     success: async () => {
       counterparty = (await new ApiRequest(config).get(`/api/counterparties/${id}`) as CounterpartyResponce).content.counterparty;

@@ -29,11 +29,11 @@
 
     <q-separator />
 
-    <div class="row">
-      <h3>Продукция</h3>
-    </div>
-
-    <q-separator />
+    <GoodsTable
+      :good="goodsRef.data"
+      :loading="goodsRef.loading"
+      :rowsNumber="goodsRef.rowsNumber"
+    />
 
   </q-page>
   <CounterpartyDialog 
@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, computed} from 'vue';
+  import { ref, watch, computed, onMounted} from 'vue';
   
   /**
    * Api
@@ -61,6 +61,7 @@
    */
   import CounterpartyDialog from 'Components/counterparty/CounterpartyDialog.vue';
   import Counterparty from 'Components/counterparty/Counterparty.vue';
+  import GoodsTable from 'Components/tables/GoodsTable.vue';
 
   /**
    * Hooks
@@ -73,6 +74,11 @@
   import { storeToRefs } from 'pinia'
   import { userStore } from 'Src/stores';
 
+  /**
+   * Types
+   */
+  import { ImportSortColoumn } from '../types';
+
   useUserPageGuard();
 
   const { user } = storeToRefs(userStore());
@@ -81,10 +87,37 @@
 
   const counterparty = ref<CounterpartyType>(user.value.company || getDefaultCounterparty());
 
-  const selectCounterparty = ref<CounterpartyType|undefined>(getDefaultCounterparty());
+  const selectCounterparty = ref<CounterpartyType>(getDefaultCounterparty());
+
+  const goodsRef: any = ref({
+    data: [],
+    rowsNumber: 0,
+    loading: false
+  });
 
   function openEditDialog() {
     dialog.value = true;
     selectCounterparty.value = counterparty.value;
   }
+
+  async function onRequestGoods({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
+  {
+    if(user.value.company?.id)
+    {
+      goodsRef.value.loading = true;
+      const { goods } = await apiCounterparty(user.value.company?.id);
+      goodsRef.value.rowsNumber = goods?.length;
+      goodsRef.value.data = goods;
+      goodsRef.value.loading = false;
+    }
+  }
+
+  onMounted(async () => {
+    await onRequestGoods({
+      page: 1,
+      size: 10,
+      columns: {},
+      searchText: ''
+    });
+  })
 </script>

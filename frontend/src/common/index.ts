@@ -92,6 +92,7 @@ export function getDefaultCounterparty(): Counterparty {
     email: '',
     phone: '',
     site: '',
+    goods: []
   }
 }
 
