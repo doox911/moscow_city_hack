@@ -254,7 +254,7 @@
       name: 'registration_date',
       format: (val) => {
         if (val) {
-          const { y, m, d } = val.split('')[0];
+          const [ y, m, d ] = val.split('-');
 
           return `${d}.${m}.${y}`;
         }
