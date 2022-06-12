@@ -39,3 +39,7 @@ export type LaravelPagination<T> = {
   prev_page_url: string
   to: string
 }
+
+export type ImportSortColoumn = {
+  [key: string]: 'asc' | 'desc';
+}

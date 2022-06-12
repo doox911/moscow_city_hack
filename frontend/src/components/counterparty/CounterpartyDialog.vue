@@ -2,12 +2,11 @@
 <template>
   <DialogCommonWrapper
     v-model="dialog"
+    button-success-label="Сохранить"
     :button-success-tooltip="buttonSuccessTooltip"
-    :button-success-label="buttonSuccessLabel"
+    :header-bg-color="headerColor"
     :header-text="textHeader"
     :open-dialog-button="false"
-    :reset-button="false"
-    header-bg-color="warning"
     @on-cancel="cancel"
     @on-success="success"
   >
@@ -50,47 +49,47 @@
     <div style = "width: 100%">
       <q-input
         v-model="counterpartyData.phone"
-        label="телефон"
+        label="Телефон"
       />
     </div>
     <div style = "width: 100%">
       <q-input
         v-model="counterpartyData.site"
-        label="сайт"
+        label="Сайт"
       />
     </div>
   </DialogCommonWrapper>
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue';
-  import { apiCreateCounterparty, apiUpdateCounterparty, Counterparty } from '../../api/counterparty';
+  import { computed } from 'vue';
+
+  /**
+   * Api
+   */
+  import { apiCreateCounterparty, apiUpdateCounterparty, Counterparty } from 'Src/api/counterparty';
 
   /**
    * Components
    */
   import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue';
 
-  const emit = defineEmits(['onCancel', 'onSuccess', 'update:modelValue']);
-  let dialogMode = 'new';
+  const emit = defineEmits([
+    'onCancel',
+    'onSuccess',
+    'update:modelValue',
+    'update:Counterparty',
+  ]);
 
   const props = withDefaults(
     defineProps<{
-      counterparty: Counterparty | null;
-      modelValue: boolean;
-      textHeader: string;
+      counterparty: Counterparty;
+      modelValue?: boolean;
     }>(),
     {
       modelValue: false,
-      textHeader: 'Редактирование предприятия',
-      counterparty: null,
-    },
+    }
   );
-
-  let buttonSuccessTooltip = ref('Изменить');
-  let buttonSuccessLabel = ref('Изменить');
-
-  const counterpartyData = ref({})
 
   const dialog = computed({
     get() {
@@ -101,19 +100,31 @@
     },
   });
 
-  watch(
-    () => props.counterparty,
-    (counterparty: Counterparty | null) => {
-
-      let out = {};
-      for(let key in counterparty)
-        out[key] = counterparty[key];
-
-      counterpartyData.value = out;
-      buttonSuccessTooltip.value = buttonSuccessLabel.value = counterparty.id ? 'Изменить' : 'Создать';
-      dialogMode = counterparty.id ? 'update' : 'new';
+  const counterpartyData = computed({
+    get() {
+      return props.counterparty;
     },
-  );
+    set(value?: Counterparty) {
+      emit('update:Counterparty', value);
+    },
+  });
+
+  const headerColor = computed(() => {
+    return counterpartyData.value.id
+      ? 'warning'
+      : 'primary';
+  });
+
+  const textHeader = computed(() => {
+    return counterpartyData.value.id
+      ? 'Изменить предприятие'
+      : 'Создать предприятие';
+  });
+  const buttonSuccessTooltip = computed(() => {
+    return counterpartyData.value.id
+      ? 'Изменить предприятие'
+      : 'Создать предприятие';
+  });
 
   const cancel = () => {
     dialog.value = false;
@@ -124,9 +135,10 @@
   const success = async () => {
     dialog.value = false;
 
-    if(dialogMode == 'update')
-      await apiUpdateCounterparty(counterpartyData.value);
-    else await apiCreateCounterparty(counterpartyData.value);
+    counterpartyData.value.id
+      ? await apiUpdateCounterparty(counterpartyData.value)
+      : await apiCreateCounterparty(counterpartyData.value);
+    
     emit('onSuccess', true);
   };
 </script>

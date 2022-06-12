@@ -153,12 +153,14 @@
     row: true,
   };
 
-  const header_classes = {
-    row: true,
-    'items-center': true,
-    [`bg-${props.headerBgColor}`]: true,
-    [`text-${props.headerTextColor || 'white'}`]: true,
-  };
+  const header_classes = computed(() => {
+    return {
+      row: true,
+      'items-center': true,
+      [`bg-${props.headerBgColor}`]: true,
+      [`text-${props.headerTextColor || 'white'}`]: true,
+    };
+  });
 
   const style = props.maximized
     ? ''

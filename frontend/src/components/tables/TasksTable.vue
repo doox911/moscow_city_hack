@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-none">
-    <h5 class="q-ma-xs non-selectable text-grey-9">Задачи</h5>
+    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">Задачи</h5>
     <q-table
       v-model:pagination="pagination"
       v-model:selected="s"
@@ -35,7 +35,6 @@
       </template>
     </q-table>
   </div>
-  <TaskEventLogDialog v-model="task_event_dialog" :task="selected_task" />
 </template>
 
 <script setup lang="ts">
@@ -140,11 +139,9 @@
     },
   );
 
-  const task_event_dialog = ref(false);
 
   const rows = computed(() => props.tasks);
 
-  const selected_task = ref<Task | undefined>(undefined);
 
   const pagination = ref({
     sortBy: '',
