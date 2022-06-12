@@ -11,6 +11,7 @@ import { Roles } from 'Src/constants';
  */
 import { Counterparty } from 'Src/api/counterparty';
 import { apiGetAllUsers } from '../api/users';
+import { getDefaultUser } from '../common';
 
 export type User = {
   company?: Counterparty | null;
@@ -25,16 +26,7 @@ export type User = {
 };
 
 export const userStore = defineStore('user', () => {
-  const user = ref<User>({
-    id: -1,
-    name: '',
-    second_name: '',
-    patronymic: '',
-    email: '',
-    role: Roles.Guest,
-    created_at: '',
-    updated_at: '',
-  });
+  const user = ref<User>(getDefaultUser());
 
   async function setUser(u: User) {
     user.value = u;

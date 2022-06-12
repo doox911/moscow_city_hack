@@ -1,28 +1,49 @@
 <template>
-  <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">Пользователи</h5>
-  <q-table
-    :columns="columns"
-    :rows="allUser"
-    :pagination-label="paginationLabel"
-    :selected-rows-label="selectedRowsLabel"
-    class="no-shadow"
-    row-key="id"
-    rows-per-page-label="Пользователей на странице"
-  >
-    <template v-slot:top-left>
-      <q-btn
-        :loading="loading"
-        color="primary float-right"
-        label="Добавить пользователя"
-        @click="appendNewUser"
-      />
-    </template>
-    <template v-slot:body-cell-actions="props">
-      <q-td :props="props">
-        <q-btn flat icon="edit" @click="onEdit(props.row)"></q-btn>
-      </q-td>
-    </template>
-  </q-table>
+  <div class="q-pa-none">
+    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">
+      Пользователи
+    </h5>
+    <q-table
+      :columns="columns"
+      :rows="allUser"
+      :loading="loading"
+      :pagination-label="paginationLabel"
+      :selected-rows-label="selectedRowsLabel"
+      class="no-shadow"
+      row-key="id"
+      rows-per-page-label="Пользователей на странице"
+      @request="onRequest"
+    >
+      <template v-slot:body-cell-actions="props">
+        <q-td :props="props">
+          <div class="col q-gutter justify-center">
+            <IconBtn
+              v-for="(button, index) of buttons"
+              :key="index"
+              :color="button.color"
+              :icon="button.icon"
+              :tooltip-text="button.tooltip"
+              hover-color="primary"
+              @click="openEditDialog(props.row)"
+            />
+          </div>
+        </q-td>
+      </template>
+      <template v-slot:top-left>
+        <q-btn
+          :loading="loading"
+          color="primary float-right"
+          label="Добавить пользователя"
+          @click="appendNewUser"
+        />
+      </template>
+    </q-table>
+  </div>
+  <UserDialog 
+    v-model="dialog" 
+    v-model:counterparty="selectCounterparty"
+    @on-success="emitOnRequest"
+  />
 </template>
 
 <script setup lang="ts">
@@ -41,7 +62,7 @@
   /**
    * Common
    */
-  import { selectedRowsLabel, paginationLabel} from 'Src/common';
+  import { selectedRowsLabel, paginationLabel, getDefaultUser} from 'Src/common';
 
   /**
    * Rules
@@ -58,108 +79,33 @@
    * Types
    */
   import type { QTableProps } from 'quasar';
+  import { QTableOnRequestProps } from '../../types';
+
+  /**
+   * Components
+   */
+  import IconBtn from 'Components/common/IconBtn.vue'
+  import UserDialog from 'Components/user/UserDialog.vue';
+
 
   const { loadAllUser } = userStore();
   const { allUser } = storeToRefs(userStore());
 
-  const userData = ref({
-    id: null,
-    patronymic: '',
-    name: '',
-    secondName: '',
-    email: '',
-    role: '',
-    owner: '',
-    password: '',
-    confirmPassword: '',
-  });
+  const dialog = ref(false);
 
-  let modalMode = ref<'new' | 'update'>('new');
+  const searchText = ref('');
 
-  const roleList = ref([
-    { value: Roles.Admin, label: RolesDescription[Roles.Admin] },
-    { value: Roles.Government, label: RolesDescription[Roles.Government] },
-    { value: Roles.Owner, label: RolesDescription[Roles.Owner] },
-    { value: Roles.Guest, label: RolesDescription[Roles.Guest] },
-  ])
+  const selectUser = ref<User>();
 
-  /**
-   * Осуществляется запрос регистрации пользователя
-   */
-  async function registration() {
-    const response = await apiSignupUser({
-      second_name: userData.value.secondName,
-      name: userData.value.name,
-      patronymic: userData.value.patronymic,
-      email: userData.value.email,
-      role: userData.value.role.value,
-      owner: userData.value.owner?.value,
-      password: userData.value.password
-    });
-    if(response) {
-      isOpen.value = false;
-      onRequest();
-    }
-  }
-  /**
-   * Изменить пользователя
-   */
-  async function updateUser() {
-    const response = await apiUpdateUserInfo({
-      id: userData.value.id,
-      second_name: userData.value.secondName,
-      name: userData.value.name,
-      patronymic: userData.value.patronymic,
-      email: userData.value.email,
-      role: userData.value.role.value,
-      owner: userData.value.owner?.value,
-      password: userData.value.password
-    });
+  const loading = ref(false);
 
-    if(response) {
-      isOpen.value = false;
-      onRequest();
-    }
-  }
-  /**
-   * Отправить запрос можно только при наличии всех значений
-   */
-  const disabled = computed(() => {
-    if(modalMode.value == 'update') return false;
-    return !userData.value.name
-      || !userData.value.secondName
-      || !userData.value.email
-      || !userData.value.role
-      || (userData.value.role?.value == Roles.Owner && !userData.value.owner)
-      || !userData.value.password
-      || !userData.value.confirmPassword
-      || userData.value.password !== userData.value.confirmPassword;
-  })
-
-  /** 
-   * Открыть окно редактирования пользователя
-   */
-  function appendNewUser() {
-    isOpen.value = true;
-    userData.value = {
-      id: null,
-      name: '',
-      secondName: '',
-      email: '',
-      role: '',
-      owner: '',
-      password: '',
-      confirmPassword: '',
-    };
-    modalMode.value = 'new';
-  }
-
-  /**
-   * Закрыть модальное окно
-   */
-  function onCancelModal() {
-    isOpen.value = false
-  }
+  type Button = {
+    color: string;
+    event: 'edit' | 'delete';
+    icon: string;
+    tooltip: string;
+  };
+  
   /**
    * Заголовки таблицы
    */
@@ -199,27 +145,64 @@
       name: 'actions',
     },
   ];
-  const isOpen = ref(false);
-  let isPwd = ref(true);
-  const loading = ref(false);
-  const { ownerList } = storeToRefs(ownerStore());
+  
+  const buttons: Button[] = [
+    {
+      color: 'warning',
+      event: 'edit',
+      icon: 'edit',
+      tooltip: 'Редактировать',
+    },
+    {
+      color: 'red',
+      event: 'delete',
+      icon: 'delete',
+      tooltip: 'Удалить',
+    },
+  ];
 
-  async function onRequest()
-  {
+  const emit = defineEmits([
+    'onSearch',
+    'onRequest',
+    'onCancel',
+    'onApply',
+    'update:selected',
+  ]);
+
+  const props = withDefaults(
+    defineProps<{
+      loading?: boolean;
+      user?: User[];
+    }>(),
+    {
+      loading: false,
+      user: () => [],
+    },
+  );
+
+  /** 
+   * Открыть окно редактирования пользователя
+   */
+  function openEditDialog(value: User) {
+    dialog.value = true;
+
+    selectUser.value = { ...value };
+  }
+
+  function appendNewUser() {
+    dialog.value = true;
+
+    selectUser.value = getDefaultUser();
+  }
+
+  async function onRequest(ps: QTableOnRequestProps) {
+    const { page, rowsPerPage, sortBy, descending } = ps.pagination;
+
     loading.value = true;
 
     await loadAllUser();
 
     loading.value = false
-  }
 
-  async function onEdit(user: User)
-  {
-    appendNewUser();
-    userData.value = {
-      ...user,
-      role: { value: user.role, label: RolesDescription[user.role] }
-    };
-    modalMode.value = 'update';
   }
 </script>
