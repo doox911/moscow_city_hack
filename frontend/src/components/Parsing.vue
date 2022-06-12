@@ -65,22 +65,31 @@
 
   const loading = ref(true);
 
-  let timeinterval_id: ReturnType<typeof setInterval> | null = null;
+  let timeinterval_id: string | number | NodeJS.Timeout | undefined = undefined;
 
   function runPing() {
-    timeinterval_id = setInterval(() => {
-      apiPingParsing().then((r) => {
-        is_parsing.value = r;
-      });
-    }, 5000);
+    clearTimeout(timeinterval_id);
+    timeinterval_id = setTimeout(
+      () => {
+        apiPingParsing().then(r => {
+          is_parsing.value = r;
+
+          if (is_parsing.value) {
+            runPing();
+          }
+        });
+      },
+      5000
+    );
   }
 
   async function searching() {
     loading.value = true;
 
-    runPing();
+    await apiRunParsing(search.value);
+    is_parsing.value = true;
 
-    await apiRunParsing(search.value, timeinterval_id);
+    runPing();
 
     loading.value = false;
 
