@@ -95,6 +95,10 @@ class TaskController extends Controller {
       } elseif ($method === 'store') {
         $model = new($task->entity_type);
         $new_model = $model::create($new_data);
+      } elseif ($method === 'attach_goods') {
+        GoodController::massAttachToCounterparty($new_data['goods'], $task->entity);
+      } elseif ($method === 'attach_services') {
+        ServiceController::massAttachToCounterparty($new_data['services'], $task->entity);
       }
     }
 

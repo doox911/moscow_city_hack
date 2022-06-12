@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Models\Activity;
+use App\Models\Counterparty;
 use App\Models\Good;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class GoodController extends Controller {
@@ -12,7 +15,7 @@ class GoodController extends Controller {
    *
    * @return \Illuminate\Http\JsonResponse
    */
-  public function index() {
+  public function index(): JsonResponse {
     $goods = Good::query();
     $items_per_page = request()->input('item_per_page');
 
@@ -58,9 +61,10 @@ class GoodController extends Controller {
    * @param \Illuminate\Http\Request $request
    * @return \Illuminate\Http\JsonResponse
    */
-  public function store(Request $request) {
+  public function store(Request $request): JsonResponse {
     $data = $request->all();
 
+    // todo move to Trait or Service (duplicate code)
     if ($request->user()->isOwnerRole()) {
       $tc = new TaskController;
       $req = new StoreTaskRequest;
@@ -105,9 +109,10 @@ class GoodController extends Controller {
    * @param \App\Models\Good $good
    * @return \Illuminate\Http\JsonResponse
    */
-  public function update(Request $request, Good $good) {
+  public function update(Request $request, Good $good): JsonResponse {
     $data = $request->all();
 
+    // todo move to Trait or Service (duplicate code)
     if ($request->user()->isOwnerRole()) {
       $tc = new TaskController;
       $req = new StoreTaskRequest;
@@ -146,12 +151,37 @@ class GoodController extends Controller {
   }
 
   /**
+   * Массовая обработка массива товаров и создание записей о компании, которая производит эти товары
+   *
+   * @param array $goods
+   * @param \App\Models\Counterparty $counterparty
+   * @return void
+   */
+  public static function massAttachToCounterparty(array $goods, Counterparty $counterparty): void {
+
+    foreach ($goods as $good) {
+      $good = Good::updateOrCreate([
+        'name' => $good['name'],
+        'brand' => $good['brand'],
+      ]);
+
+
+      Activity::updateOrCreate([
+        'counterparty_id' => $counterparty->id,
+        'activity_id' => $good->id,
+        'activity_type' => Good::class,
+        'is_active' => true,
+      ]);
+    }
+  }
+
+  /**
    * Remove the specified resource from storage.
    *
    * @param \App\Models\Good $good
    * @return \Illuminate\Http\Response
    */
-  public function destroy(Good $good) {
+  public function destroy(Good $good): \Illuminate\Http\Response {
     // todo realise
   }
 }

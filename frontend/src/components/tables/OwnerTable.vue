@@ -94,6 +94,13 @@
   import type { QTableOnRequestProps, ImportSortColoumn } from 'src/types';
   import type { QTableProps } from 'quasar';
 
+  /**
+   * Store
+   */
+  import { storeToRefs } from 'pinia'
+  import { userStore } from '../../stores';
+
+  const { allUser } = storeToRefs(userStore());
 
   const dialog = ref(false);
 
@@ -112,6 +119,7 @@
       field: 'user_id',
       label: 'Пользователь',
       name: 'user_id',
+      format: (val) => allUser.value.filter(user => user.id == val).pop()?.name,
       sortable: true,
     },
     {

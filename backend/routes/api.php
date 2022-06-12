@@ -29,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::get('', [CounterpartyController::class, 'getCounterparty']);
       Route::put('', [CounterpartyController::class, 'update']);
       Route::delete('', [CounterpartyController::class, 'destroy']);
+
+      Route::post('attach_goods', [CounterpartyController::class, 'attachGoods'])->middleware('role:admin|owner');
+      Route::post('attach_services', [CounterpartyController::class, 'attachServices'])->middleware('role:admin|owner');
     });
   });
 
@@ -58,7 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // CRUD
     Route::get('', [TaskController::class, 'index']);
 
-    Route::prefix('api')->group(static function () {
+    Route::prefix('{task}')->group(static function () {
       Route::put('', [TaskController::class, 'update']);
     });
   });

@@ -10,6 +10,8 @@ import { Roles } from 'Src/constants';
  * Types
  */
 import { Counterparty } from 'Src/api/counterparty';
+import { apiGetAllUsers } from '../api/users';
+import { getDefaultUser } from '../common';
 
 export type User = {
   company?: Counterparty | null;
@@ -25,17 +27,8 @@ export type User = {
 };
 
 export const userStore = defineStore('user', () => {
-  const user = ref<User>({
-    company: null,
-    created_at: '',
-    email: '',
-    id: -1,
-    name: '',
-    patronymic: '',
-    role: Roles.Guest,
-    second_name: '',
-    updated_at: '',
-  });
+
+  const user = ref<User>(getDefaultUser());
 
   async function setUser(u: User) {
     user.value = u;
@@ -55,8 +48,18 @@ export const userStore = defineStore('user', () => {
       updated_at: '',
     };
   }
+
   function isAuthenticated() {
     return user.value.id !== -1;
+  }
+
+  const allUser = ref<User[]>([]);
+
+  async function loadAllUser() {
+    if (user.value.role == Roles.Admin) {
+      const users = await apiGetAllUsers();
+      allUser.value = users;
+    }
   }
 
   return {
@@ -64,5 +67,7 @@ export const userStore = defineStore('user', () => {
     setUser,
     user,
     isAuthenticated,
+    allUser,
+    loadAllUser,
   };
 });

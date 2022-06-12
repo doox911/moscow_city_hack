@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Resources\CounterpartyResource;
+use App\Models\Activity;
 use App\Models\Counterparty;
+use App\Models\Good;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -161,6 +163,104 @@ class CounterpartyController extends Controller {
       ],
       'messages' => [
         'Информация о компании получена'
+      ]
+    ]);
+  }
+
+  /**
+   * Создание задания для добавления новых товаров компании или прямое добавление для админа
+   *
+   * @param \Illuminate\Http\Request $request
+   * @param \App\Models\Counterparty $counterparty
+   * @return \Illuminate\Http\JsonResponse
+   */
+  public function attachGoods(Request $request, Counterparty $counterparty): JsonResponse {
+    // todo validate goods
+    $data = $request->all();
+
+    // todo move to Trait, just no time for that right now (duplicate code)
+    if ($request->user()->isOwnerRole()) {
+      $tc = new TaskController;
+      $req = new StoreTaskRequest;
+      $req->replace([
+        'user_id' => $request->user()->id,
+        'entity_id' => $counterparty->id,
+        'entity_type' => $counterparty::class,
+        'value' => [
+          'method' => 'attach_goods',
+          'data' => $data,
+        ]
+      ]);
+
+      $new_task = $tc->store($req);
+
+      return response()->json([
+        'content' => [
+          'task_id' => $new_task->id,
+        ],
+        'messages' => [
+          'Запрос на модерацию данных отправлен'
+        ]
+      ]);
+    }
+
+    GoodController::massAttachToCounterparty($data['goods'], $counterparty);
+
+    return response()->json([
+      'content' => [
+        'counterparty' => CounterpartyResource::make($counterparty->refresh()),
+      ],
+      'messages' => [
+        'Информация о товарах компании обновлена'
+      ]
+    ]);
+  }
+
+  /**
+   * Создание задания для добавления новых товаров компании или прямое добавление для админа
+   *
+   * @param \Illuminate\Http\Request $request
+   * @param \App\Models\Counterparty $counterparty
+   * @return \Illuminate\Http\JsonResponse
+   */
+  public function attachServices(Request $request, Counterparty $counterparty): JsonResponse {
+    // todo validate services
+    $data = $request->all();
+
+    // todo move to Trait, just no time for that right now (duplicate code)
+    if ($request->user()->isOwnerRole()) {
+      $tc = new TaskController;
+      $req = new StoreTaskRequest;
+      $req->replace([
+        'user_id' => $request->user()->id,
+        'entity_id' => $counterparty->id,
+        'entity_type' => $counterparty::class,
+        'value' => [
+          'method' => 'attach_services',
+          'data' => $data,
+        ]
+      ]);
+
+      $new_task = $tc->store($req);
+
+      return response()->json([
+        'content' => [
+          'task_id' => $new_task->id,
+        ],
+        'messages' => [
+          'Запрос на модерацию данных отправлен'
+        ]
+      ]);
+    }
+
+    ServiceController::massAttachToCounterparty($data['services'], $counterparty);
+
+    return response()->json([
+      'content' => [
+        'counterparty' => CounterpartyResource::make($counterparty->refresh()),
+      ],
+      'messages' => [
+        'Информация о товарах компании обновлена'
       ]
     ]);
   }

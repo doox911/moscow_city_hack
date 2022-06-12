@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Models\Activity;
+use App\Models\Counterparty;
+use App\Models\Good;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -143,6 +146,24 @@ class ServiceController extends Controller {
         'Информация об услуге обновлена'
       ]
     ]);
+  }
+
+  /**
+   * Массовая обработка массива услуг и создание записей о компании, которая производит эти услуги
+   *
+   * @param array $services
+   * @param \App\Models\Counterparty $counterparty
+   * @return void
+   */
+  public static function massAttachToCounterparty(array $services, Counterparty $counterparty): void {
+    foreach ($services as $service_id) {
+      Activity::updateOrCreate([
+        'counterparty_id' => $counterparty->id,
+        'activity_id' => $service_id,
+        'activity_type' => Service::class,
+        'is_active' => true,
+      ]);
+    }
   }
 
   /**

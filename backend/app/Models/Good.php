@@ -21,6 +21,10 @@ class Good extends Model implements HasMedia {
     'name',
   ];
 
+  protected $with = [
+    'data_source',
+  ];
+
   /**
    *
    * @return MorphMany
