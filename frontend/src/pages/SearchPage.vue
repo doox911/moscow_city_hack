@@ -129,7 +129,7 @@
 </script>
 
 <style scoped>
-  .search-result row:nth-child(n+1)
+  .search-result > .row:nth-child(n+2)
   {
     margin-top:10px;
   }
