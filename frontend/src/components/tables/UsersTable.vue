@@ -8,6 +8,7 @@
         v-model="dialog" 
         v-model:user="selectUser"
         :loading="loading"
+        :use-reset="false"
         @on-success="onSucces"
       />
     </div>
@@ -60,7 +61,6 @@
    * Types
    */
   import type { QTableProps } from 'quasar';
-  import type { QTableOnRequestProps } from 'Src/types';
 
   /**
    * Components
@@ -141,7 +141,7 @@
     },
   ];
 
-  const emit = defineEmits([
+  defineEmits([
     'onSearch',
     'onRequest',
     'onCancel',
@@ -149,7 +149,7 @@
     'update:selected',
   ]);
 
-  const props = withDefaults(
+  withDefaults(
     defineProps<{
       loading?: boolean;
       user?: User[];
