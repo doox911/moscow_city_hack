@@ -151,7 +151,8 @@ class Counterparty extends Model implements HasMedia {
    * @throws Exception
    */
   public function getPNGBase64Logo(): string {
-    $media = $this->getMedia('company_logo')->first();
+    $collection = 'company_logo';
+    $media = $this->getMedia($collection)->first();
     $image_content = '';
 
     if ($media && file_exists($media->getPath())) {
@@ -169,7 +170,8 @@ class Counterparty extends Model implements HasMedia {
    * @throws Exception
    */
   public function getPNGBase64Photos(): array {
-    $media_photos = $this->getMedia('company_logo');
+    $collection = 'photos';
+    $media_photos = $this->getMedia($collection);
     $images_base64 = [];
 
     foreach ($media_photos as $media_photo) {

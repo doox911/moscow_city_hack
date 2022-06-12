@@ -34,6 +34,7 @@ class GoodResource extends JsonResource {
       'data_source_item_last_edit' => $data_source_item_last_edit,
       'price_min_party' => $good->price_min_party,
       'properties' => $good->properties,
+      'base64_photos' => $good->getPNGBase64Photos(), // галерея фотографий товара
 
       // источник данных (например: адрес сайта, Excel файл)
       'data_source' => $this->whenLoaded('data_source', DataSourceResource::make($good->data_source)),
