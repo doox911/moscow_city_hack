@@ -40,6 +40,7 @@
     v-model="dialog" 
     v-model:counterparty="selectCounterparty"
   />
+  <Counterparty/>
 </template>
 
 <script setup lang="ts">
@@ -48,7 +49,7 @@
   /**
    * Api
    */
-  import { apiCounterparty, Counterparty } from 'Src/api/counterparty';
+  import { apiCounterparty, Counterparty as CounterpartyType } from 'Src/api/counterparty';
   
   /**
    * Common
@@ -59,6 +60,7 @@
    * Components
    */
   import CounterpartyDialog from 'Components/counterparty/CounterpartyDialog.vue';
+  import Counterparty from 'Components/counterparty/Counterparty.vue';
 
   /**
    * Hooks
@@ -77,26 +79,12 @@
 
   const dialog = ref(false);
 
-  const counterparty = ref<Counterparty>(getDefaultCounterparty());
+  const counterparty = ref<CounterpartyType>(user.value.company || getDefaultCounterparty());
 
-  const selectCounterparty = ref<Counterparty|undefined>();
+  const selectCounterparty = ref<CounterpartyType|undefined>(getDefaultCounterparty());
 
-  watch(user, async (u) => {
-    if (u.company) {
-      const response = await apiCounterparty(u.company.id);
-
-      if(response) {
-        counterparty.value = response;
-      }
-    }
-  });
-  
   function openEditDialog() {
     dialog.value = true;
     selectCounterparty.value = counterparty.value;
   }
-
-  if(user.value.company)
-    load(user.value.company);
-
 </script>
