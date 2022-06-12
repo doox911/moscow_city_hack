@@ -276,7 +276,7 @@
   }
 
   function emitOnRequest() {
-    let columns: ImportSortColumn = {};
+    let columns: ImportSortColumn = { 'name': 'desc' };
 
     if (pagination.value.sortBy) {
       columns[pagination.value.sortBy] = pagination.value.descending

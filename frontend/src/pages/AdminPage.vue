@@ -3,14 +3,16 @@
     <div>
       <div class="row q-mb-md">
         <div class="col-12">
-          <Parsing />
+          <Parsing
+            @on-success="updateAllEntity"
+          />
         </div>
       </div>
       <div class="row">
         <div class="col">
           <TasksTable
             :tasks="taskRef.data"
-            :loading="loading"
+            :loading="taskRef.loading"
             @on-request="onRequestTask"
             @on-apply="onTaskApply"
             @on-cancel="onTaskCancel"
@@ -126,8 +128,6 @@
     loading: false,
     selected: [],
   });
-
-  const loading = ref(false);
 
   async function onRequestTask({
     page,
@@ -279,8 +279,7 @@
     loading.value = false;
   }
 
-  onMounted(async () => {
-    loading.value = true;
+  async function updateAllEntity() {
 
     onRequestTask({
       page: 1,
@@ -302,6 +301,7 @@
       columns: {},
       searchText: '',
     });
+
     onRequestServices({
       page: 1,
       size: 10,
@@ -309,6 +309,9 @@
       searchText: '',
     });
 
-    loading.value = false;
+  }
+
+  onMounted(async () => {
+    await updateAllEntity();
   });
 </script>

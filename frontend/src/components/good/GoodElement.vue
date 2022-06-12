@@ -37,8 +37,10 @@
     <div class="content">
       <div class="title">Название:</div>
       <div>{{ good.name }}</div>
-      <div class="title">Брэнд:</div>
-      <div>{{ good.brand }}</div>
+      <template v-if="good.brand">
+        <div class="title">Брэнд:</div>
+        <div>{{ good.brand }}</div>
+      </template>
     </div>
   </div>
 </template>

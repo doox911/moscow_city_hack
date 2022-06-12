@@ -57,6 +57,8 @@
    */
   import IconBtn from 'Components/common/IconBtn.vue';
 
+  const emit = defineEmits(['onSuccess']);
+
   const search = ref('');
 
   const disabled = ref(false);
@@ -77,6 +79,7 @@
           if (is_parsing.value) {
             runPing();
           }
+          else emit('onSuccess');
         });
       },
       5000

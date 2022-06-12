@@ -45,8 +45,12 @@
       <div>{{ counterparty.email }}</div>
       <div class="title">телефон:</div>
       <div>{{ counterparty.phone }}</div>
-      <div class="title">сайт:</div>
-      <div>{{ counterparty.site }}</div>
+      <template v-if="counterparty.site">
+        <div class="title">сайт:</div>
+        <div>
+          <a href="{{ counterparty.site }}">{{ counterparty.site }}</a>
+        </div>
+      </template>
     </div>
   </div>
 </template>
