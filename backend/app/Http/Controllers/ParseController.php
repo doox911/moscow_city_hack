@@ -45,65 +45,73 @@ class ParseController extends Controller {
     $fns = new FNSParser;
 
     foreach ($this->parsers as $parser) {
-      foreach ($parser->parse() as $company) {
-        /** @var CompanyFromParserValueObject $company */
+      foreach ($parser->parse() as $company_vo) {
+        /** @var CompanyFromParserValueObject $company_vo */
 
         // ищем ИНН компании в ФНС по
-        if (empty($company->inn)) {
-          $fns_company = $fns->search($company->name);
+        if (empty($company_vo->inn)) {
+          $fns_company = $fns->search($company_vo->name);
           $inns[] = $fns_company->{'ИНН'};
 
           $founded_inn = $fns_company->{'ИНН'};
         } else {
-          $inns[] = $company->inn;
+          $inns[] = $company_vo->inn;
 
-          $founded_inn = $company->inn;
+          $founded_inn = $company_vo->inn;
         }
 
-        Counterparty::updateOrCreate([
+        $counterparty = Counterparty::updateOrCreate([
           'inn' => $founded_inn,
         ], [
-          'data_source_id' => $company->data_source_id,
-          'data_source_item_id' => $company->data_source_item_id,
+          'data_source_id' => $company_vo->data_source_id,
+          'data_source_item_id' => $company_vo->data_source_item_id,
           'user_id' => null,
-          'name' => $company->name,
-          'full_name' => $company->full_name,
+          'name' => $company_vo->name,
+          'full_name' => $company_vo->full_name,
           'inn' => $founded_inn,
-          'ogrn' => $company->ogrn,
-          'address' => $company->actual_address,
-          'email' => $company->email,
-          'phone' => $company->phone,
-          'site' => $company->site,
+          'ogrn' => $company_vo->ogrn,
+          'address' => $company_vo->actual_address,
+          'email' => $company_vo->email,
+          'phone' => $company_vo->phone,
+          'site' => $company_vo->site,
 
-          'longitude_center' => $company->longitude_center,
-          'latitude_center' => $company->latitude_center,
-          'longitude' => $company->longitude,
-          'latitude' => $company->latitude,
+          'longitude_center' => $company_vo->longitude_center,
+          'latitude_center' => $company_vo->latitude_center,
+          'longitude' => $company_vo->longitude,
+          'latitude' => $company_vo->latitude,
         ]);
 
-        // сохранение товаров производителя
-        foreach ($company->goods as $good) {
-          /** @var CompanyGoodFromParserValueObject $good */
+        if ($company_vo->logo_url) {
+          $counterparty->saveLogoFromUrl($company_vo->logo_url);
+        }
 
-          $is_already_exists = Good::where('data_source_id', $good->data_source_id)
-            ->where('data_source_item_id', $good->data_source_item_id)->exists();
+        $counterparty->savePhotosFromUrlArray($company_vo->photos_urls);
+
+        // сохранение товаров производителя
+        foreach ($company_vo->goods as $good_vo) {
+          /** @var CompanyGoodFromParserValueObject $good_vo */
+
+          $is_already_exists = Good::where('data_source_id', $good_vo->data_source_id)
+            ->where('data_source_item_id', $good_vo->data_source_item_id)->exists();
 
           // если такой товар в БД уже существует
           if (!$is_already_exists) {
-            Good::create([
-              'data_source_id' => $good->data_source_id,
-              'data_source_item_id' => $good->data_source_item_id,
-              'brand' => $good->brand,
-              'name' => $good->name,
-              'description' => $good->description,
-              'price' => $good->price,
-              'price_description' => $good->price_description,
-              'keyword_for_search' => (object)$good->keyword_for_search,
-              'data_source_item_url' => $good->data_source_item_url,
-              'data_source_item_last_edit' => $good->data_source_item_last_edit,
-              'price_min_party' => $good->price_min_party,
-              'properties' => (object)$good->properties,
+            $good = Good::create([
+              'data_source_id' => $good_vo->data_source_id,
+              'data_source_item_id' => $good_vo->data_source_item_id,
+              'brand' => $good_vo->brand,
+              'name' => $good_vo->name,
+              'description' => $good_vo->description,
+              'price' => $good_vo->price,
+              'price_description' => $good_vo->price_description,
+              'keyword_for_search' => (object)$good_vo->keyword_for_search,
+              'data_source_item_url' => $good_vo->data_source_item_url,
+              'data_source_item_last_edit' => $good_vo->data_source_item_last_edit,
+              'price_min_party' => $good_vo->price_min_party,
+              'properties' => (object)$good_vo->properties,
             ]);
+
+            $good->savePhotosFromUrlArray($good_vo->photos_urls);
           } else {
             // TODO: можно делать обновление товара
           }
