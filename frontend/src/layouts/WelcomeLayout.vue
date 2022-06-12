@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-  import { storeToRefs } from 'pinia'
+  import { storeToRefs } from 'pinia';
 
   /**
    * Routers
@@ -25,7 +25,7 @@
   import AuthService from '../services/auth.service';
 
   const router = useRouter();
-  
+
   const { user } = storeToRefs(userStore());
 
   async function logout() {

@@ -1,15 +1,13 @@
 <template>
   <div class="q-pa-none">
-    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">
-      Пользователи
-    </h5>
+    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">Пользователи</h5>
     <div>
-      <UserDialog 
-        v-model="dialog" 
+      <UserDialog
+        v-model="dialog"
         v-model:user="selectUser"
         :loading="loading"
         :use-reset="false"
-        @on-success="onSucces"
+        @on-success="onSuccess"
       />
     </div>
     <q-table
@@ -40,16 +38,19 @@
       </template>
     </q-table>
   </div>
-
 </template>
 
 <script setup lang="ts">
-  import {ref } from 'vue';
+  import { ref } from 'vue';
 
   /**
    * Common
    */
-  import { selectedRowsLabel, paginationLabel, getDefaultUser} from 'Src/common';
+  import {
+    selectedRowsLabel,
+    paginationLabel,
+    getDefaultUser,
+  } from 'Src/common';
 
   /**
    * Store
@@ -65,9 +66,8 @@
   /**
    * Components
    */
-  import IconBtn from 'Components/common/IconBtn.vue'
+  import IconBtn from 'Components/common/IconBtn.vue';
   import UserDialog from 'Components/user/UserDialog.vue';
-
 
   const { loadAllUser } = userStore();
 
@@ -85,7 +85,7 @@
     icon: string;
     tooltip: string;
   };
-  
+
   /**
    * Заголовки таблицы
    */
@@ -94,29 +94,29 @@
       name: 'name',
       align: 'left',
       label: 'Имя',
-      field: 'name', 
-      sortable: true
+      field: 'name',
+      sortable: true,
     },
     {
       name: 'second_name',
       align: 'left',
       label: 'Фамилия',
       field: 'second_name',
-      sortable: true
+      sortable: true,
     },
     {
       name: 'email',
       align: 'left',
       label: 'email',
       field: 'email',
-      sortable: true
+      sortable: true,
     },
     {
       name: 'role',
       align: 'left',
       label: 'Роль',
       field: 'role',
-      sortable: true
+      sortable: true,
     },
     {
       align: 'center',
@@ -125,7 +125,7 @@
       name: 'actions',
     },
   ];
-  
+
   const buttons: Button[] = [
     {
       color: 'warning',
@@ -160,7 +160,7 @@
     },
   );
 
-  /** 
+  /**
    * Открыть окно редактирования пользователя
    */
   function openEditDialog(value: User) {
@@ -169,12 +169,12 @@
     selectUser.value = { ...value };
   }
 
-  async function onSucces() {
+  async function onSuccess() {
     loading.value = true;
 
     await loadAllUser();
 
-    loading.value = false
+    loading.value = false;
   }
 
   async function onRequest() {
@@ -182,7 +182,6 @@
 
     await loadAllUser();
 
-    loading.value = false
-
+    loading.value = false;
   }
 </script>

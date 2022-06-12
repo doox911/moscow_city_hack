@@ -21,24 +21,25 @@ export function capitalizeFirstLetter(v: string) {
 /**
  * Инициалы
  */
-export function getUserName(user: { name: string, second_name: string, patronymic: string }) {
+export function getUserName(user: {
+  name: string;
+  second_name: string;
+  patronymic: string;
+}) {
   const { name, second_name, patronymic } = user;
 
-  const n = name?.length
-    ? `${capitalizeFirstLetter(name)}`
-    : ''
+  const n = name?.length ? `${capitalizeFirstLetter(name)}` : '';
 
   const sn = second_name?.length
     ? `${capitalizeFirstLetter(second_name[0])}.`
-    : ''
+    : '';
 
   const p = patronymic?.length
     ? `${capitalizeFirstLetter(patronymic[0])}.`
-    : ''
+    : '';
 
   return `${n} ${sn} ${p}`;
-
-};
+}
 
 export function getRoleDescription(name: Roles) {
   return RolesDescription[name];
@@ -93,8 +94,8 @@ export function getDefaultCounterparty(): Counterparty {
     email: '',
     phone: '',
     site: '',
-    goods: []
-  }
+    goods: [],
+  };
 }
 
 /**
@@ -111,7 +112,7 @@ export function getDefaultUser(): User {
     role: Roles.Guest,
     created_at: '',
     updated_at: '',
-  }
+  };
 }
 
 export function getDefaultGood(): Good {
@@ -119,14 +120,14 @@ export function getDefaultGood(): Good {
     name: '',
     brand: '',
     created_at: '',
-    updated_at: ''
-  }
+    updated_at: '',
+  };
 }
 
 export function getDefaultService(): Service {
   return {
     name: '',
     additional_info: '',
-    code: ''
-  }
+    code: '',
+  };
 }

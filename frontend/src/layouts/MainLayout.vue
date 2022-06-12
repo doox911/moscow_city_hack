@@ -4,9 +4,11 @@
       <q-toolbar>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
 
-        <div class="non-selectable ">
+        <div class="non-selectable">
           <span class="text-weight-bold text-green">М</span>ос<span
-            class="text-weight-bold text-green">И</span>порт<span class="text-weight-bold text-green">М</span>ониторинг
+            class="text-weight-bold text-green"
+            >И</span
+          >порт<span class="text-weight-bold text-green">М</span>ониторинг
         </div>
 
         <q-space />
@@ -22,15 +24,21 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="drawer" :width="200" :breakpoint="500" overlay bordered class="bg-grey-3">
+    <q-drawer
+      v-model="drawer"
+      :width="200"
+      :breakpoint="500"
+      overlay
+      bordered
+      class="bg-grey-3"
+    >
       <q-scroll-area class="fit">
         <q-list>
-
           <template v-for="(menuItem, index) in menuList" :key="index">
-            <q-item 
+            <q-item
               :active="menuItem.to === route.path"
-              :clickable="menuItem.to !== route.path" 
-              class="non-selectable" 
+              :clickable="menuItem.to !== route.path"
+              class="non-selectable"
               @click="router.push(menuItem.to)"
             >
               <q-item-section avatar>
@@ -42,7 +50,6 @@
             </q-item>
             <!-- <q-separator :key="'sep' + index"  v-if="menuItem.separator" /> -->
           </template>
-
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -54,8 +61,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from 'vue'
-  import { storeToRefs } from 'pinia'
+  import { computed, ref } from 'vue';
+  import { storeToRefs } from 'pinia';
 
   /**
    * Api
@@ -113,8 +120,7 @@
 
   const { menuList } = storeToRefs(menuStore());
 
-  async function getMenuList()
-  {
+  async function getMenuList() {
     const { setMenu } = menuStore();
     setMenu(await apiMenuList());
 

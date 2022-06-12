@@ -1,14 +1,14 @@
 /**
  * Constants
  */
- import Config from 'Constants/config';
+import Config from 'Constants/config';
 
 /**
  * Notifications
  */
- import { Notify } from 'quasar';
+import { Notify } from 'quasar';
 
- /**
+/**
  * Types
  */
 import type { AxiosError } from 'axios';
