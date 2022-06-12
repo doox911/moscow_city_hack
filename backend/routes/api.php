@@ -94,6 +94,19 @@ Route::middleware('auth:sanctum')->group(function () {
     ]);
   })->middleware('role:government|admin');
 
+  Route::get('cancel_parsing', function () {
+    Cache::forget('parsing_' . request()->user()->id);
+
+    return response()->json([
+      'content' => [
+        'status' => 'Parse declined',
+      ],
+      'messages' => [
+        'Поиск информации отменен'
+      ]
+    ]);
+  })->middleware('role:government|admin');
+
   Route::post('/register', [AuthController::class, 'register'])->middleware('role:admin');
   Route::post('/logout', [AuthController::class, 'logout']);
 });
