@@ -20,7 +20,7 @@ class GoodController extends Controller {
    */
   public function index(): JsonResponse {
     $goods = Good::query();
-    $items_per_page = request()->input('item_per_page');
+    $items_per_page = request()->input('item_per_page') ?? 1;
 
     /**
      * [
@@ -36,6 +36,7 @@ class GoodController extends Controller {
       $filters = json_decode($filters, true);
     }
 
+    $filters['columns'] = $filters['columns'] ?? [];
     foreach ($filters['columns'] as $column => $sort_direction) {
       if (!empty($filters['search_string'])) {
         $goods->orWhere($column, 'like', "%{$filters['search_string']}%");
