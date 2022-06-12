@@ -196,8 +196,8 @@
       selected?: Good[];
       good?: Good[];
       rowsPerPage?: number;
-      isAttach: boolean;
-      isSearch: boolean;
+      isAttach?: boolean;
+      isSearch?: boolean;
     }>(),
     {
       loading: false,
