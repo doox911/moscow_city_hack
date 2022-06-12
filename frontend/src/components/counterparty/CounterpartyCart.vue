@@ -28,7 +28,7 @@
                 >
                   <q-img
                     class="rounded-borders col-12 full-height"
-                    :src="`data:image/png;base64,${encodedImage}`"
+                    :src="`${encodedImage}`"
                   />
                 </div>
               </q-carousel-slide>
