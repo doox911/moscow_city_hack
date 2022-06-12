@@ -46,6 +46,9 @@ class CounterpartyResource extends JsonResource {
       'latitude_center' => $counterparty->latitude_center,
       'longitude' => $counterparty->longitude,
       'latitude' => $counterparty->latitude,
+
+      'goods' => $counterparty->goods->map->activity,
+      'services' => $counterparty->services->map->activity,
     ];
   }
 }

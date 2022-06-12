@@ -22,6 +22,8 @@ class UserResource extends JsonResource {
     /** @var User */
     $user = $this->resource;
 
+    $company = $user->isOwnerRole() ? $user->counterparty : null;
+
     return [
       'id' => $user->id,
       'name' => $user->name,
@@ -32,7 +34,7 @@ class UserResource extends JsonResource {
       'email_verified_at' => $user->email_verified_at,
       'created_at' => $user->created_at,
       'updated_at' => $user->updated_at,
-      'company' => $this->when($request->user()->isOwnerRole(), $user->counterparty),
+      'company' => $company,
     ];
   }
 }

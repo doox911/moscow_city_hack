@@ -64,6 +64,7 @@ class CounterpartyController extends Controller {
   public function store(Request $request): JsonResponse {
     $data = $request->all();
 
+    // todo move to Trait or Service (duplicate code)
     if ($request->user()->isOwnerRole()) {
       $tc = new TaskController;
       $req = new StoreTaskRequest;
@@ -111,6 +112,7 @@ class CounterpartyController extends Controller {
   public function update(Request $request, Counterparty $counterparty): JsonResponse {
     $data = $request->all();
 
+    // todo move to Trait or Service (duplicate code)
     if ($request->user()->isOwnerRole()) {
       $tc = new TaskController;
       $req = new StoreTaskRequest;
@@ -170,6 +172,6 @@ class CounterpartyController extends Controller {
    * @return Response
    */
   public function destroy(Counterparty $counterparty): Response {
-    // todo realise
+    // todo realise (at the moment we do not destroy anything)
   }
 }

@@ -44,7 +44,27 @@ class Counterparty extends Model implements HasMedia {
    * @return HasMany
    */
   public function activities(): HasMany {
-    return $this->hasMany(Counterparty::class);
+    return $this->hasMany(Activity::class, 'counterparty_id');
+  }
+
+  /**
+   * Товары компании
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function goods(): HasMany {
+    return $this->activities()
+      ->where('activity_type', Good::class);
+  }
+
+  /**
+   * Деятельность компании
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function services(): HasMany {
+    return $this->activities()
+      ->where('activity_type', Service::class);
   }
 
   /**
