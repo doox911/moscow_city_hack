@@ -2,7 +2,7 @@
   <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">Пользователи</h5>
   <q-table
     :columns="columns"
-    :rows="rows"
+    :rows="allUser"
     :pagination-label="paginationLabel"
     :selected-rows-label="selectedRowsLabel"
     class="no-shadow"
@@ -23,93 +23,6 @@
       </q-td>
     </template>
   </q-table>
-  <q-dialog
-    v-model="isOpen">
-      <q-card style="width: 500px; padding: 10px;">
-        <q-card-section>
-          <template v-if = "modalMode == 'new'">Добавить нового пользователя</template>
-          <template v-if = "modalMode == 'update'">Изменить пользователя</template>
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            v-model="userData.secondName"
-            :rules="[ requiredStringRule ]"
-            label="Фамилия"
-          />
-          <q-input
-            v-model="userData.name"
-            :rules="[ requiredStringRule ]"
-            label="Имя"
-          />
-          <q-input
-            v-model="userData.patronymic"
-            label="Отчество"
-          />
-          <q-input
-            v-model="userData.email"
-            :rules="[ requiredStringRule ]"
-            label="Email"
-          />
-          <q-select
-            v-model="userData.role"
-            :options="roleList"
-            option-label="label"
-            :rules="[ requiredSelectRule ]"
-            label="Роль"
-          />
-          <q-select
-            v-if = "userData.role?.value == Roles.Owner"
-            v-model="userData.owner"
-            :options="ownerList"
-            :rules="[ (e) => e !== undefined ]"
-            label="Предприятие"
-          />
-          <q-input
-            v-model="userData.password"
-            :rules="[ requiredStringRule ]"
-            :type="isPwd ? 'password' : 'text'"
-            label="Пароль"
-            ref="fldPasswordChange"
-          >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd = !isPwd"
-              />
-            </template>
-          </q-input>
-          <q-input
-            v-if="modalMode == 'new'"
-            v-model="userData.confirmPassword"
-            :rules="[ requiredStringRule, (v) => requiredPasswordRule(v, userData.password) ]"
-            :type="isPwd ? 'password' : 'text'"
-            label="Подтверждение пароля"
-          >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd = !isPwd"
-              />
-            </template>
-          </q-input>
-        </q-card-section>
-        <q-btn
-          color="primary float-right"
-          :label="modalMode == 'new' ? 'Зарегистрировать' : 'Изменить'"
-          :disable="disabled"
-          @click="modalMode == 'new' ? registration() : updateUser()"
-        />
-        <q-btn
-          color="white float-right"
-          text-color="black"
-          label="Отмена"
-          style="margin-right: 10px;"
-          @click="onCancelModal"
-        />
-      </q-card>
-  </q-dialog>
 </template>
 
 <script setup lang="ts">
@@ -138,13 +51,16 @@
   /**
    * Store
    */
-  import { ownerStore, User } from '../../stores';
+  import { ownerStore, User, userStore } from '../../stores';
   import { storeToRefs } from 'pinia';
 
   /**
    * Types
    */
   import type { QTableProps } from 'quasar';
+
+  const { loadAllUser } = userStore();
+  const { allUser } = storeToRefs(userStore());
 
   const userData = ref({
     id: null,
@@ -285,7 +201,6 @@
   ];
   const isOpen = ref(false);
   let isPwd = ref(true);
-  const rows = ref<User[]>([]);
   const loading = ref(false);
   const { ownerList } = storeToRefs(ownerStore());
 
@@ -293,13 +208,10 @@
   {
     loading.value = true;
 
-    const users = await apiGetAllUsers();
-
-    rows.value.splice(0, rows.value.length, ...users);
+    await loadAllUser();
 
     loading.value = false
   }
-  onRequest();
 
   async function onEdit(user: User)
   {

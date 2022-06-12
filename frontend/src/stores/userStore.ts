@@ -6,22 +6,27 @@ import { ref } from 'vue';
  */
 import { Roles } from 'Src/constants';
 
+/**
+ * Types
+ */
+import { Counterparty } from 'Src/api/counterparty';
+import { apiGetAllUsers } from '../api/users';
+
 export type User = {
-  id: number;
-  company: number;
-  name: string;
-  second_name: string;
-  patronymic: string;
-  email: string;
-  role: Roles;
+  company?: Counterparty | null;
   created_at: string;
+  email: string;
+  id: number;
+  name: string;
+  patronymic: string;
+  role: Roles;
+  second_name: string;
   updated_at: string;
 };
 
 export const userStore = defineStore('user', () => {
   const user = ref<User>({
     id: -1,
-    company: -1,
     name: '',
     second_name: '',
     patronymic: '',
@@ -39,7 +44,6 @@ export const userStore = defineStore('user', () => {
   function removeUser() {
     user.value = {
       id: -1,
-      company: -1,
       name: '',
       second_name: '',
       patronymic: '',
@@ -53,10 +57,21 @@ export const userStore = defineStore('user', () => {
     return user.value.id !== -1;
   }
 
+  const allUser = ref<User[]>([]);
+
+  async function loadAllUser() {
+    if (user.value.role == Roles.Admin) {
+      const users = await apiGetAllUsers();
+      allUser.value = users;
+    }
+  }
+
   return {
     removeUser,
     setUser,
     user,
     isAuthenticated,
+    allUser,
+    loadAllUser,
   };
 });
