@@ -101,6 +101,7 @@ export function getDefaultCounterparty(): Counterparty {
 export function getDefaultUser(): User {
   return {
     id: -1,
+    company: null,
     name: '',
     second_name: '',
     patronymic: '',
@@ -114,6 +115,8 @@ export function getDefaultUser(): User {
 export function getDefaultGood(): Good {
   return {
     name: '',
-    brand: ''
+    brand: '',
+    created_at: '',
+    updated_at: ''
   }
 }

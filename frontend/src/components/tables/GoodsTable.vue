@@ -59,7 +59,7 @@
   </div>
   <GoodDialog 
     v-model="dialog" 
-    v-model:counterparty="selectGood"
+    v-model:good="selectGood"
     @on-success="emitOnRequest"
   />
 </template>
@@ -78,7 +78,8 @@
   import { 
     selectedRowsLabel,
     paginationLabel,
-    getDefaultGood
+    getDefaultGood,
+    setDateAndTimeToDateTimeComponent
   } from 'Src/common';
 
   /**
@@ -133,7 +134,23 @@
       label: 'Название',
       name: 'name',
       sortable: true,
-    }
+    },
+    {
+      align: 'center',
+      field: 'created_at',
+      label: 'создано',
+      name: 'created_at',
+      format: (val) => setDateAndTimeToDateTimeComponent(val),
+      sortable: true,
+    },
+    {
+      align: 'center',
+      field: 'updated_at',
+      label: 'обновлено',
+      name: 'updated_at',
+      format: (val) => setDateAndTimeToDateTimeComponent(val),
+      sortable: true,
+    },
   ];
 
   const buttons: Button[] = [
@@ -212,7 +229,7 @@
 
   function appendNewGood() {
     dialog.value = true;
-
+    console.log(GoodDialog)
     selectGood.value = getDefaultGood();
   }
 

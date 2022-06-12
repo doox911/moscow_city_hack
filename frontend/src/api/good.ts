@@ -16,6 +16,11 @@ export type Good = {
     name: string;
     resource_name: string;
   }
+  created_at: string
+  updated_at: string
+
+  data_source_id?: any
+  data_source_item_id?: any
 };
 
 export type GoodResponce = {

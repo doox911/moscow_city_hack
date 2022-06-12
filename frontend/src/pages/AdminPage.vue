@@ -28,10 +28,10 @@
     <div class="row">
       <div class="col">
         <GoodsTable
-          :counterpart="goodsRef.data"
+          :good="goodsRef.data"
           :loading="goodsRef.loading"
           :rowsNumber="goodsRef.rowsNumber"
-          @on-request="onRequestOwner"
+          @on-request="onRequestGoods"
         />
       </div>
     </div>
@@ -107,7 +107,7 @@
   async function onRequestGoods({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
   {
     goodsRef.value.loading = true;
-    const { counterparties, total_rows } = await apiGoods({
+    const { goods, total_rows } = await apiGoods({
       params: {
         page,
         item_per_page: size,
@@ -119,7 +119,7 @@
     });
 
     goodsRef.value.rowsNumber = total_rows;
-    goodsRef.value.data = counterparties;
+    goodsRef.value.data = goods.data;
     goodsRef.value.loading = false;
   }
 
