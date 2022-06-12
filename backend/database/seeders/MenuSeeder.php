@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Menu;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MenuSeeder extends Seeder {
   /**
@@ -37,10 +38,9 @@ class MenuSeeder extends Seeder {
       ]
     ];
 
+    Menu::truncate();
     foreach ($menus as $menu) {
-      Menu::updateOrCreate([
-        'to' => $menu
-      ], $menu);
+      Menu::create($menu);
     }
   }
 }

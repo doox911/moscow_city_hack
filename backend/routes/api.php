@@ -72,7 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('', [OkvedController::class, 'index']);
   });
 
-  Route::prefix('search/{string}')->group(function () {
+  Route::prefix('search/{string}')->middleware('role:government')->group(function () {
     Route::post('', [SearchController::class, 'search']);
   });
 
