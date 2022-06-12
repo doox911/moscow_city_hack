@@ -1,7 +1,7 @@
 <?php
 
+use App\Services\MainService;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -26,9 +26,7 @@ return new class extends Migration {
   }
 
   public static function fillOKVED() {
-    ini_set('max_execution_time', '999999999');
-    set_time_limit(0);
-    ini_set('memory_limit', '-1');
+    MainService::setUnlimitExecutionResources();
 
     $db_schema_dump = 'database/sql/okved_schema.sql';
     $db_dump = 'database/sql/okved_data.sql';
