@@ -8,6 +8,7 @@ use App\Models\Good;
 use App\Models\Service;
 use App\Parsers\FNSParser;
 use App\Parsers\ProductCenterParser;
+use App\Services\MainService;
 use App\ValueObjects\CompanyFromParserValueObject;
 use App\ValueObjects\CompanyGoodFromParserValueObject;
 use Carbon\Carbon;
@@ -27,11 +28,13 @@ class ParseController extends Controller {
    * Конструктор контроллера
    */
   public function __construct() {
+    MainService::setUnlimitExecutionResources();
+
     $parsers = [];
     foreach (self::PARSERS as $parser) {
       // debug todo убрать 5 чтобы снять ограничение
       //$parsers[] = new $parser(5);
-      $parsers[] = new $parser(5);
+      $parsers[] = new $parser(10);
     }
 
     $this->parsers = $parsers;

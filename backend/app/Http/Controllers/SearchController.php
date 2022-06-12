@@ -28,6 +28,7 @@ class SearchController extends Controller {
     // сначала ищем полную фразу
     $search_goods = Good::where('name', 'like', "%$query%")
       ->orWhere('brand', 'like', "%$query%")
+      ->orWhere('description', 'like', "%$query%")
       ->get();
 
     $companies = $companies->merge($search_goods->flatMap->activities->map->counterparty);
@@ -40,6 +41,7 @@ class SearchController extends Controller {
       foreach ($words as $word) {
         $search_goods = Good::where('name', 'like', "%$word%")
           ->orWhere('brand', 'like', "%$word%")
+          ->orWhere('description', 'like', "%$word%")
           ->get();
 
         $companies = $companies->merge($search_goods->flatMap->activities->map->counterparty);
