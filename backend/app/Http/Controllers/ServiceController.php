@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Resources\ServiceResource;
 use App\Models\Activity;
 use App\Models\Counterparty;
-use App\Models\Good;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -47,7 +47,7 @@ class ServiceController extends Controller {
 
     return response()->json([
       'content' => [
-        'services' => $services->simplePaginate($items_per_page),
+        'services' => ServiceResource::collection($services->simplePaginate($items_per_page)),
         'pages_count' => $pages_count,
         'total_rows' => $total_rows,
       ],
