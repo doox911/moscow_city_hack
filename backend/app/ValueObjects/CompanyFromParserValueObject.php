@@ -5,6 +5,7 @@ namespace App\ValueObjects;
 use App\Abstractions\AbstractValueObject;
 use App\Exceptions\ValidationException;
 use App\Traits\ValueObjectHelperTrait;
+use Illuminate\Support\Collection;
 use JsonException;
 
 /**
@@ -38,8 +39,9 @@ use JsonException;
  * @property array $keywords_for_search
  * @property string|null $general_activity
  * @property array $activities
+ * @property Collection $goods collection of CompanyGoodFromParserValueObject
  *
- * @description Объект позиции для быстрого ввода
+ * @description Объект производителя после парсинга
  * @package Preorder
  */
 final class CompanyFromParserValueObject extends AbstractValueObject {
@@ -195,7 +197,11 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
    */
   protected array $activities = [];
 
-
+  /**
+   * @description Товары производителя
+   * @var Collection
+   */
+  protected Collection $goods;
 
   /**
    * CompanyFromParserValueObject constructor.

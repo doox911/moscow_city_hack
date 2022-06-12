@@ -4,8 +4,8 @@ namespace App\Parsers;
 
 use App\Abstractions\AbstractParser;
 use App\Exceptions\ValidationException;
-use App\Services\MainService;
 use App\ValueObjects\CompanyFromParserValueObject;
+use App\ValueObjects\CompanyGoodFromParserValueObject;
 use Carbon\Carbon;
 use DiDom\Document;
 use DiDom\Exceptions\InvalidSelectorException;
@@ -61,13 +61,13 @@ class ProductCenterParser extends AbstractParser {
           break;
         }
 
-        try {
-          $search_page_document = new Document($html_content);
+        // try {
+        $search_page_document = new Document($html_content);
 
-          $this->parsePage($search_page_document);
-        } catch (Throwable $e) {
-          //dd($page, $response_json);
-        }
+        $this->parsePage($search_page_document);
+        // } catch (Throwable $e) {
+        //   //dd($page, $response_json);
+        // }
       }
     }
 
@@ -75,6 +75,8 @@ class ProductCenterParser extends AbstractParser {
   }
 
   /**
+   * Парсинг одной страницы списка производителей
+   *
    * @param Document $search_page_document
    * @return void
    * @throws GuzzleException
@@ -241,7 +243,16 @@ class ProductCenterParser extends AbstractParser {
         }
       }
 
+      $goods_url = self::$base_url . $producer_page->first('.iv_side_block')
+          ->first('b a')->attr('href');
+
+      $goods = collect();
+      if (!empty($goods_url)) {
+        $goods = $this->parseProducerGoodsPage($goods_url);
+      }
+
       $producer_vo = new CompanyFromParserValueObject([
+        // TODO
         //'data_source_id' => $data_source_id,
         'data_source_item_id' => $producer_id,
         'name' => $producer_name,
@@ -268,6 +279,7 @@ class ProductCenterParser extends AbstractParser {
 
         'general_activity' => $general_activity,
         'activities' => $activities,
+        'goods' => $goods,
       ]);
 
 
@@ -278,5 +290,68 @@ class ProductCenterParser extends AbstractParser {
 
       $this->producers->push($producer_vo);
     }
+  }
+
+  /**
+   * Парсинг страницы товаров производителя
+   *
+   * @param string $goods_url
+   * @return Collection
+   * @throws GuzzleException
+   * @throws InvalidSelectorException
+   * @throws JsonException
+   * @throws ValidationException
+   */
+  private function parseProducerGoodsPage(string $goods_url): Collection {
+    $goods = collect();
+
+    // переходим на страницу товаров производителя
+    $response = $this->client->request('GET', $goods_url);
+    $response_html_producer_goods_page = $response->getBody()->getContents();
+    $producer_goods_page = new Document($response_html_producer_goods_page);
+
+    $cards = $producer_goods_page->first('.cards');
+    foreach ($cards->find('.card_item') as $card_node) {
+      $data_source_id = null;
+      $photos_urls = [];
+      $keywords_for_search = [];
+
+      $data_source_item_id = $card_node->first('.to_favorites')->attr('data-item-id');
+      $image_url = self::$base_url . $card_node->first('.image img')->attr('src');
+
+      $good_page_url = self::$base_url . $card_node->first('.image a')->attr('href');
+
+      // переходим на страницу товара
+      $response_good_page = $this->client->request('GET', $good_page_url);
+      $response_html_good_page = $response_good_page->getBody()->getContents();
+      $good_page = new Document($response_html_good_page);
+
+      $good_node = $good_page->first('.item_view');
+
+      foreach ($good_node->find('li[data-fancybox="main-photos"]') as $image_node) {
+        $photos_urls[] = $image_node->attr('href');
+      }
+
+      $name = $good_page->first('.iv_content h1[itemprop="name"]')?->text();
+      $description = $good_page->first('.iv_bottom .tc_description div[itemprop="description"]')?->text();
+      $price = $good_page->first('.iv_content .iv_main_block meta[itemprop="price"]')?->attr('content');
+      $price_description = $good_page->first('.iv_content .iv_main_block div[class="price"]')?->text();
+
+      $good = new CompanyGoodFromParserValueObject([
+        // TODO
+        'data_source_id' => $data_source_id,
+        'data_source_item_id' => $data_source_item_id,
+        'name' => $name,
+        'description' => $description,
+        'price' => $price,
+        'price_description' => $price_description,
+        'photos_urls' => $photos_urls,
+        'keywords_for_search' => $keywords_for_search,
+      ]);
+
+      $goods->push($good);
+    }
+
+    return $goods;
   }
 }
