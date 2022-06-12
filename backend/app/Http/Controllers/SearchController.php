@@ -27,19 +27,21 @@ class SearchController extends Controller {
       ->orWhere('brand', 'like', "%$query%")
       ->get();
 
-    $companies = $companies->merge($search_goods->companies);
+    $companies = $companies->merge($search_goods->flatMap->companies);
     $goods = $goods->merge($search_goods);
 
     // затем разбиваем по словам и ищем для каждого слова
     $words = explode(' ', $query);
 
-    foreach ($words as $word) {
-      $search_goods = Good::where('name', 'like', "%$word%")
-        ->orWhere('brand', 'like', "%$word%")
-        ->get();
+    if (count($words) > 1) {
+      foreach ($words as $word) {
+        $search_goods = Good::where('name', 'like', "%$word%")
+          ->orWhere('brand', 'like', "%$word%")
+          ->get();
 
-      $companies = $companies->merge($search_goods->companies);
-      $goods = $goods->merge($search_goods);
+        $companies = $companies->merge($search_goods->flatMap->companies);
+        $goods = $goods->merge($search_goods);
+      }
     }
 
     return response()->json([
