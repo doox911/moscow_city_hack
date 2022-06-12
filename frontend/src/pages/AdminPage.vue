@@ -28,6 +28,7 @@
     <div class="row">
       <div class="col">
         <GoodsTable
+          v-model:selected="selected"
           :good="goodsRef.data"
           :loading="goodsRef.loading"
           :rowsNumber="goodsRef.rowsNumber"
@@ -83,7 +84,9 @@
     loading: false
   });
 
-  const loading = ref(false)
+  const loading = ref(false);
+
+  const selected = ref([]);
 
   async function onRequestOwner({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
   {
