@@ -22,6 +22,7 @@ export type Counterparty = {
   phone: string,
   site: string,
   goods?: Good[],
+  services?: Service[],
   created_at?: string;
   updated_at?: string;
 };

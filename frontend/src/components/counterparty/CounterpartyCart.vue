@@ -18,7 +18,12 @@
         </div>
       </div>
     </div>
-
+    <q-separator />
+    <div class="row">
+      <div v-for="service in servicesRef">
+        <q-chip icon="home_repair_service" color="deep-orange" text-color="white">{{ service.name }}</q-chip>
+      </div>
+    </div>
     <q-separator />
 
     <div class="row" style="margin-bottom:10px;">
@@ -27,7 +32,7 @@
           <p class="text-h5">Товары</p>
           <q-separator />
           <div class="row" style = "gap:10px; padding:10px;">
-            <div v-for="good in goodsRef.data" class = "good-block">
+            <div v-for="good in goodsRef" class = "good-block">
               <div class = "icon">
                 <q-icon name="photo_library" class="cursor-pointer"/>
               </div>
@@ -68,6 +73,8 @@
    * Types
    */
   import { ImportSortColoumn } from '../types';
+  import { Service } from 'bonjour-service';
+  import { Good } from '../../api/good';
 
 
   const { user } = storeToRefs(userStore());
@@ -82,11 +89,8 @@
 
   const counterparty_updated = computed(() => setDateAndTimeToDateTimeComponent(counterparty.value.updated_at));
 
-  const goodsRef: any = ref({
-    data: [],
-    rowsNumber: 0,
-    loading: false
-  });
+  const goodsRef = ref<Good[]>([]);
+  const servicesRef = ref<Service[]>([]);
 
   function openEditDialog() {
     dialog.value = true;
@@ -97,13 +101,12 @@
   {
     if(user.value.company?.id)
     {
-      goodsRef.value.loading = true;
-      const { goods } = await apiCounterparty(user.value.company?.id);
-      goodsRef.value.rowsNumber = goods?.length;
-      goodsRef.value.data = goods;
-      goodsRef.value.loading = false;
+      const { goods, services } = await apiCounterparty(user.value.company?.id);
 
-      console.log(goodsRef.value.data)
+      console.log(goods)
+      console.log(services)
+      goodsRef.value = goods;
+      servicesRef.value = services;
     }
   }
 
