@@ -384,8 +384,8 @@
   {
     switch(event)
     {
-      case "edit": return openEditDialog(props);
-      case "map": return openMapDialog(props);
+    case 'edit': return openEditDialog(props);
+    case 'map': return openMapDialog(props);
     }
   }
 
