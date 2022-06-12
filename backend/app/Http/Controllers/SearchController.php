@@ -2,64 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Parsers\OptParser;
-use App\Parsers\ProductCenterParser;
+use App\Models\Good;
+use Illuminate\Http\JsonResponse;
 
+/**
+ * Класс поиска
+ */
 class SearchController extends Controller {
 
-  private const PARSERS = [
-    ProductCenterParser::class,
-    // OptParser::class, // todo дописать
-  ];
-
-  private array $parsers;
-
-  public function __construct() {
-    $parsers = [];
-    foreach (self::PARSERS as $parser) {
-      $parsers[] = new $parser;
-    }
-
-    $this->parsers = $parsers;
-  }
-
   /**
-   * Возвращает коллекцию объектов поиска
+   * Возвращает результаты объектов поиска
+   * На выходе должен быть массив с компаниями производителями
    *
    * @param string $query
-   * @return array
+   * @return \Illuminate\Http\JsonResponse
    */
-  public function search(string $query): array {
+  public function search(string $query): JsonResponse {
+    $goods = collect();
+    $services = collect();
+    $companies = collect();
 
-    $rows = [];
-    foreach ($this->parsers as $parser) {
-      $rows = [...$rows, $parser->parse($query)];
+    // сначала ищем полную фразу
+    $search_goods = Good::where('name', 'like', "%$query%")
+      ->orWhere('brand', 'like', "%$query%")
+      ->get();
+
+    $companies = $companies->merge($search_goods->companies);
+    $goods = $goods->merge($search_goods);
+
+    // затем разбиваем по словам и ищем для каждого слова
+    $words = explode(' ', $query);
+
+    foreach ($words as $word) {
+      $search_goods = Good::where('name', 'like', "%$word%")
+        ->orWhere('brand', 'like', "%$word%")
+        ->get();
+
+      $companies = $companies->merge($search_goods->companies);
+      $goods = $goods->merge($search_goods);
     }
 
-    $this->saveResult($rows);
-
-    return $rows;
-  }
-
-  /**
-   * Сохранение результатов парсинга. На входе массив CompanyFromParserValueObject
-   *
-   * @param array $rows
-   * @return void
-   * @see \App\ValueObjects\CompanyFromParserValueObject
-   */
-  public function saveResult(array $rows) {
-    foreach ($rows as $row) {
-      /**
-       * @var \App\ValueObjects\CompanyFromParserValueObject $row
-       */
-
-      foreach ($rows->goods as $good) {
-        /**
-         * @var \App\ValueObjects\CompanyGoodFromParserValueObject
-         */
-
-      }
-    }
+    return response()->json([
+      'content' => [
+        'companies' => $companies,
+        'goods' => $goods,
+        'services' => $services,
+      ]
+    ]);
   }
 }

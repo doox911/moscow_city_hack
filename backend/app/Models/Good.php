@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
@@ -38,6 +39,15 @@ class Good extends Model implements HasMedia {
    */
   public function data_source(): BelongsTo {
     return $this->belongsTo(DataSource::class);
+  }
+
+  /**
+   * Компании которые производят товар
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+   */
+  public function companies(): HasManyThrough {
+    return $this->hasManyThrough(Counterparty::class, Activity::class);
   }
 
   /**
