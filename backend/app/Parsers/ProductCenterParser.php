@@ -31,7 +31,7 @@ class ProductCenterParser extends AbstractParser {
   /**
    * Инициализация парсера
    */
-  public function __construct(int $limit_rows = 0, int $start_page = 1) {
+  public function __construct(int $limit_rows = 25, int $start_page = 1) {
     parent::__construct();
 
     $this->data_source = DataSource::where('canonical_name', 'productcenter_ru')->first();
@@ -47,7 +47,7 @@ class ProductCenterParser extends AbstractParser {
    */
   public function parse(string $query = ''): Collection {
     $page = $this->start_page;
-    for ($page = 1; $page <= 40; $page++) {
+    for ($page = 1; $page <= 5; $page++) {
       if ($this->limit_rows > 0 && $this->producers->count() >= $this->limit_rows) {
         break;
       }
@@ -59,7 +59,7 @@ class ProductCenterParser extends AbstractParser {
         $response = $this->client->request('GET', $url);
       } catch (ServerException $e) {
         // очередная страница не существует, превышен лимит страниц на стороне поставщика информации
-        break;
+        continue;
       }
 
       if ($response->getStatusCode() === 200) {
@@ -70,16 +70,16 @@ class ProductCenterParser extends AbstractParser {
 
         if (empty($html_content)) {
           // очередная страница не существует
-          break;
+          continue;
         }
 
-        // try {
-        $search_page_document = new Document($html_content);
+        try {
+          $search_page_document = new Document($html_content);
 
-        $this->parsePage($search_page_document);
-        // } catch (Throwable $e) {
-        //   //dd($page, $response_json);
-        // }
+          $this->parsePage($search_page_document);
+        } catch (Throwable $e) {
+          //dd($page, $response_json);
+        }
       }
     }
 

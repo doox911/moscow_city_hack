@@ -18,6 +18,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use Throwable;
 
 class Good extends Model implements HasMedia {
   use HasFactory, SoftDeletes, InteractsWithMedia;
@@ -68,7 +69,6 @@ class Good extends Model implements HasMedia {
    * Сохраняет фотографии товара
    *
    * @param array $urls
-   * @throws FileCannotBeAdded
    */
   public function savePhotosFromUrlArray(array $urls): void {
     $collection = 'photos';
@@ -79,6 +79,11 @@ class Good extends Model implements HasMedia {
       // если в один день загрузят несколько файлов чтобы они не затирали друг друга
       $current_time = Carbon::now()->format('H_i');
       $path_info = pathinfo($url);
+
+      if (!isset($path_info['extension'])) {
+        continue;
+      }
+
       $filename = $path_info['filename'] . "_$current_time." . $path_info['extension'];
 
       try {
@@ -87,7 +92,7 @@ class Good extends Model implements HasMedia {
           ->usingName($filename)
           ->usingFileName($filename)
           ->toMediaCollection($collection);
-      } catch (FileDoesNotExist | FileIsTooBig $e) {
+      } catch (FileDoesNotExist | FileIsTooBig | Throwable $e) {
         Log::info($e->getMessage());
       }
     }

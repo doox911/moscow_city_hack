@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ParseController;
 use App\Parsers\ProductCenterParser;
 use App\Services\MainService;
 use Illuminate\Support\Facades\Route;
@@ -11,18 +12,12 @@ Route::get('/', function () {
 
 Route::get('/parser', function () {
 
-  $ar = [
-    'Размер' => 'M',
-    'Высота' => '2000',
-    'Ширина' => '3500',
-  ];
-
-  echo json_encode($ar);
-
-  dd(1);
-
   MainService::setUnlimitExecutionResources();
-  $producers = (new ProductCenterParser(30, 1))->parse('молоко');
+
+  //(new ParseController)->parse('шоколад');
+
+
+  $producers = (new ProductCenterParser(5))->parse('шоколад');
 
   // сохранение логотипа и фотографий галереи
   // $counterparty = Counterparty::where('id', 100)->first();

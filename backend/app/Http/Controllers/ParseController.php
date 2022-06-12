@@ -12,6 +12,7 @@ use App\ValueObjects\CompanyFromParserValueObject;
 use App\ValueObjects\CompanyGoodFromParserValueObject;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Throwable;
 
 class ParseController extends Controller {
 
@@ -29,6 +30,7 @@ class ParseController extends Controller {
     $parsers = [];
     foreach (self::PARSERS as $parser) {
       // debug todo убрать 5 чтобы снять ограничение
+      //$parsers[] = new $parser(5);
       $parsers[] = new $parser(5);
     }
 
@@ -45,9 +47,10 @@ class ParseController extends Controller {
 
     $inns = [];
     $fns = new FNSParser;
-    try {
 
+    try {
       foreach ($this->parsers as $parser) {
+
         foreach ($parser->parse($query) as $company_vo) {
           /** @var CompanyFromParserValueObject $company_vo */
 
@@ -199,7 +202,7 @@ class ParseController extends Controller {
         }
       }
 
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
       Cache::forget('parsing_' . request()->user()->id);
 
       response()->json([
@@ -211,6 +214,7 @@ class ParseController extends Controller {
         ]
       ], 500)->throwResponse();
     }
+
     // после завершения парсинга убираем флаг
     Cache::forget('parsing_' . request()->user()->id);
   }

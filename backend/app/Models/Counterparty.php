@@ -17,6 +17,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use Throwable;
 
 /**
  * @description Модель сущности "Производитель/Контрагент"
@@ -91,7 +92,6 @@ class Counterparty extends Model implements HasMedia {
    * Сохраняет логотип компании
    *
    * @param string $url
-   * @throws FileCannotBeAdded
    */
   public function saveLogoFromUrl(string $url): void {
     $collection = 'company_logo';
@@ -102,7 +102,8 @@ class Counterparty extends Model implements HasMedia {
     // если в один день загрузят несколько файлов чтобы они не затирали друг друга
     $current_time = Carbon::now()->format('H_i');
     $path_info = pathinfo($url);
-    $filename = $path_info['filename'] . "_$current_time." . $path_info['extension'];
+
+    $filename = $path_info['filename'] . "_$current_time." . ($path_info['extension'] ?? 'jpg');
 
     try {
       $this
@@ -110,7 +111,7 @@ class Counterparty extends Model implements HasMedia {
         ->usingName($filename)
         ->usingFileName($filename)
         ->toMediaCollection($collection);
-    } catch (FileDoesNotExist | FileIsTooBig $e) {
+    } catch (FileDoesNotExist | FileIsTooBig | Throwable $e) {
       Log::info($e->getMessage());
     }
   }
@@ -130,6 +131,11 @@ class Counterparty extends Model implements HasMedia {
       // если в один день загрузят несколько файлов чтобы они не затирали друг друга
       $current_time = Carbon::now()->format('H_i');
       $path_info = pathinfo($url);
+
+      if (!isset($path_info['extension'])) {
+        continue;
+      }
+
       $filename = $path_info['filename'] . "_$current_time." . $path_info['extension'];
 
       try {
@@ -138,7 +144,7 @@ class Counterparty extends Model implements HasMedia {
           ->usingName($filename)
           ->usingFileName($filename)
           ->toMediaCollection($collection);
-      } catch (FileDoesNotExist | FileIsTooBig $e) {
+      } catch (FileDoesNotExist | FileIsTooBig | Throwable $e) {
         Log::info($e->getMessage());
       }
     }
