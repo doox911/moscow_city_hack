@@ -29,11 +29,22 @@
     <div class="row">
       <div class="col">
         <GoodsTable
-          v-model:selected="selected"
+          v-model:selected="goodsRef.selected"
           :good="goodsRef.data"
           :loading="goodsRef.loading"
           :rowsNumber="goodsRef.rowsNumber"
           @on-request="onRequestGoods"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <ServiceTable
+          v-model:selected="servicesRef.selected"
+          :service="servicesRef.data"
+          :loading="servicesRef.loading"
+          :rowsNumber="servicesRef.rowsNumber"
+          @on-request="onRequestServices"
         />
       </div>
     </div>
@@ -62,12 +73,14 @@
   import UsersTable from '../components/tables/UsersTable.vue';
   import OwnerTable from '../components/tables/OwnerTable.vue';
   import GoodsTable from '../components/tables/GoodsTable.vue';
+  import ServiceTable from '../components/tables/ServiceTable.vue';
 
   /**
    * Types
    */
   import type { Task } from 'Src/api/task';
   import type { ImportSortColoumn } from 'Src/types';
+  import { apiServices } from '../api/service';
 
   type URef<T> = {
     data: T,
@@ -92,12 +105,19 @@
   const goodsRef= ref<URef<Good[]>>({
     data: [],
     rowsNumber: 0,
-    loading: false
+    loading: false,
+    selected: ref([])
+  });
+
+  const servicesRef: any = ref({
+    data: [],
+    rowsNumber: 0,
+    loading: false,
+    selected: ref([])
   });
 
   const loading = ref(false);
 
-  const selected = ref([]);
 
   async function onRequestTask({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
   {
@@ -156,6 +176,25 @@
     goodsRef.value.loading = false;
   }
 
+  async function onRequestServices({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
+  {
+    servicesRef.value.loading = true;
+    const { services, total_rows } = await apiServices({
+      params: {
+        page,
+        item_per_page: size,
+        filters: {
+          search_string: searchText,
+          columns
+        }
+      }
+    });
+
+    servicesRef.value.rowsNumber = total_rows;
+    servicesRef.value.data = services;
+    servicesRef.value.loading = false;
+  }
+
   async function onTaskApply(t: Task) {
     console.log('onTaskApply', t);
   }
@@ -182,6 +221,12 @@
     });
 
     onRequestGoods({
+      page: 1,
+      size: 10,
+      columns: {},
+      searchText: ''
+    });
+    onRequestServices({
       page: 1,
       size: 10,
       columns: {},

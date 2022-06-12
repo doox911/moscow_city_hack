@@ -9,6 +9,7 @@ import { User } from '../stores';
  */
 import { Roles, RolesDescription } from 'Src/constants';
 import { Good } from '../api/good';
+import { Service } from '../api/service';
 
 /**
  * первый символ в верхний регистр
@@ -119,5 +120,13 @@ export function getDefaultGood(): Good {
     brand: '',
     created_at: '',
     updated_at: ''
+  }
+}
+
+export function getDefaultService(): Service {
+  return {
+    name: '',
+    additional_info: '',
+    code: ''
   }
 }

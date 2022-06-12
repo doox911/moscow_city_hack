@@ -8,6 +8,7 @@ import { requestWrapper } from '../common/wrappers';
 import type { PaginationCount, LaravelPagination } from 'Src/types';
 import { Good } from './good';
 import { getDefaultCounterparty } from '../common';
+import { Service } from './service';
 
 export type Counterparty = {
   id: number | null,
@@ -118,5 +119,21 @@ export async function apiCounterpartyAttachGoods(
       await new ApiRequest(config).post(`/api/counterparties/${counterparty.id}/attach_goods`, { goods });
     },
     success_message: 'К компании привязаны товары'
+  });
+}
+
+/**
+ * Привязать к компании услугу
+ */
+export async function apiCounterpartyAttachServices(
+  counterparty: Counterparty,
+  serviceIds: number[],
+  config?: AxiosRequestConfig
+) {
+  await requestWrapper({
+    success: async () => {
+      await new ApiRequest(config).post(`/api/counterparties/${counterparty.id}/attach_services`, { services: serviceIds });
+    },
+    success_message: 'К компании привязаны услуги'
   });
 }

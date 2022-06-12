@@ -1,6 +1,7 @@
 <template>
   <q-page class="q-ma-md">
     <UserProfile />
+    <CounterpartyCart />
   </q-page>
 </template>
 
@@ -10,6 +11,7 @@
    * Components
    */
   import UserProfile from 'Components/user/UserProfile.vue'
+  import CounterpartyCart from 'Components/counterparty/CounterpartyCart.vue'
 
   /**
    * Hooks

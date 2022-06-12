@@ -15,33 +15,34 @@
           <p class="q-my-xs"><b class="q-pr-sm">сайт:</b>{{ counterparty.site }}</p>
           <p class="q-my-xs"><b class="q-pr-sm">создано:</b>{{ counterparty_created }}</p>
           <p class="q-my-xs"><b class="q-pr-sm">обновлено:</b>{{ counterparty_updated }}</p>
-
-          <q-btn
-            color="primary float-right"
-            label="Изменить"
-            style="margin-top: 10px"
-            type="reset"
-            @click="openEditDialog"
-          />
         </div>
       </div>
     </div>
 
     <q-separator />
 
-    <GoodsTable
-      :isAttach="false"
-      :isSearch="false"
-      :good="goodsRef.data"
-      :loading="goodsRef.loading"
-      :rowsNumber="goodsRef.rowsNumber"
-    />
-
+    <div class="row" style="margin-bottom:10px;">
+      <div class="row">
+        <div class="q-px-sm non-selectable text-weight-regular text-grey-9">
+          <p class="text-h5">Товары</p>
+          <q-separator />
+          <div class="row" style = "gap:10px; padding:10px;">
+            <div v-for="good in goodsRef.data" class = "good-block">
+              <div class = "icon">
+                <q-icon name="photo_library" class="cursor-pointer"/>
+              </div>
+              <div class = "title">Название: </div>
+              <div>{{ good.name }}</div>
+              <div class = "title">Брэнд: </div>
+              <div>{{ good.brand }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <q-separator />
   </q-page>
-  <CounterpartyDialog 
-    v-model="dialog" 
-    v-model:counterparty="selectCounterparty"
-  />
 </template>
 
 <script setup lang="ts">
@@ -58,18 +59,6 @@
   import { getDefaultCounterparty, setDateAndTimeToDateTimeComponent } from 'Src/common';
 
   /**
-   * Components
-   */
-  import CounterpartyDialog from 'Components/counterparty/CounterpartyDialog.vue';
-  import Counterparty from 'Components/counterparty/Counterparty.vue';
-  import GoodsTable from 'Components/tables/GoodsTable.vue';
-
-  /**
-   * Hooks
-   */
-  import { useUserPageGuard } from 'Src/hooks';
-
-  /**
    * Store
    */
   import { storeToRefs } from 'pinia'
@@ -80,7 +69,6 @@
    */
   import { ImportSortColoumn } from '../types';
 
-  useUserPageGuard();
 
   const { user } = storeToRefs(userStore());
 
@@ -114,6 +102,8 @@
       goodsRef.value.rowsNumber = goods?.length;
       goodsRef.value.data = goods;
       goodsRef.value.loading = false;
+
+      console.log(goodsRef.value.data)
     }
   }
 
@@ -126,3 +116,28 @@
     });
   })
 </script>
+
+<style scoped lang="scss">
+  .good-block
+  {
+    min-width: 200px;
+    padding: 12px;
+    color: #000;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 5px #0003, 0 2px 2px #00000024, 0 3px 1px -2px #0000001f;
+
+    .title
+    {
+      opacity: .54;
+      font-weight: 500;
+      font-size: 12px;
+    }
+    .icon
+    {
+      font-size: 6em;
+      color: gray;
+      text-align: center;
+    }
+  }
+</style>
