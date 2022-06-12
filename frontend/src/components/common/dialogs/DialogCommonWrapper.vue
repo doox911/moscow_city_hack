@@ -4,6 +4,7 @@
       v-if="openDialogButton"
       :disable="disabled"
       :label="buttonText"
+      :loading="loadingOpenDialog"
       :color="buttonColor"
       @click="onOpen"
     >
@@ -120,6 +121,7 @@
       headerText?: string;
       headerTextColor?: string;
       loading?: boolean;
+      loadingOpenDialog?: boolean;
       maximized?: boolean;
       maxWidth?: number;
       modelValue: boolean;

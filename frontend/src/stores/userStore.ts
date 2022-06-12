@@ -6,28 +6,34 @@ import { ref } from 'vue';
  */
 import { Roles } from 'Src/constants';
 
+/**
+ * Types
+ */
+import { Counterparty } from 'Src/api/counterparty';
+
 export type User = {
-  id: number;
-  company: number;
-  name: string;
-  second_name: string;
-  patronymic: string;
-  email: string;
-  role: Roles;
+  company?: Counterparty | null;
   created_at: string;
+  email: string;
+  id: number;
+  name: string;
+  patronymic: string;
+  role: Roles;
+  second_name: string;
   updated_at: string;
+  password?: string;
 };
 
 export const userStore = defineStore('user', () => {
   const user = ref<User>({
-    id: -1,
-    company: -1,
-    name: '',
-    second_name: '',
-    patronymic: '',
-    email: '',
-    role: Roles.Guest,
+    company: null,
     created_at: '',
+    email: '',
+    id: -1,
+    name: '',
+    patronymic: '',
+    role: Roles.Guest,
+    second_name: '',
     updated_at: '',
   });
 
@@ -39,7 +45,7 @@ export const userStore = defineStore('user', () => {
   function removeUser() {
     user.value = {
       id: -1,
-      company: -1,
+      company: null,
       name: '',
       second_name: '',
       patronymic: '',

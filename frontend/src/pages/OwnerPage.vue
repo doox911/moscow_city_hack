@@ -82,8 +82,8 @@
   const selectCounterparty = ref<Counterparty|undefined>();
 
   watch(user, async (u) => {
-    if (u.id > 0) {
-      const response = await apiCounterparty(u.id);
+    if (u.company) {
+      const response = await apiCounterparty(u.company.id);
 
       if(response) {
         counterparty.value = response;
