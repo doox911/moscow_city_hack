@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-mx-md">
-    <div class="row">
+    <div class="row" style="margin-bottom:10px;">
       <div class="row">
         <div class="q-px-sm non-selectable text-weight-regular text-grey-9">
           <p class="text-h5">Информация о компании</p>
@@ -13,8 +13,8 @@
           <p class="q-my-xs"><b class="q-pr-sm">Почта:</b>{{ counterparty.email }}</p>
           <p class="q-my-xs"><b class="q-pr-sm">телефон:</b>{{ counterparty.phone }}</p>
           <p class="q-my-xs"><b class="q-pr-sm">сайт:</b>{{ counterparty.site }}</p>
-          <p class="q-my-xs"><b class="q-pr-sm">создано:</b>{{ counterparty.created_at }}</p>
-          <p class="q-my-xs"><b class="q-pr-sm">обновлено:</b>{{ counterparty.updated_at }}</p>
+          <p class="q-my-xs"><b class="q-pr-sm">создано:</b>{{ counterparty_created }}</p>
+          <p class="q-my-xs"><b class="q-pr-sm">обновлено:</b>{{ counterparty_updated }}</p>
 
           <q-btn
             color="primary float-right"
@@ -30,6 +30,8 @@
     <q-separator />
 
     <GoodsTable
+      :isAttach="false"
+      :isSearch="false"
       :good="goodsRef.data"
       :loading="goodsRef.loading"
       :rowsNumber="goodsRef.rowsNumber"
@@ -54,7 +56,7 @@
   /**
    * Common
    */
-  import { getDefaultCounterparty } from 'Src/common';
+  import { getDefaultCounterparty, setDateAndTimeToDateTimeComponent } from 'Src/common';
 
   /**
    * Components
@@ -88,6 +90,10 @@
   const counterparty = ref<CounterpartyType>(user.value.company || getDefaultCounterparty());
 
   const selectCounterparty = ref<CounterpartyType>(getDefaultCounterparty());
+
+  const counterparty_created = computed(() => setDateAndTimeToDateTimeComponent(counterparty.value.created_at));
+
+  const counterparty_updated = computed(() => setDateAndTimeToDateTimeComponent(counterparty.value.updated_at));
 
   const goodsRef: any = ref({
     data: [],

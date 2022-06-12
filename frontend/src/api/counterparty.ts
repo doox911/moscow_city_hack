@@ -20,7 +20,9 @@ export type Counterparty = {
   email: string,
   phone: string,
   site: string,
-  goods?: Good[]
+  goods?: Good[],
+  created_at?: string;
+  updated_at?: string;
 };
 
 export type CounterpartiesResponce = {
