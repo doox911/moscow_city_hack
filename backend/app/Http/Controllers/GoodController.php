@@ -9,12 +9,13 @@ use App\Models\Counterparty;
 use App\Models\Good;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class GoodController extends Controller {
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\JsonResponse
+   * @return JsonResponse
    */
   public function index(): JsonResponse {
     $goods = Good::query();
@@ -59,8 +60,8 @@ class GoodController extends Controller {
   /**
    * Store a newly created resource in storage.
    *
-   * @param \Illuminate\Http\Request $request
-   * @return \Illuminate\Http\JsonResponse
+   * @param Request $request
+   * @return JsonResponse
    */
   public function store(Request $request): JsonResponse {
     $data = $request->all();
@@ -106,9 +107,9 @@ class GoodController extends Controller {
   /**
    * Update the specified resource in storage.
    *
-   * @param \Illuminate\Http\Request $request
-   * @param \App\Models\Good $good
-   * @return \Illuminate\Http\JsonResponse
+   * @param Request $request
+   * @param Good $good
+   * @return JsonResponse
    */
   public function update(Request $request, Good $good): JsonResponse {
     $data = $request->all();
@@ -155,7 +156,7 @@ class GoodController extends Controller {
    * Массовая обработка массива товаров и создание записей о компании, которая производит эти товары
    *
    * @param array $goods
-   * @param \App\Models\Counterparty $counterparty
+   * @param Counterparty $counterparty
    * @return void
    */
   public static function massAttachToCounterparty(array $goods, Counterparty $counterparty): void {
@@ -179,10 +180,10 @@ class GoodController extends Controller {
   /**
    * Remove the specified resource from storage.
    *
-   * @param \App\Models\Good $good
-   * @return \Illuminate\Http\Response
+   * @param Good $good
+   * @return Response
    */
-  public function destroy(Good $good): \Illuminate\Http\Response {
+  public function destroy(Good $good): Response {
     // todo realise
   }
 }

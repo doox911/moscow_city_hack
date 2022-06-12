@@ -4,46 +4,47 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ActivityController extends Controller {
+
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @return Response
    */
-  public function index() {
+  public function index(): Response {
     //
   }
-
 
   /**
    * Store a newly created resource in storage.
    *
-   * @param \Illuminate\Http\Request $request
-   * @return \Illuminate\Http\Response
+   * @param Request $request
+   * @return Response
    */
-  public function store(Request $request) {
+  public function store(Request $request): Response {
     //
   }
 
   /**
    * Update the specified resource in storage.
    *
-   * @param \Illuminate\Http\Request $request
-   * @param \App\Models\Activity $activity
-   * @return \Illuminate\Http\Response
+   * @param Request $request
+   * @param Activity $activity
+   * @return Response
    */
-  public function update(Request $request, Activity $activity) {
+  public function update(Request $request, Activity $activity): Response {
     //
   }
 
   /**
    * Remove the specified resource from storage.
    *
-   * @param \App\Models\Activity $activity
-   * @return \Illuminate\Http\Response
+   * @param Activity $activity
+   * @return Response
    */
-  public function destroy(Activity $activity) {
+  public function destroy(Activity $activity): Response {
     //
   }
 }

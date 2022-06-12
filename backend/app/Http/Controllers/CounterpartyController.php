@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Resources\CounterpartyResource;
-use App\Models\Activity;
 use App\Models\Counterparty;
-use App\Models\Good;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -170,9 +168,9 @@ class CounterpartyController extends Controller {
   /**
    * Создание задания для добавления новых товаров компании или прямое добавление для админа
    *
-   * @param \Illuminate\Http\Request $request
-   * @param \App\Models\Counterparty $counterparty
-   * @return \Illuminate\Http\JsonResponse
+   * @param Request $request
+   * @param Counterparty $counterparty
+   * @return JsonResponse
    */
   public function attachGoods(Request $request, Counterparty $counterparty): JsonResponse {
     // todo validate goods
@@ -219,9 +217,9 @@ class CounterpartyController extends Controller {
   /**
    * Создание задания для добавления новых товаров компании или прямое добавление для админа
    *
-   * @param \Illuminate\Http\Request $request
-   * @param \App\Models\Counterparty $counterparty
-   * @return \Illuminate\Http\JsonResponse
+   * @param Request $request
+   * @param Counterparty $counterparty
+   * @return JsonResponse
    */
   public function attachServices(Request $request, Counterparty $counterparty): JsonResponse {
     // todo validate services
