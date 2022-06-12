@@ -25,6 +25,8 @@ class SearchController extends Controller {
     $services = collect();
     $companies = collect();
 
+    CounterpartyResource::setWithoutGoods();
+
     // сначала ищем полную фразу
     $search_goods = Good::where('name', 'like', "%$query%")
       ->orWhere('brand', 'like', "%$query%")

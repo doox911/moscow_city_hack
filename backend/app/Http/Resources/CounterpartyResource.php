@@ -15,6 +15,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class CounterpartyResource extends JsonResource {
 
+  private static bool $without_goods = false;
+
+  public static function setWithoutGoods(): void {
+    self::$without_goods = true;
+  }
+
   /**
    * @param Request $request
    * @return array
@@ -25,7 +31,7 @@ class CounterpartyResource extends JsonResource {
 
     $registration_date = !empty($counterparty->registration_date) ? Carbon::parse($counterparty->registration_date)->format('Y-m-d') : null;
 
-    return [
+    $response_array = [
       'id' => $counterparty->id,
       'user_id' => $counterparty->user_id,
       'name' => $counterparty->name,
@@ -59,8 +65,15 @@ class CounterpartyResource extends JsonResource {
       'longitude' => $counterparty->longitude,
       'latitude' => $counterparty->latitude,
 
-      'goods' => GoodResource::collection($counterparty->goods->map->activity),
-      'services' => ServiceResource::collection($counterparty->services->map->activity),
+      'goods' => [], // по умолчанию
+      'services' => [], // по умолчанию
     ];
+
+    if (self::$without_goods === false) {
+      $response_array['goods'] = GoodResource::collection($counterparty->goods->map->activity);
+      $response_array['services'] = ServiceResource::collection($counterparty->services->map->activity);
+    }
+
+    return $response_array;
   }
 }

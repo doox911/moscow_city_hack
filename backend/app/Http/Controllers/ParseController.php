@@ -208,9 +208,11 @@ class ParseController extends Controller {
     } catch (Throwable $e) {
       Cache::forget('parsing_' . request()->user()->id);
 
+      $message = mb_convert_encoding($e->getMessage(), 'UTF-8', 'auto');
+
       response()->json([
         'content' => [
-          'error' => $e->getMessage()
+          'error' => $message
         ],
         'messages' => [
           'Что-то пошло не так'
