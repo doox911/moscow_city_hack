@@ -134,6 +134,13 @@ class ProductCenterParser extends AbstractParser {
         'phone' => $phone,
         'site' => $site,
         'actual_address' => $actual_address,
+        'legal_address' => $legal_address,
+        'number_of_employees' => $number_of_employees,
+        'authorized_capital' => $authorized_capital,
+        'registration_date' => $registration_date,
+        'orgn' => $orgn,
+        'inn' => $inn,
+        'kpp' => $kpp,
       ]);
 
 

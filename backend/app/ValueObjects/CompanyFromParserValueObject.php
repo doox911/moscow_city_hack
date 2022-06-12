@@ -12,7 +12,6 @@ use JsonException;
  *
  * @property int|null $data_source_id
  * @property string|null $data_source_item_id
- * @property string|null $inn
  * @property string|null $name
  * @property string|null $full_name
  * @property string|null $description
@@ -22,6 +21,14 @@ use JsonException;
  * @property string|null $actual_address
  * @property string|null $legal_address
  * @property string|null $logo_url
+ *
+ * @property int|null $number_of_employees
+ * @property float|null $authorized_capital
+ * @property string|null $registration_date
+ * @property string|null $orgn
+ * @property string|null $inn
+ * @property string|null $kpp
+ *
  * @property array $photos_urls
  * @property array $keywords_for_search
  *
@@ -42,12 +49,6 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
    * @var string|null
    */
   protected ?string $data_source_item_id = null;
-
-  /**
-   * @description ИНН
-   * @var string|null
-   */
-  protected ?string $inn = null;
 
   /**
    * @description Наименование
@@ -84,6 +85,43 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
    * @var string|null
    */
   protected ?string $legal_address = null;
+
+
+  /**
+   * @description Количество сотрудников
+   * @var int|null
+   */
+  protected ?int $number_of_employees = null;
+
+  /**
+   * @description Уставной капитал
+   * @var float|null
+   */
+  protected ?float $authorized_capital = null;
+
+  /**
+   * @description Дата регистрации
+   * @var string|null
+   */
+  protected ?string $registration_date = null;
+
+  /**
+   * @description ОГРН
+   * @var string|null
+   */
+  protected ?string $orgn = null;
+
+  /**
+   * @description ИНН
+   * @var string|null
+   */
+  protected ?string $inn = null;
+
+  /**
+   * @description КПП
+   * @var string|null
+   */
+  protected ?string $kpp = null;
 
 
   /**
