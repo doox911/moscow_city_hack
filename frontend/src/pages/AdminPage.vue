@@ -15,13 +15,23 @@
         <UsersTable />
       </div>
     </div>
-    <div class="row" style="margin-top:10px;">
+    <div class="row">
       <div class="col">
         <OwnerTable
           :counterpart="counterpartRef.data"
           :loading="counterpartRef.loading"
           :rowsNumber="counterpartRef.rowsNumber"
           @on-request="onRequestOwner"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <GoodsTable
+          :good="goodsRef.data"
+          :loading="goodsRef.loading"
+          :rowsNumber="goodsRef.rowsNumber"
+          @on-request="onRequestGoods"
         />
       </div>
     </div>
@@ -36,6 +46,7 @@
    */
   import { apiTasks } from 'Src/api/task';
   import { apiCounterparties } from 'Src/api/counterparty';
+  import { apiGoods } from '../api/good';
 
   /**
    * Hooks
@@ -48,6 +59,7 @@
   import TasksTable from '../components/tables/TasksTable.vue';
   import UsersTable from '../components/tables/UsersTable.vue';
   import OwnerTable from '../components/tables/OwnerTable.vue';
+  import GoodsTable from '../components/tables/GoodsTable.vue';
 
   /**
    * Types
@@ -60,6 +72,12 @@
   const tasks = ref<Task[]>([]);
 
   const counterpartRef: any = ref({
+    data: [],
+    rowsNumber: 0,
+    loading: false
+  });
+
+  const goodsRef: any = ref({
     data: [],
     rowsNumber: 0,
     loading: false
@@ -86,6 +104,25 @@
     counterpartRef.value.loading = false;
   }
 
+  async function onRequestGoods({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
+  {
+    goodsRef.value.loading = true;
+    const { goods, total_rows } = await apiGoods({
+      params: {
+        page,
+        item_per_page: size,
+        filters: {
+          search_string: searchText,
+          columns
+        }
+      }
+    });
+
+    goodsRef.value.rowsNumber = total_rows;
+    goodsRef.value.data = goods.data;
+    goodsRef.value.loading = false;
+  }
+
   async function onTaskApply(t: Task) {
     console.log('onTaskApply', t);
   }
@@ -108,6 +145,12 @@
     });
 
     onRequestOwner({
+      page: 1,
+      size: 10,
+      columns: {},
+      searchText: ''
+    });
+    onRequestGoods({
       page: 1,
       size: 10,
       columns: {},
