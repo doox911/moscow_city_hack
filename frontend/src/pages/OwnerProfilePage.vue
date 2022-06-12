@@ -1,8 +1,10 @@
 <template>
   <q-page class="q-ma-md">
     <div class="row">
-      <UserProfile class = "col-12 col-md-4"/>
-      <CounterpartyCart  class = "col-12 col-md-8"/>
+      <div class = "col-12 col-md-1"></div>
+      <UserProfile class = "col-12 col-md-3"/>
+      <CounterpartyCart  class = "col-12 col-md-7"/>
+      <div class = "col-12 col-md-1"></div>
     </div>
   </q-page>
 </template>

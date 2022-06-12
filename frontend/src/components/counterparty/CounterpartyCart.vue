@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-mx-md">
+  <q-page>
     <div class="row" style="margin-bottom:10px;">
       <div class="row col-12">
         <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
