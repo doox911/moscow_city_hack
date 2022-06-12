@@ -15,46 +15,47 @@ export type Good = {
     id: number;
     name: string;
     resource_name: string;
-  }
-  created_at: string
-  updated_at: string
+  };
+  created_at: string;
+  updated_at: string;
 
-  data_source_id?: any
-  data_source_item_id?: any
+  data_source_id?: number | null;
+  data_source_item_id?: string | number | null;
 
   base64_logo?: string;
   base64_photos?: string[];
 };
 
-export type GoodResponce = {
+export type GoodResponse = {
   content: {
-    good: Good
-  }
+    good: Good;
+  };
   message: string;
-}
+};
 
-export type GoodsResponce = {
+export type GoodsResponse = {
   content: PaginationCount & {
-    goods: Good[],
-  },
+    goods: Good[];
+  };
   message: string;
-}
+};
 
 /**
  * Получение списка товаров
  */
 export async function apiGoods(config?: AxiosRequestConfig) {
   let data: PaginationCount & {
-    goods: Good[],
+    goods: Good[];
   } = {
     pages_count: 0,
     total_rows: 0,
-    goods: []
+    goods: [],
   };
   await requestWrapper({
     success: async () => {
-      data = (await new ApiRequest(config).get('/api/goods') as GoodsResponce).content;
-    }
+      data = ((await new ApiRequest(config).get('/api/goods')) as GoodsResponse)
+        .content;
+    },
   });
   return data;
 }
@@ -62,29 +63,29 @@ export async function apiGoods(config?: AxiosRequestConfig) {
 /**
  * Создать товар
  */
-export async function apiCreateGood(
-  good: Good,
-  config?: AxiosRequestConfig
-) {
+export async function apiCreateGood(good: Good, config?: AxiosRequestConfig) {
   await requestWrapper({
     success: async () => {
-      (await new ApiRequest(config).post('/api/goods', good) as GoodResponce).content.good;
+      ((await new ApiRequest(config).post('/api/goods', good)) as GoodResponse)
+        .content.good;
     },
-    success_message: 'Товар добавлен'
+    success_message: 'Товар добавлен',
   });
 }
 
 /**
  * Изменить товар
  */
-export async function apiUpdateGood(
-  good: Good,
-  config?: AxiosRequestConfig
-) {
+export async function apiUpdateGood(good: Good, config?: AxiosRequestConfig) {
   await requestWrapper({
     success: async () => {
-      (await new ApiRequest(config).put(`/api/goods/${good.id}`, good) as GoodResponce).content.good;
+      (
+        (await new ApiRequest(config).put(
+          `/api/goods/${good.id}`,
+          good,
+        )) as GoodResponse
+      ).content.good;
     },
-    success_message: 'Информация о товаре изменена успешно'
+    success_message: 'Информация о товаре изменена успешно',
   });
 }

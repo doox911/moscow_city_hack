@@ -23,27 +23,34 @@ export type Service = {
 };
 
 export type AllEntity = {
-  companies: Counterparty[]
-  goods: Good[]
-  services: Service[]
-}
-export type SearchResponce = {
-  content: AllEntity
+  companies: Counterparty[];
+  goods: Good[];
+  services: Service[];
+};
+export type SearchResponse = {
+  content: AllEntity;
   message: string;
-}
+};
 
 /**
  * Поиск
  */
-export async function apiGlobalSearch(str: string, config?: AxiosRequestConfig) {
+export async function apiGlobalSearch(
+  str: string,
+  config?: AxiosRequestConfig,
+) {
   let data: AllEntity = {
     companies: [],
     goods: [],
-    services: []
-  }
+    services: [],
+  };
   await requestWrapper({
     success: async () => {
-      data = (await new ApiRequest(config).post(`api/search/${str}`) as SearchResponce).content;
+      data = (
+        (await new ApiRequest(config).post(
+          `api/search/${str}`,
+        )) as SearchResponse
+      ).content;
     },
     error_message: 'Ошибка запуска поиска',
   });

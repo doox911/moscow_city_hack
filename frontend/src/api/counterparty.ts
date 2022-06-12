@@ -11,18 +11,18 @@ import { getDefaultCounterparty } from '../common';
 import { Service } from './service';
 
 export type Counterparty = {
-  id: number | null,
-  user_id: number | null,
-  name: string,
-  full_name: string,
-  inn: string,
-  ogrn: string,
-  adress: string,
-  email: string,
-  phone: string,
-  site: string,
-  goods?: Good[],
-  services?: Service[],
+  id: number | null;
+  user_id: number | null;
+  name: string;
+  full_name: string;
+  inn: string;
+  ogrn: string;
+  adress: string;
+  email: string;
+  phone: string;
+  site: string;
+  goods?: Good[];
+  services?: Service[];
   created_at?: string;
   updated_at?: string;
   /**
@@ -38,7 +38,7 @@ export type Counterparty = {
   number_of_employees?: number | null;
 
   /**
-   * Уставной капитал, число с плавающей 
+   * Уставной капитал, число с плавающей
    */
   authorized_capital?: string | null;
 
@@ -56,35 +56,39 @@ export type Counterparty = {
   base64_photos?: string[];
 };
 
-export type CounterpartiesResponce = {
+export type CounterpartiesResponse = {
   content: PaginationCount & {
-    counterparties: Counterparty[],
-  },
+    counterparties: Counterparty[];
+  };
   message: string;
-}
+};
 
-export type CounterpartyResponce = {
+export type CounterpartyResponse = {
   content: {
-    counterparty: Counterparty
-  }
+    counterparty: Counterparty;
+  };
   message: string;
-}
+};
 
 /**
  * Получение списка предприятий
  */
 export async function apiCounterparties(config?: AxiosRequestConfig) {
   let pagination: PaginationCount & {
-    counterparties: Counterparty[],
+    counterparties: Counterparty[];
   } = {
     pages_count: 0,
     total_rows: 0,
-    counterparties: []
+    counterparties: [],
   };
   await requestWrapper({
     success: async () => {
-      pagination = (await new ApiRequest(config).get('/api/counterparties') as CounterpartiesResponce).content;
-    }
+      pagination = (
+        (await new ApiRequest(config).get(
+          '/api/counterparties',
+        )) as CounterpartiesResponse
+      ).content;
+    },
   });
 
   return pagination;
@@ -93,15 +97,16 @@ export async function apiCounterparties(config?: AxiosRequestConfig) {
 /**
  * Получить одно предприятие по user_id
  */
-export async function apiCounterparty(
-  id: number,
-  config?: AxiosRequestConfig
-) {
+export async function apiCounterparty(id: number, config?: AxiosRequestConfig) {
   let counterparty: Counterparty = getDefaultCounterparty();
   await requestWrapper({
     success: async () => {
-      counterparty = (await new ApiRequest(config).get(`/api/counterparties/${id}`) as CounterpartyResponce).content.counterparty;
-    }
+      counterparty = (
+        (await new ApiRequest(config).get(
+          `/api/counterparties/${id}`,
+        )) as CounterpartyResponse
+      ).content.counterparty;
+    },
   });
   return counterparty;
 }
@@ -111,13 +116,18 @@ export async function apiCounterparty(
  */
 export async function apiCreateCounterparty(
   counterparty: Counterparty,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) {
   await requestWrapper({
     success: async () => {
-      (await new ApiRequest(config).post('/api/counterparties', counterparty) as CounterpartyResponce).content.counterparty;
+      (
+        (await new ApiRequest(config).post(
+          '/api/counterparties',
+          counterparty,
+        )) as CounterpartyResponse
+      ).content.counterparty;
     },
-    success_message: 'Предприятие добавлено'
+    success_message: 'Предприятие добавлено',
   });
 }
 
@@ -126,13 +136,18 @@ export async function apiCreateCounterparty(
  */
 export async function apiUpdateCounterparty(
   counterparty: Counterparty,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) {
   await requestWrapper({
     success: async () => {
-      (await new ApiRequest(config).put(`/api/counterparties/${counterparty.id}`, counterparty) as CounterpartyResponce).content.counterparty;
+      (
+        (await new ApiRequest(config).put(
+          `/api/counterparties/${counterparty.id}`,
+          counterparty,
+        )) as CounterpartyResponse
+      ).content.counterparty;
     },
-    success_message: 'Информация о предприятии изменена успешно'
+    success_message: 'Информация о предприятии изменена успешно',
   });
 }
 
@@ -142,13 +157,16 @@ export async function apiUpdateCounterparty(
 export async function apiCounterpartyAttachGoods(
   counterparty: Counterparty,
   goods: Good[],
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) {
   await requestWrapper({
     success: async () => {
-      await new ApiRequest(config).post(`/api/counterparties/${counterparty.id}/attach_goods`, { goods });
+      await new ApiRequest(config).post(
+        `/api/counterparties/${counterparty.id}/attach_goods`,
+        { goods },
+      );
     },
-    success_message: 'К компании привязаны товары'
+    success_message: 'К компании привязаны товары',
   });
 }
 
@@ -158,12 +176,15 @@ export async function apiCounterpartyAttachGoods(
 export async function apiCounterpartyAttachServices(
   counterparty: Counterparty,
   serviceIds: number[],
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) {
   await requestWrapper({
     success: async () => {
-      await new ApiRequest(config).post(`/api/counterparties/${counterparty.id}/attach_services`, { services: serviceIds });
+      await new ApiRequest(config).post(
+        `/api/counterparties/${counterparty.id}/attach_services`,
+        { services: serviceIds },
+      );
     },
-    success_message: 'К компании привязаны услуги'
+    success_message: 'К компании привязаны услуги',
   });
 }
