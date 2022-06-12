@@ -28,6 +28,19 @@ export async function apiRunParsing(str: string, config?: AxiosRequestConfig) {
 }
 
 /**
+ * Запуск парсинга
+ */
+ export async function apiStopParsing(config?: AxiosRequestConfig) {
+  await requestWrapper({
+    success: async () => {
+      await new ApiRequest(config).post('api/cancelparsing');
+    },
+    error_message: 'Ошибка остановки парсинга',
+    success_message: 'Парсинг успешно остановлен',
+  });
+}
+
+/**
  * Статус парсинга
  */
 export async function apiPingParsing(config?: AxiosRequestConfig) {

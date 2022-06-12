@@ -21,6 +21,17 @@
         @click="searching"
       />
     </div>
+    <div class="cols-auto">
+      <IconBtn
+        :disabled="disabled || !is_parsing"
+        :loading="is_parsing || loading"
+        color="red"
+        hover-color="red"
+        icon="stop_circle"
+        text-tooltip="Остановить парсинг"
+        @click="stopParsing"
+      />
+    </div>
   </div>
 </template>
 
@@ -30,7 +41,7 @@
   /**
    * Api
    */
-  import { apiRunParsing, apiPingParsing } from 'Src/api/parsing';
+  import { apiRunParsing, apiPingParsing, apiStopParsing } from 'Src/api/parsing';
 
   /**
    * Components
@@ -68,6 +79,18 @@
     search.value = '';
 
     runPing();
+  }
+
+  async function stopParsing() {
+    loading.value = true;
+
+    await apiStopParsing();
+
+    loading.value = false;
+
+    if (timeinterval_id) {
+      clearInterval(timeinterval_id);
+    }
   }
 
   onMounted(async () => {
