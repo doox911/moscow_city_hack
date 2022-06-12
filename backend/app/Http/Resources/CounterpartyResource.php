@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Counterparty;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,9 +23,8 @@ class CounterpartyResource extends JsonResource {
     /** @var Counterparty */
     $counterparty = $this->resource;
 
-    $data_source = $counterparty->data_source ? DataSourceResource::make($counterparty->data_source) : null;
+    $registration_date = !empty($counterparty->registration_date) ? Carbon::parse($counterparty->registration_date)->format('Y-m-d') : null;
 
-    // todo добавить поля
     return [
       'id' => $counterparty->id,
       'user_id' => $counterparty->user_id,
@@ -42,7 +42,7 @@ class CounterpartyResource extends JsonResource {
       'legal_address' => $counterparty->legal_address,
       'number_of_employees' => $counterparty->number_of_employees,
       'authorized_capital' => $counterparty->authorized_capital,
-      'registration_date' => $counterparty->registration_date,
+      'registration_date' => $registration_date,
       'keywords_for_search' => $counterparty->keywords_for_search,
 
       'created_at' => $counterparty->created_at,
