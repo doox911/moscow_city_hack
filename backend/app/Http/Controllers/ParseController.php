@@ -8,6 +8,7 @@ use App\Parsers\FNSParser;
 use App\Parsers\ProductCenterParser;
 use App\ValueObjects\CompanyFromParserValueObject;
 use App\ValueObjects\CompanyGoodFromParserValueObject;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class ParseController extends Controller {
@@ -25,7 +26,8 @@ class ParseController extends Controller {
   public function __construct() {
     $parsers = [];
     foreach (self::PARSERS as $parser) {
-      $parsers[] = new $parser;
+      // debug todo убрать 5 чтобы снять ограничение
+      $parsers[] = new $parser(5);
     }
 
     $this->parsers = $parsers;
@@ -43,12 +45,15 @@ class ParseController extends Controller {
     $fns = new FNSParser;
 
     foreach ($this->parsers as $parser) {
-      foreach ($parser->parse() as $company_vo) {
+      foreach ($parser->parse($query) as $company_vo) {
         /** @var CompanyFromParserValueObject $company_vo */
 
         // ищем ИНН компании в ФНС по
         if (empty($company_vo->inn)) {
+          continue;
+          // dd($company_vo);
           $fns_company = $fns->search($company_vo->name);
+
           $inns[] = $fns_company->{'ИНН'};
 
           $founded_inn = $fns_company->{'ИНН'};
@@ -96,37 +101,38 @@ class ParseController extends Controller {
         foreach ($company_vo->goods as $good_vo) {
           /** @var CompanyGoodFromParserValueObject $good_vo */
 
-          $is_already_exists = Good::where('data_source_id', $good_vo->data_source_id)
-            ->where('data_source_item_id', $good_vo->data_source_item_id)->exists();
+          // $is_already_exists = Good::where('data_source_id', $good_vo->data_source_id)
+          //   ->where('data_source_item_id', $good_vo->data_source_item_id)->exists();
 
+          // dd(json_encode($good_vo->toArray()['keywords_for_search']));
           // если такой товар в БД уже существует
-          if (!$is_already_exists) {
-            $good = Good::create([
+            $good = Good::updateOrCreate([
               'data_source_id' => $good_vo->data_source_id,
               'data_source_item_id' => $good_vo->data_source_item_id,
-              'brand' => $good_vo->brand,
+            ],[
+              'data_source_id' => $good_vo->data_source_id,
+              'data_source_item_id' => $good_vo->data_source_item_id,
+              'brand' => '',
               'name' => $good_vo->name,
               'description' => $good_vo->description,
               'price' => $good_vo->price,
               'price_description' => $good_vo->price_description,
-              'keyword_for_search' => (object)$good_vo->keyword_for_search,
+              'keywords_for_search' => (object)$good_vo->keywords_for_search,
               'data_source_item_url' => $good_vo->data_source_item_url,
-              'data_source_item_last_edit' => $good_vo->data_source_item_last_edit,
+              'data_source_item_last_edit' => Carbon::parse($good_vo->data_source_item_last_edit)->toDateTimeString(),
               'price_min_party' => $good_vo->price_min_party,
               'properties' => (object)$good_vo->properties,
             ]);
 
             $good->savePhotosFromUrlArray($good_vo->photos_urls);
-          } else {
-            // TODO: можно делать обновление товара
-          }
-
         }
       }
     }
 
+    // dd($inns);
     // $additional_companies_info = $fns->searchGroupInfo($inns);
-    //
+
+    // dd($additional_companies_info);
     // foreach ($additional_companies_info as $item) {
     //
     // }
@@ -134,7 +140,7 @@ class ParseController extends Controller {
     // после завершения парсинга убираем флаг
     Cache::forget('parsing_' . request()->user()->id);
 
-    dd($inns);
+    // dd($inns);
 
   }
 }

@@ -129,7 +129,7 @@ class Good extends Model implements HasMedia {
    * @return object
    */
   public function getKeywordsForSearchAttribute($value): object {
-    return (object)json_decode($value);
+    return (object)json_decode($value, true);
   }
 
   /**
