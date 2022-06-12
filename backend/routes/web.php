@@ -11,7 +11,12 @@ Route::get('/', function () {
 
 Route::get('/parser', function () {
   MainService::setUnlimitExecutionResources();
-  $producers = (new ProductCenterParser)->parse('молоко');
+  $producers = (new ProductCenterParser(30, 1))->parse('молоко');
+
+  // сохранение логотипа и фотографий галереи
+  // $counterparty = Counterparty::where('id', 100)->first();
+  // $counterparty->saveLogoFromUrl($producer_vo->logo_url);
+  // $counterparty->savePhotosFromUrlArray($producer_vo->photos_urls);
 
   dd($producers);
 });

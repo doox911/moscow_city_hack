@@ -26,15 +26,17 @@ class ProductCenterParser extends AbstractParser {
   protected Collection $producers;
   private DataSource $data_source;
   private int $limit_rows;
+  private int $start_page = 1;
 
   /**
    * Инициализация парсера
    */
-  public function __construct(int $limit_rows = 0) {
+  public function __construct(int $limit_rows = 0, int $start_page = 1) {
     parent::__construct();
 
     $this->data_source = DataSource::where('canonical_name', 'productcenter_ru')->first();
     $this->limit_rows = $limit_rows;
+    $this->start_page = $start_page;
     $this->producers = collect();
   }
 
@@ -44,6 +46,7 @@ class ProductCenterParser extends AbstractParser {
    * @throws GuzzleException
    */
   public function parse(string $query = ''): Collection {
+    $page = $this->start_page;
     for ($page = 1; $page <= 40; $page++) {
       if ($this->limit_rows > 0 && $this->producers->count() >= $this->limit_rows) {
         break;
@@ -295,12 +298,6 @@ class ProductCenterParser extends AbstractParser {
         'goods' => $goods,
       ]);
 
-
-      // сохранение логотипа и фотографий галереи
-      // $counterparty = Counterparty::where('id', 100)->first();
-      // $counterparty->saveLogoFromUrl($producer_vo->logo_url);
-      // $counterparty->savePhotosFromUrlArray($producer_vo->photos_urls);
-
       $this->producers->push($producer_vo);
     }
   }
@@ -354,18 +351,21 @@ class ProductCenterParser extends AbstractParser {
       $description = $good_page->first('.iv_bottom .tc_description div[itemprop="description"]')?->text();
       $price = $good_page->first('.iv_content .iv_main_block meta[itemprop="price"]')?->attr('content');
       $price_description = $good_page->first('.iv_content .iv_main_block div[class="price"]')?->text();
-      $price_min_party = $good_page->first('.iv_content .iv_main_block span[class="min_party"]')?->text();
-
+      $price_min_party = $good_page->first('.iv_content .iv_main_block span.min_party')?->text();
+      $last_edit_text = $good_page->first('.iv_bottom .last_edit')?->text();
 
       $last_edit = '';
-      //2022-03-15 16:00:34
-      // $last_edit = $good_page->first('.iv_bottom .last_edit')?->text();
-      //
-      // preg_match('/([^0-9]-[^0-9]-[^0-9] [^0-9]:[^0-9]:[^0-9])/ui', $last_edit, $found);
-      // if (count($found)) {
-      //   dd($found);
-      // }
+      preg_match('/([0-9]{1,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2})/ui', $last_edit_text, $found);
+      if (count($found)) {
+        $last_edit = $found[0] ?? '';
+      }
 
+      $properties = [];
+      foreach ($good_node->find('.iv_features tr') as $tr_node) {
+        [$property_name_node, $property_value_node] = $tr_node->find('td');
+
+        $properties[$property_name_node->text()] = $property_value_node->text();
+      }
 
 
       $good = new CompanyGoodFromParserValueObject([
@@ -380,6 +380,7 @@ class ProductCenterParser extends AbstractParser {
         'price_min_party' => $price_min_party,
         'photos_urls' => $photos_urls,
         'keywords_for_search' => $keywords_for_search,
+        'properties' => $properties,
       ]);
 
       $goods->push($good);

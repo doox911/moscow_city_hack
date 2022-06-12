@@ -12,7 +12,8 @@ use JsonException;
  *
  * @property int|null $data_source_id
  * @property string|null $data_source_item_id
- * @property string|null data_source_item_url
+ * @property string|null $data_source_item_url
+ * @property string|null $data_source_item_last_edit
  * @property string|null $name
  * @property string|null $description
  * @property string|null $price
@@ -21,6 +22,7 @@ use JsonException;
  *
  * @property array $photos_urls
  * @property array $keywords_for_search
+ * @property array $properties
  *
  * @description Объект товара производителя после парсинга
  * @package Preorder
@@ -45,6 +47,12 @@ final class CompanyGoodFromParserValueObject extends AbstractValueObject {
    * @var string|null
    */
   protected ?string $data_source_item_url = null;
+
+  /**
+   * @description Дата изменения
+   * @var string|null
+   */
+  protected ?string $data_source_item_last_edit = null;
 
   /**
    * @description Наименование
@@ -76,8 +84,6 @@ final class CompanyGoodFromParserValueObject extends AbstractValueObject {
    */
   protected ?string $price_min_party = null;
 
-
-
   /**
    * @description Массив URL фотографий компании
    * @var array
@@ -89,6 +95,12 @@ final class CompanyGoodFromParserValueObject extends AbstractValueObject {
    * @var array
    */
   protected array $keywords_for_search = [];
+
+  /**
+   * @description Характеристики товара
+   * @var array
+   */
+  protected array $properties = [];
 
 
   /**
