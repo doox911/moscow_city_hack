@@ -1,58 +1,56 @@
 <template>
-  <q-page>
-    <div class="row" style="margin-bottom:10px;">
-      <div class="row col-12">
-        <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
-          <p class="text-h5">Информация о компании</p>
-          <q-separator />
-          <p class="q-my-xs"><b class="q-pr-sm">Название:</b>{{ counterparty.name }}</p>
-          <p class="q-my-xs"><b class="q-pr-sm">Полное название:</b>{{ counterparty.full_name }}</p>
-          <p class="q-my-xs"><b class="q-pr-sm">ИНН:</b>{{ counterparty.inn }}</p>
-          <p class="q-my-xs"><b class="q-pr-sm">ОГРН:</b>{{ counterparty.ogrn }}</p>
-          <p class="q-my-xs"><b class="q-pr-sm">Адрес:</b>{{ counterparty.address }}</p>
-          <p class="q-my-xs"><b class="q-pr-sm">Почта:</b>{{ counterparty.email }}</p>
-          <p class="q-my-xs"><b class="q-pr-sm">телефон:</b>{{ counterparty.phone }}</p>
-          <p class="q-my-xs"><b class="q-pr-sm">сайт:</b>{{ counterparty.site }}</p>
-          <p class="q-my-xs"><b class="q-pr-sm">создано:</b>{{ counterparty_created }}</p>
-          <p class="q-my-xs"><b class="q-pr-sm">обновлено:</b>{{ counterparty_updated }}</p>
-        </div>
+  <div class="row" style="margin-bottom:10px;">
+    <div class="row col-12">
+      <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
+        <p class="text-h5">Информация о компании</p>
+        <q-separator />
+        <p class="q-my-xs"><b class="q-pr-sm">Название:</b>{{ counterparty.name }}</p>
+        <p class="q-my-xs"><b class="q-pr-sm">Полное название:</b>{{ counterparty.full_name }}</p>
+        <p class="q-my-xs"><b class="q-pr-sm">ИНН:</b>{{ counterparty.inn }}</p>
+        <p class="q-my-xs"><b class="q-pr-sm">ОГРН:</b>{{ counterparty.ogrn }}</p>
+        <p class="q-my-xs"><b class="q-pr-sm">Адрес:</b>{{ counterparty.address }}</p>
+        <p class="q-my-xs"><b class="q-pr-sm">Почта:</b>{{ counterparty.email }}</p>
+        <p class="q-my-xs"><b class="q-pr-sm">телефон:</b>{{ counterparty.phone }}</p>
+        <p class="q-my-xs"><b class="q-pr-sm">сайт:</b>{{ counterparty.site }}</p>
+        <p class="q-my-xs"><b class="q-pr-sm">создано:</b>{{ counterparty_created }}</p>
+        <p class="q-my-xs"><b class="q-pr-sm">обновлено:</b>{{ counterparty_updated }}</p>
       </div>
     </div>
+  </div>
 
-    <div class="row" style="margin-bottom:10px;">
-      <div class="row col-12">
-        <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
-          <p class="text-h5">Услуги</p>
-          <q-separator />
-          <div class="row">
-            <div v-for="service in servicesRef">
-              <q-chip icon="home_repair_service" color="deep-orange" text-color="white">{{ service.name }}</q-chip>
-            </div>
+  <div class="row" style="margin-bottom:10px;">
+    <div class="row col-12">
+      <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
+        <p class="text-h5">Услуги</p>
+        <q-separator />
+        <div class="row">
+          <div v-for="service in servicesRef">
+            <q-chip icon="home_repair_service" color="deep-orange" text-color="white">{{ service.name }}</q-chip>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="row" style="margin-bottom:10px;">
-      <div class="row col-12">
-        <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
-          <p class="text-h5">Товары</p>
-          <q-separator />
-          <div class="row" style = "gap:10px; padding:10px;">
-            <div v-for="good in goodsRef" class = "good-block">
-              <div class = "icon">
-                <q-icon name="photo_library" class="cursor-pointer"/>
-              </div>
-              <div class = "title">Название: </div>
-              <div>{{ good.name }}</div>
-              <div class = "title">Брэнд: </div>
-              <div>{{ good.brand }}</div>
+  <div class="row" style="margin-bottom:10px;">
+    <div class="row col-12">
+      <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
+        <p class="text-h5">Товары</p>
+        <q-separator />
+        <div class="row" style = "gap:10px; padding:10px;">
+          <div v-for="good in goodsRef" class = "good-block">
+            <div class = "icon">
+              <q-icon name="photo_library" class="cursor-pointer"/>
             </div>
+            <div class = "title">Название: </div>
+            <div>{{ good.name }}</div>
+            <div class = "title">Брэнд: </div>
+            <div>{{ good.brand }}</div>
           </div>
         </div>
       </div>
     </div>
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">
