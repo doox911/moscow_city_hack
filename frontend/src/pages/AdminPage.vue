@@ -69,11 +69,11 @@
   /**
    * Components
    */
-  import TasksTable from '../components/tables/TasksTable.vue';
-  import UsersTable from '../components/tables/UsersTable.vue';
-  import OwnerTable from '../components/tables/OwnerTable.vue';
-  import GoodsTable from '../components/tables/GoodsTable.vue';
-  import ServiceTable from '../components/tables/ServiceTable.vue';
+  import TasksTable from 'Src/components/tables/TasksTable.vue';
+  import UsersTable from 'Src/components/tables/UsersTable.vue';
+  import OwnerTable from 'Src/components/tables/OwnerTable.vue';
+  import GoodsTable from 'Src/components/tables/GoodsTable.vue';
+  import ServiceTable from 'Src/components/tables/ServiceTable.vue';
 
   /**
    * Types
