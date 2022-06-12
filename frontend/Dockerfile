@@ -26,6 +26,8 @@ FROM nginx:stable-alpine as production
 
 COPY --from=build-frontend /frontend/dist/spa /usr/share/nginx/html/
 
+COPY nginx.conf /etc/nginx/nginx.conf
+
 EXPOSE 80
 
 WORKDIR /usr/share/nginx/html/
