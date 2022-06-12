@@ -18,16 +18,16 @@ export const ownerStore = defineStore('ownerStore', () => {
   ]);
 
   async function setList(u: OwnerListItem[]) {
-    ownerList.value = u.map(item => {
+    ownerList.value = u.map((item) => {
       return {
         value: item.id,
-        label: item.name
-      }
+        label: item.name,
+      };
     });
   }
 
   return {
     setList,
-    ownerList
+    ownerList,
   };
 });

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export type RequestListItem = {
-  id: number
+  id: number;
 };
 
 export const requestStore = defineStore('requestStore', () => {
@@ -14,6 +14,6 @@ export const requestStore = defineStore('requestStore', () => {
 
   return {
     setList,
-    requestList
+    requestList,
   };
 });

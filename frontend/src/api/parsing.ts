@@ -17,7 +17,11 @@ import type { DefaultApiResponse } from 'Src/types';
 /**
  * Запуск парсинга
  */
-export async function apiRunParsing(str: string, timeinterval_id: ReturnType<typeof setInterval> | null, config?: AxiosRequestConfig) {
+export async function apiRunParsing(
+  str: string,
+  timeinterval_id: ReturnType<typeof setInterval> | null,
+  config?: AxiosRequestConfig,
+) {
   await requestWrapper({
     success: async () => {
       await new ApiRequest(config).post(`api/parse/${str}`);
@@ -35,7 +39,7 @@ export async function apiRunParsing(str: string, timeinterval_id: ReturnType<typ
 /**
  * Запуск парсинга
  */
- export async function apiStopParsing(config?: AxiosRequestConfig) {
+export async function apiStopParsing(config?: AxiosRequestConfig) {
   await requestWrapper({
     success: async () => {
       await new ApiRequest(config).get('api/cancel_parsing');
@@ -53,7 +57,11 @@ export async function apiPingParsing(config?: AxiosRequestConfig) {
 
   await requestWrapper({
     success: async () => {
-      status = (await new ApiRequest(config).get('api/check_parse_status') as DefaultApiResponse<{status: boolean}>).content.status;
+      status = (
+        (await new ApiRequest(config).get(
+          'api/check_parse_status',
+        )) as DefaultApiResponse<{ status: boolean }>
+      ).content.status;
     },
   });
 

@@ -7,18 +7,17 @@ import { ref } from 'vue';
 import { apiOKVED } from 'Src/api';
 
 /**
- * Types 
+ * Types
  */
 import type { OKVED } from 'Src/api';
 
 export const okvedStore = defineStore('okved', () => {
-
   const okved = ref<OKVED[]>([]);
 
   async function loadOKVED() {
     okved.value = await apiOKVED();
   }
- 
+
   return {
     okved,
     loadOKVED,

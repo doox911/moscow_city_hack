@@ -12,7 +12,7 @@ export type QTableOnRequestProps = Parameters<
 export type ResponseTokens = {
   access_token: string;
   token_type: string;
-}
+};
 
 export type QueryWrapperOptions = {
   success: () => void;
@@ -24,27 +24,27 @@ export type QueryWrapperOptions = {
 };
 
 export type PaginationCount = {
-  pages_count: number
-  total_rows: number
-}
+  pages_count: number;
+  total_rows: number;
+};
 
 export type LaravelPagination<T> = {
-  current_page: number
-  data: T[]
-  first_page_url: string
-  from: string
-  next_page_url: string
-  path: string
-  per_page: string
-  prev_page_url: string
-  to: string
-}
+  current_page: number;
+  data: T[];
+  first_page_url: string;
+  from: string;
+  next_page_url: string;
+  path: string;
+  per_page: string;
+  prev_page_url: string;
+  to: string;
+};
 
 export type ImportSortColoumn = {
   [key: string]: 'asc' | 'desc';
-}
+};
 
 export type DefaultApiResponse<T> = {
   content: T;
   message: string;
-}
+};
