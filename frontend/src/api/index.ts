@@ -23,7 +23,7 @@ export type OKVED = {
 /**
  * Получить список ОКВЭД
  */
-export async function apiOKVED(str: string, config?: AxiosRequestConfig) {
+export async function apiOKVED(config?: AxiosRequestConfig) {
   let list: OKVED[] = [];
 
   await requestWrapper({
