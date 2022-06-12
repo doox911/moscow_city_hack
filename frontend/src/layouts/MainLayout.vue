@@ -117,6 +117,9 @@
   {
     const { setMenu } = menuStore();
     setMenu(await apiMenuList());
+
+    const { loadAllUser } = userStore();
+    await loadAllUser();
   }
   getMenuList();
 </script>

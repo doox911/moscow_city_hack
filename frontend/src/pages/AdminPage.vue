@@ -119,7 +119,7 @@
     });
 
     goodsRef.value.rowsNumber = total_rows;
-    goodsRef.value.data = goods.data;
+    goodsRef.value.data = goods;
     goodsRef.value.loading = false;
   }
 
