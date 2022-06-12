@@ -20,16 +20,17 @@
       <p class="q-my-xs"><b class="q-pr-sm">Роль:</b>{{ user_role }}</p>
       <p class="q-my-xs"><b class="q-pr-sm">Создан:</b>{{ user_created }}</p>
       <p class="q-my-xs"><b class="q-pr-sm">Обновлён:</b>{{ user_updated }}</p>
+
+      <UserDialog
+        v-if="user.role === Roles.Admin"
+        v-model="dialog"
+        v-model:user="u"
+        :loading="loading"
+        :use-reset="false"
+        @on-success="onSuccess"
+      />
     </div>
   </div>
-  <UserDialog
-    v-if="user.role === Roles.Admin"
-    v-model="dialog"
-    v-model:user="u"
-    :loading="loading"
-    :use-reset="false"
-    @on-success="onSuccess"
-  />
 </template>
 
 <script setup lang="ts">
