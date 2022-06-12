@@ -1,4 +1,9 @@
 /**
+ * Types
+ */
+import type { Counterparty } from 'Src/api/counterparty';
+
+/**
  * Constants
  */
 import { Roles, RolesDescription } from 'Src/constants';
@@ -68,4 +73,22 @@ export function paginationLabel(
   totalRowsNumber: number,
 ) {
   return `${firstRowIndex} - ${endRowIndex} из ${totalRowsNumber}`;
+}
+
+/**
+ * Предприятие по умолчанию
+ */
+export function getDefaultCounterparty(): Counterparty {
+  return {
+    id: null,
+    user_id: null,
+    name: '',
+    full_name: '',
+    inn: '',
+    ogrn: '',
+    adress: '',
+    email: '',
+    phone: '',
+    site: '',
+  }
 }

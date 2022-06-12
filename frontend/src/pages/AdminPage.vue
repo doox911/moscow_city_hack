@@ -21,7 +21,8 @@
           :counterpart="counterpartRef.data"
           :loading="counterpartRef.loading"
           :rowsNumber="counterpartRef.rowsNumber"
-          @on-request="onRequestOwner"/>
+          @on-request="onRequestOwner"
+        />
       </div>
     </div>
   </q-page>
@@ -34,7 +35,7 @@
    * Api
    */
   import { apiTasks } from 'Src/api/task';
-  import { apiCounterparties, Counterparty } from '../api/counterparty';
+  import { apiCounterparties } from 'Src/api/counterparty';
 
   /**
    * Hooks
@@ -52,6 +53,7 @@
    * Types
    */
   import type { Task } from 'Src/api/task';
+  import type { ImportSortColoumn } from 'Src/types';
 
   useUserPageGuard();
 
@@ -65,7 +67,7 @@
 
   const loading = ref(false)
 
-  async function onRequestOwner({ page, size, columns, searchText }: { page: number, size: number, columns: any, searchText: string })
+  async function onRequestOwner({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
   {
     counterpartRef.value.loading = true;
     const { counterparties, total_rows } = await apiCounterparties({
@@ -78,6 +80,7 @@
         }
       }
     });
+
     counterpartRef.value.rowsNumber = total_rows;
     counterpartRef.value.data = counterparties.data;
     counterpartRef.value.loading = false;
@@ -110,6 +113,7 @@
       columns: {},
       searchText: ''
     });
+
     loading.value = false;
   })
 </script>

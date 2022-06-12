@@ -1,5 +1,8 @@
 <template>
   <div class="q-pa-none">
+    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">
+      Предприятия
+    </h5>
     <q-table
       v-model:pagination="pagination"
       v-model:selected="s"
@@ -32,17 +35,18 @@
       </template>
       <template v-slot:top-left>
         <q-btn
-          color="primary"
-          label="Добавить"
-          type="reset"
           :loading="loading"
-          @request="onRequest"
+          color="primary"
+          label="Создать предприятие"
           @click="appendNewCounterparty"
         />
       </template>
       <template v-slot:top-right>
-        <q-input borderless dense debounce="300"
+        <q-input 
           v-model="searchText"
+          borderless
+          debounce="300"
+          dense 
           placeholder="Search"
           @update:model-value="emitOnRequest"
         >
@@ -53,16 +57,30 @@
       </template>
     </q-table>
   </div>
-  <CounterpartyDialog v-model="dialog" :counterparty="selectCounterparty" @on-success="emitOnRequest"/>
+  <CounterpartyDialog 
+    v-model="dialog" 
+    v-model:counterparty="selectCounterparty"
+    @on-success="emitOnRequest"
+  />
 </template>
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue';
 
   /**
+   * Api
+   */
+  import { Counterparty } from 'Src/api/counterparty';
+
+  /**
    * Common
    */
-  import { selectedRowsLabel, paginationLabel} from 'Src/common'
+  import { 
+    selectedRowsLabel,
+    paginationLabel,
+    getDefaultCounterparty,
+    setDateAndTimeToDateTimeComponent
+  } from 'Src/common';
 
   /**
    * Components
@@ -73,13 +91,13 @@
   /**
    * Types
    */
-  import type { QTableOnRequestProps } from 'src/types';
+  import type { QTableOnRequestProps, ImportSortColoumn } from 'src/types';
   import type { QTableProps } from 'quasar';
-  import { Counterparty } from 'Src/api/counterparty';
-  import { setDateAndTimeToDateTimeComponent } from 'Src/common';
 
-  let dialog = ref(false);
-  let searchText = ref('');
+
+  const dialog = ref(false);
+
+  const searchText = ref('');
 
   type Button = {
     color: string;
@@ -87,6 +105,7 @@
     icon: string;
     tooltip: string;
   };
+
   const columns: QTableProps['columns'] = [
     {
       align: 'center',
@@ -177,7 +196,7 @@
 
   const buttons: Button[] = [
     {
-      color: 'green',
+      color: 'warning',
       event: 'edit',
       icon: 'edit',
       tooltip: 'Редактировать',
@@ -189,6 +208,7 @@
       tooltip: 'Удалить',
     },
   ];
+
   const emit = defineEmits([
     'onSearch',
     'onRequest',
@@ -213,7 +233,6 @@
       counterpart: () => [],
     },
   );
-
 
   const rows = computed(() => props.counterpart);
 
@@ -241,28 +260,18 @@
     },
   );
 
-  let selectCounterparty = ref({});
-  function openEditDialog(value: any)
-  {
+  const selectCounterparty = ref<Counterparty>(getDefaultCounterparty());
+
+  function openEditDialog(value: Counterparty) {
     dialog.value = true;
-    selectCounterparty.value = value;
+
+    selectCounterparty.value = { ...value };
   }
 
-  function appendNewCounterparty()
-  {
+  function appendNewCounterparty() {
     dialog.value = true;
-    selectCounterparty.value = {
-      id: null,
-      user_id: null,
-      name: '',
-      full_name: '',
-      inn: '',
-      ogrn: '',
-      adress: '',
-      email: '',
-      phone: '',
-      site: '',
-    };
+
+    selectCounterparty.value = getDefaultCounterparty();
   }
 
   function onRequest(ps: QTableOnRequestProps) {
@@ -281,9 +290,11 @@
 
   function emitOnRequest()
   {
-    let columns: any = {};
-    if(pagination.value.sortBy)
+    let columns: ImportSortColoumn = {};
+    
+    if(pagination.value.sortBy){
       columns[pagination.value.sortBy] = pagination.value.descending ? 'desc' : 'asc';
+    }
 
     emit('onRequest', {
       page: pagination.value.page,

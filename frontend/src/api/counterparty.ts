@@ -8,8 +8,8 @@ import { requestWrapper } from '../common/wrappers';
 import type { PaginationCount, LaravelPagination } from 'Src/types';
 
 export type Counterparty = {
-  id: number,
-  user_id: number,
+  id: number | null,
+  user_id: number | null,
   name: string,
   full_name: string,
   inn: string,

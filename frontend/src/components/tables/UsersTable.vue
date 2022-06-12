@@ -1,5 +1,5 @@
 <template>
-  <h5 class="q-ma-xs non-selectable text-grey-9">Пользователи</h5>
+  <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">Пользователи</h5>
   <q-table
     :columns="columns"
     :rows="rows"
@@ -9,21 +9,20 @@
     row-key="id"
     rows-per-page-label="Пользователей на странице"
   >
+    <template v-slot:top-left>
+      <q-btn
+        :loading="loading"
+        color="primary float-right"
+        label="Добавить пользователя"
+        @click="appendNewUser"
+      />
+    </template>
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
         <q-btn flat icon="edit" @click="onEdit(props.row)"></q-btn>
       </q-td>
     </template>
   </q-table>
-  <q-btn
-    color="primary float-right"
-    label="Добавить"
-    style="margin-top: 10px"
-    type="reset"
-    :loading="loading"
-    @request="onRequest"
-    @click="appendNewUser"
-  />
   <q-dialog
     v-model="isOpen">
       <q-card style="width: 500px; padding: 10px;">
