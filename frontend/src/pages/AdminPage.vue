@@ -1,51 +1,59 @@
 <template>
-  <q-page class="q-ma-md">
-    <div class="row">
-      <div class="col">
-        <TasksTable 
-          :tasks="taskRef.data" 
-          :loading="loading"
-          @on-request="onRequestTask"
-          @on-apply="onTaskApply"
-          @on-cancel="onTaskCancel"
-      />
+  <q-page class="q-ma-md justify-end">
+    <div>
+      <div class="row q-mb-md">
+        <q-space />
+        <div>
+          <Parsing /> 
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <UsersTable />
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <OwnerTable
-          :counterpart="counterpartRef.data"
-          :loading="counterpartRef.loading"
-          :rowsNumber="counterpartRef.rowsNumber"
-          @on-request="onRequestOwner"
+      <div class="row">
+        <div class="col">
+          <TasksTable 
+            :tasks="taskRef.data" 
+            :loading="loading"
+            @on-request="onRequestTask"
+            @on-apply="onTaskApply"
+            @on-cancel="onTaskCancel"
         />
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <GoodsTable
-          v-model:selected="goodsRef.selected"
-          :good="goodsRef.data"
-          :loading="goodsRef.loading"
-          :rowsNumber="goodsRef.rowsNumber"
-          @on-request="onRequestGoods"
-        />
+      <div class="row">
+        <div class="col">
+          <UsersTable />
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <ServiceTable
-          v-model:selected="servicesRef.selected"
-          :service="servicesRef.data"
-          :loading="servicesRef.loading"
-          :rowsNumber="servicesRef.rowsNumber"
-          @on-request="onRequestServices"
-        />
+      <div class="row">
+        <div class="col">
+          <OwnerTable
+            :counterpart="counterpartRef.data"
+            :loading="counterpartRef.loading"
+            :rowsNumber="counterpartRef.rowsNumber"
+            @on-request="onRequestOwner"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <GoodsTable
+            v-model:selected="goodsRef.selected"
+            :good="goodsRef.data"
+            :loading="goodsRef.loading"
+            :rowsNumber="goodsRef.rowsNumber"
+            @on-request="onRequestGoods"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ServiceTable
+            v-model:selected="servicesRef.selected"
+            :service="servicesRef.data"
+            :loading="servicesRef.loading"
+            :rowsNumber="servicesRef.rowsNumber"
+            @on-request="onRequestServices"
+          />
+        </div>
       </div>
     </div>
   </q-page>
@@ -57,9 +65,10 @@
   /**
    * Api
    */
-  import { apiTasks } from 'Src/api/task';
+  import { apiTasks, resolveTask } from 'Src/api/task';
   import { apiCounterparties, Counterparty } from 'Src/api/counterparty';
-  import { apiGoods, Good } from '../api/good';
+  import { apiGoods, Good } from 'Src/api/good';
+  import { apiServices, Service } from 'Src/api/service';
 
   /**
    * Hooks
@@ -69,25 +78,24 @@
   /**
    * Components
    */
+  import GoodsTable from 'Src/components/tables/GoodsTable.vue';
+  import OwnerTable from 'Src/components/tables/OwnerTable.vue';
+  import Parsing from 'Components/Parsing.vue';
+  import ServiceTable from 'Src/components/tables/ServiceTable.vue';
   import TasksTable from 'Src/components/tables/TasksTable.vue';
   import UsersTable from 'Src/components/tables/UsersTable.vue';
-  import OwnerTable from 'Src/components/tables/OwnerTable.vue';
-  import GoodsTable from 'Src/components/tables/GoodsTable.vue';
-  import ServiceTable from 'Src/components/tables/ServiceTable.vue';
 
   /**
    * Types
    */
   import type { Task } from 'Src/api/task';
   import type { ImportSortColoumn } from 'Src/types';
-  import { apiServices } from '../api/service';
-  import { Service } from 'bonjour-service';
 
   type URef<T> = {
     data: T,
     rowsNumber: number,
     loading: boolean,
-    selected: T[]
+    selected: T
   }
 
   useUserPageGuard();
@@ -200,11 +208,41 @@
   }
 
   async function onTaskApply(t: Task) {
-    console.log('onTaskApply', t);
+    loading.value = true;
+
+    await resolveTask({
+      is_accepted: 1,
+      task_id: t.id,
+      comment: t.comment
+    });
+
+    onRequestTask({
+      page: 1,
+      size: 10,
+      columns: {},
+      searchText: ''
+    });
+
+    loading.value = false;
   }
 
   async function onTaskCancel(t: Task) {
-    console.log('onTaskCancel', t);
+    loading.value = true;
+
+    await resolveTask({
+      is_accepted: 0,
+      task_id: t.id,
+      comment: t.comment
+    });
+
+    onRequestTask({
+      page: 1,
+      size: 10,
+      columns: {},
+      searchText: ''
+    });
+
+    loading.value = false;
   }
 
   onMounted(async () => {

@@ -8,6 +8,7 @@ import { requestWrapper } from '../common/wrappers';
 import type { PaginationCount } from 'Src/types';
 
 export type Task = {
+  id: number;
   user_id: number,
   entity_id: number,
   entity_type: string,

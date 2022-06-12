@@ -84,17 +84,24 @@ export function paginationLabel(
  */
 export function getDefaultCounterparty(): Counterparty {
   return {
-    id: null,
-    user_id: null,
-    name: '',
-    full_name: '',
-    inn: '',
-    ogrn: '',
     adress: '',
+    authorized_capital: null,
+    data_source_item_url: null,
+    description: null,
     email: '',
-    phone: '',
-    site: '',
+    full_name: '',
     goods: [],
+    id: null,
+    inn: '',
+    keywords_for_search: {},
+    legal_address: null,
+    name: '',
+    number_of_employees: null,
+    ogrn: '',
+    phone: '',
+    registration_date: null,
+    site: '',
+    user_id: null,
   };
 }
 

@@ -187,7 +187,7 @@
 
   const buttons: Button[] = [
     {
-      color: 'apply',
+      color: 'positive',
       event: 'visibility',
       icon: 'visibility',
       tooltip: 'Посмотреть',
