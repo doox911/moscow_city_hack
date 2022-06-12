@@ -21,6 +21,9 @@ export type Good = {
 
   data_source_id?: any
   data_source_item_id?: any
+
+  base64_logo?: string;
+  base64_photos?: string[];
 };
 
 export type GoodResponce = {

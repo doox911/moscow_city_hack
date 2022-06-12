@@ -47,10 +47,13 @@ export type Counterparty = {
    */
   registration_date?: string | null;
   keywords_for_search: { [key: string]: string };
-  latitude?: number
-  latitude_center?: number
-  longitude?: number
-  longitude_center?: number
+  latitude?: number;
+  latitude_center?: number;
+  longitude?: number;
+  longitude_center?: number;
+
+  base64_logo?: string;
+  base64_photos?: string[];
 };
 
 export type CounterpartiesResponce = {
