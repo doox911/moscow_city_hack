@@ -59,8 +59,8 @@ class CounterpartyResource extends JsonResource {
       'longitude' => $counterparty->longitude,
       'latitude' => $counterparty->latitude,
 
-      'goods' => $counterparty->goods->map->activity,
-      'services' => $counterparty->services->map->activity,
+      'goods' => GoodResource::collection($counterparty->goods->map->activity),
+      'services' => ServiceResource::collection($counterparty->services->map->activity),
     ];
   }
 }

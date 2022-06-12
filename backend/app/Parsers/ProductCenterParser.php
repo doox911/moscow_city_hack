@@ -344,7 +344,7 @@ class ProductCenterParser extends AbstractParser {
 
       $photos_urls = [];
       foreach ($good_node->find('li[data-fancybox="main-photos"]') as $image_node) {
-        $photos_urls[] = $image_node->attr('href');
+        $photos_urls[] = self::$base_url . $image_node->attr('href');
       }
 
       $name = $good_page->first('.iv_content h1[itemprop="name"]')?->text();
