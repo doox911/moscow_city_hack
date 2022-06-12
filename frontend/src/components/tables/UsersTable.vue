@@ -1,115 +1,49 @@
 <template>
-  <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">Пользователи</h5>
-  <q-table
-    :columns="columns"
-    :rows="rows"
-    :pagination-label="paginationLabel"
-    :selected-rows-label="selectedRowsLabel"
-    class="no-shadow"
-    row-key="id"
-    rows-per-page-label="Пользователей на странице"
-  >
-    <template v-slot:top-left>
-      <q-btn
-        :loading="loading"
-        color="primary float-right"
-        label="Добавить пользователя"
-        @click="appendNewUser"
-      />
-    </template>
-    <template v-slot:body-cell-actions="props">
-      <q-td :props="props">
-        <q-btn flat icon="edit" @click="onEdit(props.row)"></q-btn>
-      </q-td>
-    </template>
-  </q-table>
-  <q-dialog
-    v-model="isOpen">
-      <q-card style="width: 500px; padding: 10px;">
-        <q-card-section>
-          <template v-if = "modalMode == 'new'">Добавить нового пользователя</template>
-          <template v-if = "modalMode == 'update'">Изменить пользователя</template>
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            v-model="userData.secondName"
-            :rules="[ requiredStringRule ]"
-            label="Фамилия"
-          />
-          <q-input
-            v-model="userData.name"
-            :rules="[ requiredStringRule ]"
-            label="Имя"
-          />
-          <q-input
-            v-model="userData.patronymic"
-            label="Отчество"
-          />
-          <q-input
-            v-model="userData.email"
-            :rules="[ requiredStringRule ]"
-            label="Email"
-          />
-          <q-select
-            v-model="userData.role"
-            :options="roleList"
-            option-label="label"
-            :rules="[ requiredSelectRule ]"
-            label="Роль"
-          />
-          <q-select
-            v-if = "userData.role?.value == Roles.Owner"
-            v-model="userData.owner"
-            :options="ownerList"
-            :rules="[ (e) => e !== undefined ]"
-            label="Предприятие"
-          />
-          <q-input
-            v-model="userData.password"
-            :rules="[ requiredStringRule ]"
-            :type="isPwd ? 'password' : 'text'"
-            label="Пароль"
-            ref="fldPasswordChange"
-          >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd = !isPwd"
-              />
-            </template>
-          </q-input>
-          <q-input
-            v-if="modalMode == 'new'"
-            v-model="userData.confirmPassword"
-            :rules="[ requiredStringRule, (v) => requiredPasswordRule(v, userData.password) ]"
-            :type="isPwd ? 'password' : 'text'"
-            label="Подтверждение пароля"
-          >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd = !isPwd"
-              />
-            </template>
-          </q-input>
-        </q-card-section>
+  <div class="q-pa-none">
+    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">
+      Пользователи
+    </h5>
+    <q-table
+      :columns="columns"
+      :rows="allUser"
+      :loading="loading"
+      :pagination-label="paginationLabel"
+      :selected-rows-label="selectedRowsLabel"
+      class="no-shadow"
+      row-key="id"
+      rows-per-page-label="Пользователей на странице"
+      @request="onRequest"
+    >
+      <template v-slot:body-cell-actions="props">
+        <q-td :props="props">
+          <div class="col q-gutter justify-center">
+            <IconBtn
+              v-for="(button, index) of buttons"
+              :key="index"
+              :color="button.color"
+              :icon="button.icon"
+              :tooltip-text="button.tooltip"
+              hover-color="primary"
+              @click="openEditDialog(props.row)"
+            />
+          </div>
+        </q-td>
+      </template>
+      <template v-slot:top-left>
         <q-btn
+          :loading="loading"
           color="primary float-right"
-          :label="modalMode == 'new' ? 'Зарегистрировать' : 'Изменить'"
-          :disable="disabled"
-          @click="modalMode == 'new' ? registration() : updateUser()"
+          label="Добавить пользователя"
+          @click="appendNewUser"
         />
-        <q-btn
-          color="white float-right"
-          text-color="black"
-          label="Отмена"
-          style="margin-right: 10px;"
-          @click="onCancelModal"
-        />
-      </q-card>
-  </q-dialog>
+      </template>
+    </q-table>
+  </div>
+  <UserDialog 
+    v-model="dialog" 
+    v-model:counterparty="selectCounterparty"
+    @on-success="emitOnRequest"
+  />
 </template>
 
 <script setup lang="ts">
@@ -128,7 +62,7 @@
   /**
    * Common
    */
-  import { selectedRowsLabel, paginationLabel} from 'Src/common';
+  import { selectedRowsLabel, paginationLabel, getDefaultUser} from 'Src/common';
 
   /**
    * Rules
@@ -138,112 +72,40 @@
   /**
    * Store
    */
-  import { ownerStore, User } from '../../stores';
+  import { ownerStore, User, userStore } from '../../stores';
   import { storeToRefs } from 'pinia';
 
   /**
    * Types
    */
   import type { QTableProps } from 'quasar';
-
-  const userData = ref({
-    id: null,
-    patronymic: '',
-    name: '',
-    secondName: '',
-    email: '',
-    role: '',
-    owner: '',
-    password: '',
-    confirmPassword: '',
-  });
-
-  let modalMode = ref<'new' | 'update'>('new');
-
-  const roleList = ref([
-    { value: Roles.Admin, label: RolesDescription[Roles.Admin] },
-    { value: Roles.Government, label: RolesDescription[Roles.Government] },
-    { value: Roles.Owner, label: RolesDescription[Roles.Owner] },
-    { value: Roles.Guest, label: RolesDescription[Roles.Guest] },
-  ])
+  import { QTableOnRequestProps } from '../../types';
 
   /**
-   * Осуществляется запрос регистрации пользователя
+   * Components
    */
-  async function registration() {
-    const response = await apiSignupUser({
-      second_name: userData.value.secondName,
-      name: userData.value.name,
-      patronymic: userData.value.patronymic,
-      email: userData.value.email,
-      role: userData.value.role.value,
-      owner: userData.value.owner?.value,
-      password: userData.value.password
-    });
-    if(response) {
-      isOpen.value = false;
-      onRequest();
-    }
-  }
-  /**
-   * Изменить пользователя
-   */
-  async function updateUser() {
-    const response = await apiUpdateUserInfo({
-      id: userData.value.id,
-      second_name: userData.value.secondName,
-      name: userData.value.name,
-      patronymic: userData.value.patronymic,
-      email: userData.value.email,
-      role: userData.value.role.value,
-      owner: userData.value.owner?.value,
-      password: userData.value.password
-    });
+  import IconBtn from 'Components/common/IconBtn.vue'
+  import UserDialog from 'Components/user/UserDialog.vue';
 
-    if(response) {
-      isOpen.value = false;
-      onRequest();
-    }
-  }
-  /**
-   * Отправить запрос можно только при наличии всех значений
-   */
-  const disabled = computed(() => {
-    if(modalMode.value == 'update') return false;
-    return !userData.value.name
-      || !userData.value.secondName
-      || !userData.value.email
-      || !userData.value.role
-      || (userData.value.role?.value == Roles.Owner && !userData.value.owner)
-      || !userData.value.password
-      || !userData.value.confirmPassword
-      || userData.value.password !== userData.value.confirmPassword;
-  })
 
-  /** 
-   * Открыть окно редактирования пользователя
-   */
-  function appendNewUser() {
-    isOpen.value = true;
-    userData.value = {
-      id: null,
-      name: '',
-      secondName: '',
-      email: '',
-      role: '',
-      owner: '',
-      password: '',
-      confirmPassword: '',
-    };
-    modalMode.value = 'new';
-  }
+  const { loadAllUser } = userStore();
+  const { allUser } = storeToRefs(userStore());
 
-  /**
-   * Закрыть модальное окно
-   */
-  function onCancelModal() {
-    isOpen.value = false
-  }
+  const dialog = ref(false);
+
+  const searchText = ref('');
+
+  const selectUser = ref<User>();
+
+  const loading = ref(false);
+
+  type Button = {
+    color: string;
+    event: 'edit' | 'delete';
+    icon: string;
+    tooltip: string;
+  };
+  
   /**
    * Заголовки таблицы
    */
@@ -283,31 +145,64 @@
       name: 'actions',
     },
   ];
-  const isOpen = ref(false);
-  let isPwd = ref(true);
-  const rows = ref<User[]>([]);
-  const loading = ref(false);
-  const { ownerList } = storeToRefs(ownerStore());
+  
+  const buttons: Button[] = [
+    {
+      color: 'warning',
+      event: 'edit',
+      icon: 'edit',
+      tooltip: 'Редактировать',
+    },
+    {
+      color: 'red',
+      event: 'delete',
+      icon: 'delete',
+      tooltip: 'Удалить',
+    },
+  ];
 
-  async function onRequest()
-  {
+  const emit = defineEmits([
+    'onSearch',
+    'onRequest',
+    'onCancel',
+    'onApply',
+    'update:selected',
+  ]);
+
+  const props = withDefaults(
+    defineProps<{
+      loading?: boolean;
+      user?: User[];
+    }>(),
+    {
+      loading: false,
+      user: () => [],
+    },
+  );
+
+  /** 
+   * Открыть окно редактирования пользователя
+   */
+  function openEditDialog(value: User) {
+    dialog.value = true;
+
+    selectUser.value = { ...value };
+  }
+
+  function appendNewUser() {
+    dialog.value = true;
+
+    selectUser.value = getDefaultUser();
+  }
+
+  async function onRequest(ps: QTableOnRequestProps) {
+    const { page, rowsPerPage, sortBy, descending } = ps.pagination;
+
     loading.value = true;
 
-    const users = await apiGetAllUsers();
-
-    rows.value.splice(0, rows.value.length, ...users);
+    await loadAllUser();
 
     loading.value = false
-  }
-  onRequest();
 
-  async function onEdit(user: User)
-  {
-    appendNewUser();
-    userData.value = {
-      ...user,
-      role: { value: user.role, label: RolesDescription[user.role] }
-    };
-    modalMode.value = 'update';
   }
 </script>

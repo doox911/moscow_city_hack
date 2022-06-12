@@ -82,7 +82,7 @@
     });
 
     counterpartRef.value.rowsNumber = total_rows;
-    counterpartRef.value.data = counterparties.data;
+    counterpartRef.value.data = counterparties;
     counterpartRef.value.loading = false;
   }
 

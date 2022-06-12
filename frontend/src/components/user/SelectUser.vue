@@ -2,7 +2,7 @@
   <q-select 
     v-model="selected"
     :loading="loading"
-    :options="userList"
+    :options="allUser"
     label="Выбрать пользователя"
     option-label="name"
   />
@@ -17,9 +17,10 @@
   import { apiGetAllUsers } from '../../api/users';
 
   /**
-   * Stores
+   * Store
    */
-  import { User } from '../../stores';
+  import { storeToRefs } from 'pinia'
+  import { User, userStore } from '../../stores';
 
   const emit = defineEmits(['update:modelValue']);
 
@@ -33,6 +34,8 @@
 
   const userList = ref<User[]>([]);
 
+  const { allUser } = storeToRefs(userStore());
+
   const selected = computed({
     get() {
       return props.modelValue;
@@ -41,19 +44,5 @@
       emit('update:modelValue', v);
     }
   })
-
-  async function updateUser() {
-    const users = await apiGetAllUsers();
-
-    userList.value = users;
-  }
-
-  onMounted(async () => {
-    loading.value = true;
-    
-    await updateUser();
-
-    loading.value = false;
-  });
 
 </script>

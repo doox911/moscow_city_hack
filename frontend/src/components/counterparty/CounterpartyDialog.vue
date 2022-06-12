@@ -84,6 +84,7 @@
   import { User, userStore } from '../../stores';
   import { Roles } from '../../constants';
 
+  const { allUser } = userStore();
   const emit = defineEmits([
     'onCancel',
     'onSuccess',
@@ -141,6 +142,10 @@
     if(user)
       counterpartyData.value.user_id = user.id;
   });
+
+  watch(counterpartyData, () => {
+    selectedUser.value = allUser.filter(user => user.id == counterpartyData.value.user_id).pop();
+  }, { deep: true})
 
   const { user } = userStore();
   const isAdmin = ref(user.role == Roles.Admin);

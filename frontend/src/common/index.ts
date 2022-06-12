@@ -2,6 +2,7 @@
  * Types
  */
 import type { Counterparty } from 'Src/api/counterparty';
+import { User } from '../stores';
 
 /**
  * Constants
@@ -60,7 +61,7 @@ export function setDateAndTimeToDateTimeComponent(date?: string) {
 /**
  * Русскоязычное отображение кол-ва выбранных записей в таблице
  */
- export function selectedRowsLabel(count: number) {
+export function selectedRowsLabel(count: number) {
   return `Выбрано ${count} записей`;
 }
 
@@ -90,5 +91,21 @@ export function getDefaultCounterparty(): Counterparty {
     email: '',
     phone: '',
     site: '',
+  }
+}
+
+/**
+ * Пользователь по умолчанию
+ */
+export function getDefaultUser(): User {
+  return {
+    id: -1,
+    name: '',
+    second_name: '',
+    patronymic: '',
+    email: '',
+    role: Roles.Guest,
+    created_at: '',
+    updated_at: '',
   }
 }
