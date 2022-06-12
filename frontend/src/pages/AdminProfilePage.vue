@@ -1,6 +1,10 @@
 <template>
   <q-page class="q-ma-md">
-    <UserProfile />
+    <div class="row">
+      <div class = "col-12 col-md-3">
+        <UserProfile />
+      </div>
+    </div>
   </q-page>
 </template>
 
