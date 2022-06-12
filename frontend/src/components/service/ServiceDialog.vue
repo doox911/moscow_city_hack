@@ -3,7 +3,7 @@
   <DialogCommonWrapper
     v-model="dialog"
     :header-bg-color="headerColor"
-    :header-text="serviceData.name"
+    header-text="Просмотр услуги"
     :open-dialog-button="false"
     @on-cancel="cancel"
   >

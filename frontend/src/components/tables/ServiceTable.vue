@@ -42,12 +42,6 @@
       </template>
       <template v-slot:top-left>
         <div class = "row">
-          <q-btn
-            :loading="loading"
-            color="primary"
-            label="Создать услугу"
-            @click="appendNewService"
-          />
           <SelectCounterparty
             v-if = "isAttach"
             style = "padding: 0; margin-left: 5px;"
@@ -77,6 +71,8 @@
   <ServiceDialog 
     v-model="dialog" 
     v-model:service="selectService"
+    :successButton="false"
+    :resetButton="false"
     @on-success="emitOnRequest"
   />
 </template>
@@ -259,11 +255,6 @@
     selectService.value = { ...value };
   }
 
-  function appendNewService() {
-    dialog.value = true;
-    console.log(ServiceDialog)
-    selectService.value = getDefaultService();
-  }
   async function onCounterpartyAttachServices()
   {
     apiCounterpartyAttachServices(selectCounterparty.value, props.selected.map(service => service.id));

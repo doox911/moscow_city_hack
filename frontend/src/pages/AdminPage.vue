@@ -81,11 +81,13 @@
   import type { Task } from 'Src/api/task';
   import type { ImportSortColoumn } from 'Src/types';
   import { apiServices } from '../api/service';
+  import { Service } from 'bonjour-service';
 
   type URef<T> = {
     data: T,
     rowsNumber: number,
     loading: boolean,
+    selected: T[]
   }
 
   useUserPageGuard();
@@ -93,27 +95,29 @@
   const taskRef = ref<URef<Task[]> >({
     data: [],
     rowsNumber: 0,
-    loading: false
+    loading: false,
+    selected: []
   });
 
   const counterpartRef = ref<URef<Counterparty[]>>({
     data: [],
     rowsNumber: 0,
-    loading: false
+    loading: false,
+    selected: []
   });
 
-  const goodsRef= ref<URef<Good[]>>({
+  const goodsRef = ref<URef<Good[]>>({
     data: [],
     rowsNumber: 0,
     loading: false,
-    selected: ref([])
+    selected: []
   });
 
-  const servicesRef: any = ref({
+  const servicesRef = ref<URef<Service[]>>({
     data: [],
     rowsNumber: 0,
     loading: false,
-    selected: ref([])
+    selected: []
   });
 
   const loading = ref(false);
