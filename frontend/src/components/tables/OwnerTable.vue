@@ -28,6 +28,7 @@
                 :color="button.color"
                 :icon="button.icon"
                 :tooltip-text="button.tooltip"
+                :disabled="button.event=='delete'"
                 hover-color="primary"
                 @click="onClick(button.event, { ...props.row })"
               />
