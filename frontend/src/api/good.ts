@@ -57,7 +57,7 @@ export async function apiGoods(config?: AxiosRequestConfig) {
 }
 
 /**
- * Создать предприятие
+ * Создать товар
  */
 export async function apiCreateGood(
   good: Good,
@@ -72,7 +72,7 @@ export async function apiCreateGood(
 }
 
 /**
- * Изменить предприятие
+ * Изменить товар
  */
 export async function apiUpdateGood(
   good: Good,

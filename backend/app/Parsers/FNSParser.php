@@ -49,4 +49,14 @@ class FNSParser extends AbstractParser implements IParser {
 
     return collect(json_decode($res_json->getBody())->items);
   }
+
+  public function search(string $query) {
+    $url = config('services.fns.url') . "search?q=#search_string#&filter=active+region77&key=" . config('services.fns.secret');
+
+    $url = str_replace('#search_string#', $query, $url);
+
+    $res_json = $this->client->request('GET', $url);
+
+    return json_decode($res_json->getBody())->items;
+  }
 }

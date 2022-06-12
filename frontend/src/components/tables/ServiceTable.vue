@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-none">
     <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">
-      Товары
+      Услуги
     </h5>
     <q-table
       v-model:pagination="pagination"
@@ -14,7 +14,7 @@
       binary-state-sort
       class="no-shadow"
       row-key="id"
-      rows-per-page-label="Товаров на странице"
+      rows-per-page-label="Услуг на странице"
       selection="multiple"
       @request="onRequest"
     >
@@ -33,20 +33,21 @@
           </div>
         </q-td>
       </template>
+      <template v-slot:body-cell-additional_info="props">
+        <q-td :props="props">
+          <div class="col">
+            <div style="width:200px" class="customEllipsis">{{ props.row.additional_info }}</div>
+          </div>
+        </q-td>
+      </template>
       <template v-slot:top-left>
         <div class = "row">
-          <q-btn
-            :loading="loading"
-            color="primary"
-            label="Создать товар"
-            @click="appendNewGood"
-          />
           <SelectCounterparty
             v-if = "isAttach"
             style = "padding: 0; margin-left: 5px;"
             v-model="selectCounterparty"
-            button-text="Привязать товар"
-            @on-success="onCounterpartyAttachGoods"
+            button-text="Привязать услугу"
+            @on-success="onCounterpartyAttachServices"
           />
         </div>
       </template>
@@ -67,9 +68,11 @@
       </template>
     </q-table>
   </div>
-  <GoodDialog 
+  <ServiceDialog 
     v-model="dialog" 
-    v-model:good="selectGood"
+    v-model:service="selectService"
+    :successButton="false"
+    :resetButton="false"
     @on-success="emitOnRequest"
   />
 </template>
@@ -80,7 +83,7 @@
   /**
    * Api
    */
-  import { Good } from 'Src/api/good';
+  import { Service } from 'Src/api/service';
 
   /**
    * Common
@@ -88,7 +91,7 @@
   import { 
     selectedRowsLabel,
     paginationLabel,
-    getDefaultGood,
+    getDefaultService,
     setDateAndTimeToDateTimeComponent,
     getDefaultCounterparty
   } from 'Src/common';
@@ -97,7 +100,7 @@
    * Components
    */
   import IconBtn from 'Components/common/IconBtn.vue'
-  import GoodDialog from 'Components/good/GoodDialog.vue';
+  import ServiceDialog from 'Components/service/ServiceDialog.vue';
   import SelectCounterparty from 'Components/counterparty/SelectCounterparty.vue';
 
   /**
@@ -111,7 +114,7 @@
    */
   import { storeToRefs } from 'pinia'
   import { userStore } from '../../stores';
-  import { apiCounterpartyAttachGoods, Counterparty } from '../../api/counterparty';
+  import { apiCounterpartyAttachServices, Counterparty } from '../../api/counterparty';
 
   const { allUser } = storeToRefs(userStore());
 
@@ -121,7 +124,7 @@
 
   type Button = {
     color: string;
-    event: 'edit' | 'delete';
+    event: 'visibility';
     icon: string;
     tooltip: string;
   };
@@ -136,16 +139,23 @@
     },
     {
       align: 'left',
-      field: 'brand',
-      label: 'Брэнд',
-      name: 'brand',
+      field: 'name',
+      label: 'Название',
+      name: 'name',
       sortable: true,
     },
     {
       align: 'left',
-      field: 'name',
-      label: 'Название',
-      name: 'name',
+      field: 'additional_info',
+      label: 'Информация',
+      name: 'additional_info',
+      sortable: true,
+    },
+    {
+      align: 'left',
+      field: 'code',
+      label: 'Код',
+      name: 'code',
       sortable: true,
     },
     {
@@ -174,16 +184,10 @@
 
   const buttons: Button[] = [
     {
-      color: 'warning',
-      event: 'edit',
-      icon: 'edit',
-      tooltip: 'Редактировать',
-    },
-    {
-      color: 'red',
-      event: 'delete',
-      icon: 'delete',
-      tooltip: 'Удалить',
+      color: 'apply',
+      event: 'visibility',
+      icon: 'visibility',
+      tooltip: 'Посмотреть',
     },
   ];
 
@@ -199,8 +203,8 @@
     defineProps<{
       loading?: boolean;
       rowsNumber?: number;
-      selected?: Good[];
-      good?: Good[];
+      selected?: Service[];
+      service?: Service[];
       rowsPerPage?: number;
       isAttach?: boolean;
       isSearch?: boolean;
@@ -210,13 +214,13 @@
       rowsNumber: 0,
       rowsPerPage: 10,
       selected: () => [],
-      good: () => [],
+      service: () => [],
       isAttach: true,
       isSearch: true
     },
   );
 
-  const rows = computed(() => props.good);
+  const rows = computed(() => props.service);
 
   const pagination = ref({
     sortBy: '',
@@ -230,7 +234,7 @@
     get() {
       return props.selected;
     },
-    set(v: Good[]) {
+    set(v: Service[]) {
       return emit('update:selected', v);
     },
   });
@@ -242,22 +246,18 @@
     },
   );
 
-  const selectGood = ref<Good>(getDefaultGood());
+  const selectService = ref<Service>(getDefaultService());
   const selectCounterparty = ref<Counterparty>(getDefaultCounterparty());
 
-  function openEditDialog(value: Good) {
+  function openEditDialog(value: Service) {
     dialog.value = true;
 
-    selectGood.value = { ...value };
+    selectService.value = { ...value };
   }
 
-  function appendNewGood() {
-    dialog.value = true;
-    selectGood.value = getDefaultGood();
-  }
-  async function onCounterpartyAttachGoods()
+  async function onCounterpartyAttachServices()
   {
-    apiCounterpartyAttachGoods(selectCounterparty.value, props.selected);
+    apiCounterpartyAttachServices(selectCounterparty.value, props.selected.map(service => service.id));
   }
 
   function onRequest(ps: QTableOnRequestProps) {
@@ -291,3 +291,11 @@
   }
 
 </script>
+
+<style scoped>
+  .customEllipsis {
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+  }
+</style>

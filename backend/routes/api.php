@@ -8,6 +8,7 @@ use App\Http\Controllers\ParseController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TaskController;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -73,13 +74,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('', [OkvedController::class, 'index']);
   });
 
-  Route::prefix('search/{string}')->middleware('role:government')->group(function () {
+  Route::prefix('search/{string}')->middleware('role:government|admin')->group(function () {
     Route::post('', [SearchController::class, 'search']);
   });
 
-  Route::prefix('parse/{string}')->middleware('role:government')->group(function () {
+  Route::prefix('parse/{string}')->middleware('role:government|admin')->group(function () {
     Route::post('', [ParseController::class, 'parse']);
   });
+
+  Route::get('check_parse_status', function () {
+    return Cache::get('parsing_' . request()->user()->id);
+  })->middleware('role:government|admin');
 
   Route::post('/register', [AuthController::class, 'register'])->middleware('role:admin');
   Route::post('/logout', [AuthController::class, 'logout']);
