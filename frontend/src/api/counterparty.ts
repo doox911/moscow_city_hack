@@ -25,7 +25,6 @@ export type Counterparty = {
   services?: Service[],
   created_at?: string;
   updated_at?: string;
-  
   /**
    * Ссылка на источник данных
    */
@@ -37,17 +36,21 @@ export type Counterparty = {
    * Кол-во сотрудников
    */
   number_of_employees?: number | null;
-  
+
   /**
    * Уставной капитал, число с плавающей 
    */
   authorized_capital?: string | null;
-  
+
   /**
    * Дата регистрации в формате 2022-06-10
    */
   registration_date?: string | null;
-  keywords_for_search: {[key: string]: string};
+  keywords_for_search: { [key: string]: string };
+  latitude?: number
+  latitude_center?: number
+  longitude?: number
+  longitude_center?: number
 };
 
 export type CounterpartiesResponce = {
