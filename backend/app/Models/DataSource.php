@@ -14,6 +14,7 @@ class DataSource extends Model implements HasMedia {
   protected $fillable = [
     'id',
     'name',
+    'canonical_name',
     'resource_name',
   ];
 

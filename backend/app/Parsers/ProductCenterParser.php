@@ -4,9 +4,11 @@ namespace App\Parsers;
 
 use App\Abstractions\AbstractParser;
 use App\Exceptions\ValidationException;
+use App\Models\DataSource;
 use App\ValueObjects\CompanyFromParserValueObject;
 use App\ValueObjects\CompanyGoodFromParserValueObject;
 use Carbon\Carbon;
+use Dflydev\DotAccessData\Data;
 use DiDom\Document;
 use DiDom\Exceptions\InvalidSelectorException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -23,6 +25,7 @@ class ProductCenterParser extends AbstractParser {
   protected static string $base_url = 'https://productcenter.ru';
   protected static string $search_url = '/search/r-moskovskaia-obl-191?q=#query#&filter=producers&ajax=1&page=#page_number#';
   protected Collection $producers;
+  private DataSource $data_source;
   private int $limit_rows;
 
   /**
@@ -31,6 +34,7 @@ class ProductCenterParser extends AbstractParser {
   public function __construct(int $limit_rows = 0) {
     parent::__construct();
 
+    $this->data_source = DataSource::where('canonical_name', 'productcenter_ru')->first();
     $this->limit_rows = $limit_rows;
     $this->producers = collect();
   }
@@ -41,7 +45,7 @@ class ProductCenterParser extends AbstractParser {
    * @throws GuzzleException
    */
   public function parse(string $query = ''): Collection {
-    for ($page = 1; $page <= 40; $page++) {
+    for ($page = 1; $page <= 1; $page++) {
       if ($this->limit_rows > 0 && $this->producers->count() === $this->limit_rows) {
         break;
       }
@@ -85,10 +89,10 @@ class ProductCenterParser extends AbstractParser {
    *
    * @param Document $search_page_document
    * @return void
-   * @throws \App\Exceptions\ValidationException
-   * @throws \DiDom\Exceptions\InvalidSelectorException
-   * @throws \GuzzleHttp\Exception\GuzzleException
-   * @throws \JsonException
+   * @throws ValidationException
+   * @throws InvalidSelectorException
+   * @throws GuzzleException
+   * @throws JsonException
    */
   private function parsePage(Document $search_page_document): void {
     $counter = 0;
@@ -263,9 +267,9 @@ class ProductCenterParser extends AbstractParser {
       }
 
       $producer_vo = new CompanyFromParserValueObject([
-        // TODO
-        //'data_source_id' => $data_source_id,
+        'data_source_id' => $this->data_source->id,
         'data_source_item_id' => $producer_id,
+        'data_source_item_url' => $producer_page_path,
         'name' => $producer_name,
         'description' => $producer_description,
         'logo_url' => $logo_url,
@@ -323,10 +327,6 @@ class ProductCenterParser extends AbstractParser {
 
     $cards = $producer_goods_page->first('.cards');
     foreach ($cards->find('.card_item') as $card_node) {
-      $data_source_id = null;
-      $photos_urls = [];
-      $keywords_for_search = [];
-
       $data_source_item_id = $card_node->first('.to_favorites')->attr('data-item-id');
       $image_url = self::$base_url . $card_node->first('.image img')->attr('src');
 
@@ -337,8 +337,17 @@ class ProductCenterParser extends AbstractParser {
       $response_html_good_page = $response_good_page->getBody()->getContents();
       $good_page = new Document($response_html_good_page);
 
+      // ключевые слова для поиска компании
+      $keywords_for_search = [];
+      foreach ($good_page->find('.crumbs_list li meta[itemprop="name"]') as $i => $keyword_node) {
+        if ($i > 2) {
+          $keywords_for_search[] = $keyword_node->attr('content');
+        }
+      }
+
       $good_node = $good_page->first('.item_view');
 
+      $photos_urls = [];
       foreach ($good_node->find('li[data-fancybox="main-photos"]') as $image_node) {
         $photos_urls[] = $image_node->attr('href');
       }
@@ -347,15 +356,30 @@ class ProductCenterParser extends AbstractParser {
       $description = $good_page->first('.iv_bottom .tc_description div[itemprop="description"]')?->text();
       $price = $good_page->first('.iv_content .iv_main_block meta[itemprop="price"]')?->attr('content');
       $price_description = $good_page->first('.iv_content .iv_main_block div[class="price"]')?->text();
+      $price_min_party = $good_page->first('.iv_content .iv_main_block span[class="min_party"]')?->text();
+
+
+      $last_edit = '';
+      //2022-03-15 16:00:34
+      // $last_edit = $good_page->first('.iv_bottom .last_edit')?->text();
+      //
+      // preg_match('/([^0-9]-[^0-9]-[^0-9] [^0-9]:[^0-9]:[^0-9])/ui', $last_edit, $found);
+      // if (count($found)) {
+      //   dd($found);
+      // }
+
+
 
       $good = new CompanyGoodFromParserValueObject([
-        // TODO
-        'data_source_id' => $data_source_id,
+        'data_source_id' => $this->data_source->id,
         'data_source_item_id' => $data_source_item_id,
+        'data_source_item_url' => $good_page_url,
+        'data_source_item_last_edit' => $last_edit,
         'name' => $name,
         'description' => $description,
         'price' => $price,
         'price_description' => $price_description,
+        'price_min_party' => $price_min_party,
         'photos_urls' => $photos_urls,
         'keywords_for_search' => $keywords_for_search,
       ]);

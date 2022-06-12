@@ -13,6 +13,7 @@ use JsonException;
  *
  * @property int|null $data_source_id
  * @property string|null $data_source_item_id
+ * @property string|null $data_source_item_url
  * @property string|null $name
  * @property string|null $full_name
  * @property string|null $description
@@ -58,6 +59,12 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
    * @var string|null
    */
   protected ?string $data_source_item_id = null;
+
+  /**
+   * @description URL источника данных конкретной записи
+   * @var string|null
+   */
+  protected ?string $data_source_item_url = null;
 
   /**
    * @description Наименование

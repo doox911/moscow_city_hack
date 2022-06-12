@@ -12,10 +12,12 @@ use JsonException;
  *
  * @property int|null $data_source_id
  * @property string|null $data_source_item_id
+ * @property string|null data_source_item_url
  * @property string|null $name
  * @property string|null $description
  * @property string|null $price
  * @property string|null $price_description
+ * @property string|null $price_min_party
  *
  * @property array $photos_urls
  * @property array $keywords_for_search
@@ -37,6 +39,12 @@ final class CompanyGoodFromParserValueObject extends AbstractValueObject {
    * @var string|null
    */
   protected ?string $data_source_item_id = null;
+
+  /**
+   * @description URL источника данных конкретной записи
+   * @var string|null
+   */
+  protected ?string $data_source_item_url = null;
 
   /**
    * @description Наименование
@@ -61,6 +69,13 @@ final class CompanyGoodFromParserValueObject extends AbstractValueObject {
    * @var string|null
    */
   protected ?string $price_description = null;
+
+  /**
+   * @description Мининимальная партия покупки (цена за минимальную партию?)
+   * @var string|null
+   */
+  protected ?string $price_min_party = null;
+
 
 
   /**
