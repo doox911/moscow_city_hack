@@ -137,9 +137,9 @@
   /**
    * Types
    */
-  import { ImportSortColumn } from 'Src/types';
-  import { Service } from 'bonjour-service';
-  import { Good } from 'Src/api/good';
+  import type { ImportSortColumn } from 'Src/types';
+  import type { Good } from 'Src/api/good';
+  import type { Service } from 'Src/api/service';
 
   /**
    * Components
@@ -148,13 +148,9 @@
 
   const { user } = storeToRefs(userStore());
 
-  const dialog = ref(false);
-
   const counterparty = ref<CounterpartyType>(
     user.value.company || getDefaultCounterparty(),
   );
-
-  const selectCounterparty = ref<CounterpartyType>(getDefaultCounterparty());
 
   const counterparty_created = computed(() =>
     setDateAndTimeToDateTimeComponent(counterparty.value.created_at),
@@ -188,7 +184,7 @@
       );
 
       goodsRef.value = goods as Good[];
-      servicesRef.value = services;
+      servicesRef.value = services as Service[];
 
       photos.value = base64_photos;
     }
