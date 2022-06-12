@@ -32,8 +32,6 @@ class ParseController extends Controller {
   }
 
   /**
-   *
-   *
    * @param string $query
    * @return void
    */
@@ -65,12 +63,19 @@ class ParseController extends Controller {
         ], [
           'data_source_id' => $company_vo->data_source_id,
           'data_source_item_id' => $company_vo->data_source_item_id,
+          'data_source_item_url' => $company_vo->data_source_item_url,
           'user_id' => null,
           'name' => $company_vo->name,
+          'description' => $company_vo->description,
           'full_name' => $company_vo->full_name,
           'inn' => $founded_inn,
           'ogrn' => $company_vo->ogrn,
           'address' => $company_vo->actual_address,
+          'legal_address' => $company_vo->legal_address,
+          'number_of_employees' => $company_vo->number_of_employees,
+          'authorized_capital' => $company_vo->authorized_capital,
+          'registration_date' => $company_vo->registration_date,
+          'keywords_for_search' => (object)$company_vo->keywords_for_search,
           'email' => $company_vo->email,
           'phone' => $company_vo->phone,
           'site' => $company_vo->site,
