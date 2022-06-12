@@ -3,6 +3,14 @@
     <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">
       Пользователи
     </h5>
+    <div>
+      <UserDialog 
+        v-model="dialog" 
+        v-model:user="selectUser"
+        :loading="loading"
+        @on-success="onSucces"
+      />
+    </div>
     <q-table
       :columns="columns"
       :rows="allUser"
@@ -29,35 +37,13 @@
           </div>
         </q-td>
       </template>
-      <template v-slot:top-left>
-        <q-btn
-          :loading="loading"
-          color="primary float-right"
-          label="Добавить пользователя"
-          @click="appendNewUser"
-        />
-      </template>
     </q-table>
   </div>
-  <UserDialog 
-    v-model="dialog" 
-    v-model:counterparty="selectCounterparty"
-    @on-success="emitOnRequest"
-  />
+
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from 'vue';
-
-  /**
-   * Api
-   */
-  import { apiGetAllUsers, apiSignupUser, apiUpdateUserInfo } from 'Src/api/users';
-
-  /**
-   * Constants
-   */
-  import { Roles, RolesDescription } from 'Src/constants';
+  import {ref } from 'vue';
 
   /**
    * Common
@@ -65,21 +51,16 @@
   import { selectedRowsLabel, paginationLabel, getDefaultUser} from 'Src/common';
 
   /**
-   * Rules
-   */
-  import { requiredStringRule, requiredPasswordRule, requiredSelectRule } from 'Src/common/rules';
-
-  /**
    * Store
    */
-  import { ownerStore, User, userStore } from '../../stores';
+  import { User, userStore } from '../../stores';
   import { storeToRefs } from 'pinia';
 
   /**
    * Types
    */
   import type { QTableProps } from 'quasar';
-  import { QTableOnRequestProps } from '../../types';
+  import type { QTableOnRequestProps } from 'Src/types';
 
   /**
    * Components
@@ -89,13 +70,12 @@
 
 
   const { loadAllUser } = userStore();
+
   const { allUser } = storeToRefs(userStore());
 
   const dialog = ref(false);
 
-  const searchText = ref('');
-
-  const selectUser = ref<User>();
+  const selectUser = ref<User>({ ...getDefaultUser() });
 
   const loading = ref(false);
 
@@ -189,15 +169,15 @@
     selectUser.value = { ...value };
   }
 
-  function appendNewUser() {
-    dialog.value = true;
+  async function onSucces() {
+    loading.value = true;
 
-    selectUser.value = getDefaultUser();
+    await loadAllUser();
+
+    loading.value = false
   }
 
-  async function onRequest(ps: QTableOnRequestProps) {
-    const { page, rowsPerPage, sortBy, descending } = ps.pagination;
-
+  async function onRequest() {
     loading.value = true;
 
     await loadAllUser();
