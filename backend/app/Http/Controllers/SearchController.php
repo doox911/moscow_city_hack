@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CounterpartyResource;
+use App\Http\Resources\GoodResource;
+use App\Http\Resources\ServiceResource;
 use App\Models\Good;
 use Illuminate\Http\JsonResponse;
 
@@ -46,9 +49,9 @@ class SearchController extends Controller {
 
     return response()->json([
       'content' => [
-        'companies' => $companies->unique('id')->values(),
-        'goods' => $goods->unique('id')->values(),
-        'services' => $services->unique('id')->values(),
+        'companies' => CounterpartyResource::collection($companies->unique('id')->values()),
+        'goods' => GoodResource::collection($goods->unique('id')->values()),
+        'services' => ServiceResource::collection($services->unique('id')->values()),
       ]
     ]);
   }
