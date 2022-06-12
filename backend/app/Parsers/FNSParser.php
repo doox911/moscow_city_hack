@@ -16,7 +16,7 @@ class FNSParser extends AbstractParser implements IParser {
    * @inheritDoc
    * @throws GuzzleException
    */
-  public function parse(): Collection {
+  public function parse(string $query = ''): Collection {
     $companies = $this->searchCompanies();
 
     $inn_list = array_map(function ($company) {
@@ -48,5 +48,15 @@ class FNSParser extends AbstractParser implements IParser {
     $res_json = $this->client->request('GET', $url);
 
     return collect(json_decode($res_json->getBody())->items);
+  }
+
+  public function search(string $query) {
+    $url = config('services.fns.url') . "search?q=#search_string#&filter=active+region77&key=" . config('services.fns.secret');
+
+    $url = str_replace('#search_string#', $query, $url);
+
+    $res_json = $this->client->request('GET', $url);
+
+    return json_decode($res_json->getBody())->items;
   }
 }

@@ -181,7 +181,7 @@ class ProductCenterParser extends AbstractParser {
       $legal_address = '';
 
       // ОГРН
-      $orgn = '';
+      $ogrn = '';
 
       // ИНН
       $inn = '';
@@ -207,7 +207,7 @@ class ProductCenterParser extends AbstractParser {
         }
 
         if ($property_name_node->text() === 'ОГРН') {
-          $orgn = $property_value_node->text();
+          $ogrn = $property_value_node->text();
         }
 
         if ($property_name_node->text() === 'ИНН') {
@@ -278,7 +278,7 @@ class ProductCenterParser extends AbstractParser {
         'number_of_employees' => $number_of_employees,
         'authorized_capital' => $authorized_capital,
         'registration_date' => $registration_date,
-        'orgn' => $orgn,
+        'ogrn' => $ogrn,
         'inn' => $inn,
         'kpp' => $kpp,
 

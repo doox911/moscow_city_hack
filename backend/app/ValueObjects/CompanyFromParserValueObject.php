@@ -26,7 +26,7 @@ use JsonException;
  * @property int|null $number_of_employees
  * @property float|null $authorized_capital
  * @property string|null $registration_date
- * @property string|null $orgn
+ * @property string|null $ogrn
  * @property string|null $inn
  * @property string|null $kpp
  *
@@ -117,7 +117,7 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
    * @description ОГРН
    * @var string|null
    */
-  protected ?string $orgn = null;
+  protected ?string $ogrn = null;
 
   /**
    * @description ИНН

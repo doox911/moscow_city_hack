@@ -17,6 +17,7 @@ class GoodResource extends JsonResource {
      */
     $good = $this->resource;
 
+    //todo добавить поля
     return [
       'id' => $good->id,
       'brand' => $good->brand,

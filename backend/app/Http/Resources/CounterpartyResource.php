@@ -24,6 +24,7 @@ class CounterpartyResource extends JsonResource {
 
     $data_source = $counterparty->data_source ? DataSourceResource::make($counterparty->data_source) : null;
 
+    // todo добавить поля
     return [
       'id' => $counterparty->id,
       'user_id' => $counterparty->user_id,
