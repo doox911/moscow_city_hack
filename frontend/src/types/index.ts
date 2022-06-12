@@ -40,7 +40,7 @@ export type LaravelPagination<T> = {
   to: string;
 };
 
-export type ImportSortColoumn = {
+export type ImportSortColumn = {
   [key: string]: 'asc' | 'desc';
 };
 

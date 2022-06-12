@@ -31,10 +31,7 @@
    */
   import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue';
 
-  const emit = defineEmits([
-    'update:modelValue',
-    'update:service',
-  ]);
+  const emit = defineEmits(['update:modelValue', 'update:service', 'onCancel']);
 
   const props = withDefaults(
     defineProps<{

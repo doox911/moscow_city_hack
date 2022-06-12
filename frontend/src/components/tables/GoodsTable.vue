@@ -101,7 +101,7 @@
   /**
    * Types
    */
-  import type { QTableOnRequestProps, ImportSortColoumn } from 'src/types';
+  import type { QTableOnRequestProps, ImportSortColumn } from 'src/types';
   import type { QTableProps } from 'quasar';
 
   /**
@@ -271,7 +271,7 @@
   }
 
   function emitOnRequest() {
-    let columns: ImportSortColoumn = {};
+    let columns: ImportSortColumn = {};
 
     if (pagination.value.sortBy) {
       columns[pagination.value.sortBy] = pagination.value.descending

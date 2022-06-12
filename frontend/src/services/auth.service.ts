@@ -1,7 +1,17 @@
-import { apiGetUserInfo, apiLogin, apiLogoutAccess, apiSignupUser } from '../api/users';
-import { userStore } from '../stores/userStore';
-import { Token } from '../classes/token';
-import { ResponseTokens } from '../types';
+/**
+ * Api
+ */
+import { apiGetUserInfo, apiLogin, apiLogoutAccess } from 'Src/api/users';
+
+/**
+ * Classes
+ */
+import { Token } from 'Src/classes/token';
+
+/**
+ * Store
+ */
+import { userStore } from 'Src/stores/userStore';
 
 export class AuthService {
   accessToken: Token = new Token('access_token', 0);
@@ -9,8 +19,7 @@ export class AuthService {
    * Запрос пользователя, если есть токен
    */
   async init() {
-    if (this.isAuthenticated)
-      await this.updateUserInfo();
+    if (this.isAuthenticated) await this.updateUserInfo();
   }
   /**
    * Получить текущий access токен
@@ -65,16 +74,6 @@ export class AuthService {
 }
 
 export default new AuthService();
-
-interface UserDataForSave {
-  second_name: string;
-  name: string;
-  patronymic: string;
-  email: string;
-  role: string;
-  owner?: string;
-  password: string;
-}
 
 interface UserDataForLogin {
   email: string;

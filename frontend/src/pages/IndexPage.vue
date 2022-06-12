@@ -6,7 +6,7 @@
       </q-btn>
     </div>
     <div class="row items-center justify-center">
-      <img src="~/assets/p.png" alt="Правительство Москвы">
+      <img src="~/assets/p.png" alt="Правительство Москвы" />
     </div>
     <div class="row items-center justify-center">
       <div class="col-auto">
@@ -14,7 +14,10 @@
           class="text-center non-selectable text-weight-regular text-h5 text-grey-9"
         >
           <span class="text-weight-bold">Д</span>обро пожаловать в
-          <span class="text-weight-bold text-green">М</span>ос<span class="text-weight-bold text-green">И</span>порт<span class="text-weight-bold text-green">М</span>ониторинг
+          <span class="text-weight-bold text-green">М</span>ос<span
+            class="text-weight-bold text-green"
+            >И</span
+          >порт<span class="text-weight-bold text-green">М</span>ониторинг
         </h1>
       </div>
     </div>
@@ -79,8 +82,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, onMounted} from 'vue';
-  
+  import { computed, ref, onMounted } from 'vue';
+
   /**
    * Routers
    */
@@ -162,13 +165,11 @@
 
   onMounted(() => {
     const { user } = userStore();
-      
+
     if (route.name !== user.role) {
       router.push({
-        name: user.role === Roles.Guest
-          ? 'loginPage'
-          : user.role,
-      })
+        name: user.role === Roles.Guest ? 'loginPage' : user.role,
+      });
     }
   });
 </script>

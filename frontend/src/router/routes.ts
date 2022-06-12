@@ -53,10 +53,10 @@ const routes: RouteRecordRaw[] = [
         name: Roles.Owner + 'Search',
         component: () => import('pages/SearchPage.vue'),
       },
-    ]
+    ],
   },
   {
-    path: '/login' ,
+    path: '/login',
     name: 'login',
     component: () => import('layouts/WelcomeLayout.vue'),
     children: [
@@ -69,8 +69,8 @@ const routes: RouteRecordRaw[] = [
         path: '/' + Roles.Guest,
         name: Roles.Guest,
         component: () => import('pages/IndexPage.vue'),
-      }
-    ]
+      },
+    ],
   },
   // Always leave this as last one,
   // but you can also remove it

@@ -1,4 +1,3 @@
-
 <template>
   <DialogCommonWrapper
     v-model="dialog"
@@ -10,23 +9,17 @@
     @on-cancel="cancel"
     @on-success="success"
   >
-    <div style = "width: 100%">
-      <q-input
-        v-model="goodData.name"
-        label="Название"
-        />
+    <div style="width: 100%">
+      <q-input v-model="goodData.name" label="Название" />
     </div>
-    <div style = "width: 100%">
-      <q-input
-        v-model="goodData.brand"
-        label="Брэнд"
-      />
+    <div style="width: 100%">
+      <q-input v-model="goodData.brand" label="Брэнд" />
     </div>
   </DialogCommonWrapper>
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue';
+  import { computed } from 'vue';
 
   /**
    * Api
@@ -37,7 +30,6 @@
    * Components
    */
   import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue';
-
 
   const emit = defineEmits([
     'onCancel',
@@ -53,7 +45,7 @@
     }>(),
     {
       modelValue: false,
-    }
+    },
   );
 
   const dialog = computed({
@@ -75,20 +67,14 @@
   });
 
   const headerColor = computed(() => {
-    return goodData.value.id
-      ? 'warning'
-      : 'primary';
+    return goodData.value.id ? 'warning' : 'primary';
   });
 
   const textHeader = computed(() => {
-    return goodData.value.id
-      ? 'Изменить товар'
-      : 'Создать товар';
+    return goodData.value.id ? 'Изменить товар' : 'Создать товар';
   });
   const buttonSuccessTooltip = computed(() => {
-    return goodData.value.id
-      ? 'Изменить товар'
-      : 'Создать товар';
+    return goodData.value.id ? 'Изменить товар' : 'Создать товар';
   });
 
   const cancel = () => {
@@ -103,8 +89,7 @@
     goodData.value.id
       ? await apiUpdateGood(goodData.value)
       : await apiCreateGood(goodData.value);
-    
+
     emit('onSuccess', true);
   };
 </script>
-

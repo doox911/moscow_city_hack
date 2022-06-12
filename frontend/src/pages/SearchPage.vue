@@ -1,6 +1,8 @@
 <template>
   <div class="q-pa-sm">
-    <h3 class="q-my-sm non-selectable text-grey-9">Поиск компаний, продукции и услуг</h3>
+    <h3 class="q-my-sm non-selectable text-grey-9">
+      Поиск компаний, продукции и услуг
+    </h3>
     <div class="row q-pt-sm">
       <div class="col-10">
         <q-input
@@ -12,19 +14,20 @@
           debounce="500"
         />
       </div>
-      <div class="col-2" style="padding-left:10px;">
-        <SelectOkved v-model="selectedOKVED" outlined/>
+      <div class="col-2" style="padding-left: 10px">
+        <SelectOkved v-model="selectedOKVED" outlined />
       </div>
     </div>
-    <div class="search-result" style="padding:10px;">
+    <div class="search-result" style="padding: 10px">
       <div v-if="resultSearch.companies.length" class="row">
         <div class="col-12">
           <p class="text-h5">Компании</p>
         </div>
         <div class="col-12">
-          <div class="row" style="gap:10px;">
+          <div class="row" style="gap: 10px">
             <CounterpartyElement
-              v-for="counterparty in resultSearch.companies"
+              v-for="(counterparty, index) in resultSearch.companies"
+              :key="index"
               :counterparty="counterparty"
             />
           </div>
@@ -35,9 +38,10 @@
           <p class="text-h5">Товары</p>
         </div>
         <div class="col-12">
-          <div class="row" style="gap:10px;">
+          <div class="row" style="gap: 10px">
             <GoodElement
-              v-for="good in resultSearch.goods"
+              v-for="(good, index) in resultSearch.goods"
+              :key="index"
               :good="good"
             />
           </div>
@@ -48,9 +52,14 @@
           <p class="text-h5">Услуги</p>
         </div>
         <div class="col-12">
-          <div class="row" style="gap:10px;">
-            <div v-for="service in resultSearch.services">
-              <q-chip icon="home_repair_service" color="deep-orange" text-color="white">{{ service.name }}</q-chip>
+          <div class="row" style="gap: 10px">
+            <div v-for="(service, index) in resultSearch.services" :key="index">
+              <q-chip
+                icon="home_repair_service"
+                color="deep-orange"
+                text-color="white"
+                >{{ service.name }}</q-chip
+              >
             </div>
           </div>
         </div>
@@ -60,7 +69,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script setup lang="ts">
@@ -81,7 +89,6 @@
   /**
    * Types
    */
-  import type { OKVED } from 'Src/api';
   import { AllEntity, apiGlobalSearch } from '../api/search';
 
   useUserSearchPageGuard();
@@ -101,12 +108,11 @@
   const resultSearch = ref<AllEntity>({
     companies: [],
     goods: [],
-    services: []
-  })
+    services: [],
+  });
 
-  async function startSearch()
-  {
-    if(!search.value) {
+  async function startSearch() {
+    if (!search.value) {
       isEmpty.value = false;
       resultSearch.value.companies = [];
       resultSearch.value.goods = [];
@@ -125,12 +131,10 @@
 
     loading.value = false;
   }
-
 </script>
 
 <style scoped>
-  .search-result > .row:nth-child(n+2)
-  {
-    margin-top:10px;
+  .search-result > .row:nth-child(n + 2) {
+    margin-top: 10px;
   }
 </style>

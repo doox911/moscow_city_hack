@@ -106,20 +106,16 @@
   /**
    * Types
    */
-  import type { QTableOnRequestProps, ImportSortColoumn } from 'src/types';
+  import type { QTableOnRequestProps, ImportSortColumn } from 'src/types';
   import type { QTableProps } from 'quasar';
 
   /**
    * Store
    */
-  import { storeToRefs } from 'pinia';
-  import { userStore } from '../../stores';
   import {
     apiCounterpartyAttachServices,
     Counterparty,
   } from '../../api/counterparty';
-
-  const { allUser } = storeToRefs(userStore());
 
   const dialog = ref(false);
 
@@ -280,7 +276,7 @@
   }
 
   function emitOnRequest() {
-    let columns: ImportSortColoumn = {};
+    let columns: ImportSortColumn = {};
 
     if (pagination.value.sortBy) {
       columns[pagination.value.sortBy] = pagination.value.descending

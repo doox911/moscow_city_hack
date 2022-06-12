@@ -4,18 +4,18 @@
       <div class="row q-mb-md">
         <q-space />
         <div>
-          <Parsing /> 
+          <Parsing />
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <TasksTable 
-            :tasks="taskRef.data" 
+          <TasksTable
+            :tasks="taskRef.data"
             :loading="loading"
             @on-request="onRequestTask"
             @on-apply="onTaskApply"
             @on-cancel="onTaskCancel"
-        />
+          />
         </div>
       </div>
       <div class="row">
@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue'
+  import { onMounted, ref } from 'vue';
 
   /**
    * Api
@@ -89,50 +89,58 @@
    * Types
    */
   import type { Task } from 'Src/api/task';
-  import type { ImportSortColoumn } from 'Src/types';
+  import type { ImportSortColumn } from 'Src/types';
 
   type URef<T> = {
-    data: T,
-    rowsNumber: number,
-    loading: boolean,
-    selected: T
-  }
+    data: T;
+    rowsNumber: number;
+    loading: boolean;
+    selected: T;
+  };
 
   useUserPageGuard();
 
-  const taskRef = ref<URef<Task[]> >({
+  const taskRef = ref<URef<Task[]>>({
     data: [],
     rowsNumber: 0,
     loading: false,
-    selected: []
+    selected: [],
   });
 
   const counterpartRef = ref<URef<Counterparty[]>>({
     data: [],
     rowsNumber: 0,
     loading: false,
-    selected: []
+    selected: [],
   });
 
   const goodsRef = ref<URef<Good[]>>({
     data: [],
     rowsNumber: 0,
     loading: false,
-    selected: []
+    selected: [],
   });
 
   const servicesRef = ref<URef<Service[]>>({
     data: [],
     rowsNumber: 0,
     loading: false,
-    selected: []
+    selected: [],
   });
 
   const loading = ref(false);
 
-
-  async function onRequestTask({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
-  {
+  async function onRequestTask({
+    page,
+    size,
+    columns,
+    searchText,
+  }: {
+    page: number;
+    size: number;
+    columns: ImportSortColumn;
+    searchText: string;
+  }) {
     taskRef.value.loading = true;
     const { tasks, total_rows } = await apiTasks({
       params: {
@@ -140,9 +148,9 @@
         item_per_page: size,
         filters: {
           search_string: searchText,
-          columns
-        }
-      }
+          columns,
+        },
+      },
     });
 
     taskRef.value.rowsNumber = total_rows;
@@ -150,8 +158,17 @@
     taskRef.value.loading = false;
   }
 
-  async function onRequestOwner({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
-  {
+  async function onRequestOwner({
+    page,
+    size,
+    columns,
+    searchText,
+  }: {
+    page: number;
+    size: number;
+    columns: ImportSortColumn;
+    searchText: string;
+  }) {
     counterpartRef.value.loading = true;
     const { counterparties, total_rows } = await apiCounterparties({
       params: {
@@ -159,9 +176,9 @@
         item_per_page: size,
         filters: {
           search_string: searchText,
-          columns
-        }
-      }
+          columns,
+        },
+      },
     });
 
     counterpartRef.value.rowsNumber = total_rows;
@@ -169,8 +186,17 @@
     counterpartRef.value.loading = false;
   }
 
-  async function onRequestGoods({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
-  {
+  async function onRequestGoods({
+    page,
+    size,
+    columns,
+    searchText,
+  }: {
+    page: number;
+    size: number;
+    columns: ImportSortColumn;
+    searchText: string;
+  }) {
     goodsRef.value.loading = true;
     const { goods, total_rows } = await apiGoods({
       params: {
@@ -178,9 +204,9 @@
         item_per_page: size,
         filters: {
           search_string: searchText,
-          columns
-        }
-      }
+          columns,
+        },
+      },
     });
 
     goodsRef.value.rowsNumber = total_rows;
@@ -188,8 +214,17 @@
     goodsRef.value.loading = false;
   }
 
-  async function onRequestServices({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
-  {
+  async function onRequestServices({
+    page,
+    size,
+    columns,
+    searchText,
+  }: {
+    page: number;
+    size: number;
+    columns: ImportSortColumn;
+    searchText: string;
+  }) {
     servicesRef.value.loading = true;
     const { services, total_rows } = await apiServices({
       params: {
@@ -197,9 +232,9 @@
         item_per_page: size,
         filters: {
           search_string: searchText,
-          columns
-        }
-      }
+          columns,
+        },
+      },
     });
 
     servicesRef.value.rowsNumber = total_rows;
@@ -213,14 +248,14 @@
     await resolveTask({
       is_accepted: 1,
       task_id: t.id,
-      comment: t.comment
+      comment: t.comment,
     });
 
     onRequestTask({
       page: 1,
       size: 10,
       columns: {},
-      searchText: ''
+      searchText: '',
     });
 
     loading.value = false;
@@ -232,14 +267,14 @@
     await resolveTask({
       is_accepted: 0,
       task_id: t.id,
-      comment: t.comment
+      comment: t.comment,
     });
 
     onRequestTask({
       page: 1,
       size: 10,
       columns: {},
-      searchText: ''
+      searchText: '',
     });
 
     loading.value = false;
@@ -247,34 +282,34 @@
 
   onMounted(async () => {
     loading.value = true;
-    
+
     onRequestTask({
       page: 1,
       size: 10,
       columns: {},
-      searchText: ''
+      searchText: '',
     });
 
     onRequestOwner({
       page: 1,
       size: 10,
       columns: {},
-      searchText: ''
+      searchText: '',
     });
 
     onRequestGoods({
       page: 1,
       size: 10,
       columns: {},
-      searchText: ''
+      searchText: '',
     });
     onRequestServices({
       page: 1,
       size: 10,
       columns: {},
-      searchText: ''
+      searchText: '',
     });
 
     loading.value = false;
-  })
+  });
 </script>

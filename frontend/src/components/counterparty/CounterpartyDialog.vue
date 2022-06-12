@@ -1,4 +1,3 @@
-
 <template>
   <DialogCommonWrapper
     v-model="dialog"
@@ -10,56 +9,32 @@
     @on-cancel="cancel"
     @on-success="success"
   >
-    <div style = "width: 100%">
-      <q-input
-        v-model="counterpartyData.name"
-        label="Название"
-        />
+    <div style="width: 100%">
+      <q-input v-model="counterpartyData.name" label="Название" />
     </div>
-    <div style = "width: 100%">
-      <q-input
-        v-model="counterpartyData.full_name"
-        label="Полное название"
-      />
+    <div style="width: 100%">
+      <q-input v-model="counterpartyData.full_name" label="Полное название" />
     </div>
-    <div style = "width: 100%">
-      <q-input
-        v-model="counterpartyData.inn"
-        label="ИНН"
-      />
+    <div style="width: 100%">
+      <q-input v-model="counterpartyData.inn" label="ИНН" />
     </div>
-    <div style = "width: 100%">
-      <q-input
-        v-model="counterpartyData.ogrn"
-        label="ОГРН"
-      />
+    <div style="width: 100%">
+      <q-input v-model="counterpartyData.ogrn" label="ОГРН" />
     </div>
-    <div style = "width: 100%">
-      <q-input
-        v-model="counterpartyData.adress"
-        label="Адрес"
-      />
+    <div style="width: 100%">
+      <q-input v-model="counterpartyData.address" label="Адрес" />
     </div>
-    <div style = "width: 100%">
-      <q-input
-        v-model="counterpartyData.email"
-        label="Почта"
-      />
+    <div style="width: 100%">
+      <q-input v-model="counterpartyData.email" label="Почта" />
     </div>
-    <div style = "width: 100%">
-      <q-input
-        v-model="counterpartyData.phone"
-        label="Телефон"
-      />
+    <div style="width: 100%">
+      <q-input v-model="counterpartyData.phone" label="Телефон" />
     </div>
-    <div style = "width: 100%">
-      <q-input
-        v-model="counterpartyData.site"
-        label="Сайт"
-      />
+    <div style="width: 100%">
+      <q-input v-model="counterpartyData.site" label="Сайт" />
     </div>
-    <div v-if="isAdmin" style = "width: 100%">
-      <SelectUser v-model="selectedUser"/>
+    <div v-if="isAdmin" style="width: 100%">
+      <SelectUser v-model="selectedUser" />
     </div>
   </DialogCommonWrapper>
 </template>
@@ -70,7 +45,11 @@
   /**
    * Api
    */
-  import { apiCreateCounterparty, apiUpdateCounterparty, Counterparty } from 'Src/api/counterparty';
+  import {
+    apiCreateCounterparty,
+    apiUpdateCounterparty,
+    Counterparty,
+  } from 'Src/api/counterparty';
 
   /**
    * Components
@@ -99,7 +78,7 @@
     }>(),
     {
       modelValue: false,
-    }
+    },
   );
 
   const dialog = computed({
@@ -121,9 +100,7 @@
   });
 
   const headerColor = computed(() => {
-    return counterpartyData.value.id
-      ? 'warning'
-      : 'primary';
+    return counterpartyData.value.id ? 'warning' : 'primary';
   });
 
   const textHeader = computed(() => {
@@ -140,16 +117,21 @@
   const selectedUser = ref<User | undefined>();
 
   watch(selectedUser, (user?: User) => {
-    if(user)
-      counterpartyData.value.user_id = user.id;
+    if (user) counterpartyData.value.user_id = user.id;
   });
 
-  watch(counterpartyData, () => {
-    selectedUser.value = allUser.filter(user => user.id == counterpartyData.value.user_id).pop();
-  }, { deep: true})
+  watch(
+    counterpartyData,
+    () => {
+      selectedUser.value = allUser
+        .filter((user) => user.id == counterpartyData.value.user_id)
+        .pop();
+    },
+    { deep: true },
+  );
 
   const { user } = userStore();
-  
+
   const isAdmin = ref(user.role == Roles.Admin);
 
   const cancel = () => {
@@ -164,8 +146,7 @@
     counterpartyData.value.id
       ? await apiUpdateCounterparty(counterpartyData.value)
       : await apiCreateCounterparty(counterpartyData.value);
-    
+
     emit('onSuccess', true);
   };
 </script>
-

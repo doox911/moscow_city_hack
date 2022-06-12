@@ -1,11 +1,13 @@
 <template>
-  <div class="row" style="margin-bottom:10px;">
+  <div class="row" style="margin-bottom: 10px">
     <div class="row col-12">
-      <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
+      <div
+        class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12"
+      >
         <div
           v-if="photos && photos.length"
           class="row"
-          style="justify-content:center"
+          style="justify-content: center"
         >
           <div class="col-12 col-md-6">
             <q-carousel
@@ -21,8 +23,13 @@
                 :key="index"
                 :name="index + 1"
               >
-                <div class="row fit justify-start items-center q-gutter-xs q-col-gutter no-wrap">
-                  <q-img class="rounded-borders col-12 full-height" :src="`data:image/png;base64,${encodedImage}`" />
+                <div
+                  class="row fit justify-start items-center q-gutter-xs q-col-gutter no-wrap"
+                >
+                  <q-img
+                    class="rounded-borders col-12 full-height"
+                    :src="`data:image/png;base64,${encodedImage}`"
+                  />
                 </div>
               </q-carousel-slide>
             </q-carousel>
@@ -30,43 +37,71 @@
         </div>
         <p class="text-h5">Информация о компании</p>
         <q-separator />
-        <p class="q-my-xs"><b class="q-pr-sm">Название:</b>{{ counterparty.name }}</p>
-        <p class="q-my-xs"><b class="q-pr-sm">Полное название:</b>{{ counterparty.full_name }}</p>
+        <p class="q-my-xs">
+          <b class="q-pr-sm">Название:</b>{{ counterparty.name }}
+        </p>
+        <p class="q-my-xs">
+          <b class="q-pr-sm">Полное название:</b>{{ counterparty.full_name }}
+        </p>
         <p class="q-my-xs"><b class="q-pr-sm">ИНН:</b>{{ counterparty.inn }}</p>
-        <p class="q-my-xs"><b class="q-pr-sm">ОГРН:</b>{{ counterparty.ogrn }}</p>
-        <p class="q-my-xs"><b class="q-pr-sm">Адрес:</b>{{ counterparty.address }}</p>
-        <p class="q-my-xs"><b class="q-pr-sm">Почта:</b>{{ counterparty.email }}</p>
-        <p class="q-my-xs"><b class="q-pr-sm">телефон:</b>{{ counterparty.phone }}</p>
-        <p class="q-my-xs"><b class="q-pr-sm">сайт:</b>{{ counterparty.site }}</p>
-        <p class="q-my-xs"><b class="q-pr-sm">создано:</b>{{ counterparty_created }}</p>
-        <p class="q-my-xs"><b class="q-pr-sm">обновлено:</b>{{ counterparty_updated }}</p>
+        <p class="q-my-xs">
+          <b class="q-pr-sm">ОГРН:</b>{{ counterparty.ogrn }}
+        </p>
+        <p class="q-my-xs">
+          <b class="q-pr-sm">Адрес:</b>{{ counterparty.address }}
+        </p>
+        <p class="q-my-xs">
+          <b class="q-pr-sm">Почта:</b>{{ counterparty.email }}
+        </p>
+        <p class="q-my-xs">
+          <b class="q-pr-sm">телефон:</b>{{ counterparty.phone }}
+        </p>
+        <p class="q-my-xs">
+          <b class="q-pr-sm">сайт:</b>{{ counterparty.site }}
+        </p>
+        <p class="q-my-xs">
+          <b class="q-pr-sm">создано:</b>{{ counterparty_created }}
+        </p>
+        <p class="q-my-xs">
+          <b class="q-pr-sm">обновлено:</b>{{ counterparty_updated }}
+        </p>
       </div>
     </div>
   </div>
 
-  <div class="row" style="margin-bottom:10px;">
+  <div class="row" style="margin-bottom: 10px">
     <div class="row col-12">
-      <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
+      <div
+        class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12"
+      >
         <p class="text-h5">Услуги</p>
         <q-separator />
-        <div class="row" style=" padding-top:10px;">
-          <div v-for="service in servicesRef">
-            <q-chip icon="home_repair_service" color="deep-orange" text-color="white">{{ service.name }}</q-chip>
+        <div class="row" style="padding-top: 10px">
+          <div v-for="(service, index) in servicesRef" :key="index">
+            <q-chip
+              icon="home_repair_service"
+              color="deep-orange"
+              text-color="white"
+              >{{ service.name }}</q-chip
+            >
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row" style="margin-bottom:10px;">
+  <div class="row" style="margin-bottom: 10px">
     <div class="row col-12">
-      <div class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12">
+      <div
+        class="q-px-sm non-selectable text-weight-regular text-grey-9 col-12"
+      >
         <p class="text-h5">Товары</p>
         <q-separator />
-        <div class="row" style = "gap:10px; padding-top:10px;">
-          <GoodElement 
-            v-for="good in goodsRef"
+        <div class="row" style="gap: 10px; padding-top: 10px">
+          <GoodElement
+            v-for="(good, index) in goodsRef"
             :good="good"
+            :key="index"
           />
         </div>
       </div>
@@ -75,47 +110,59 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, computed, onMounted} from 'vue';
-  
+  import { ref, computed, onMounted } from 'vue';
+
   /**
    * Api
    */
-  import { apiCounterparty, Counterparty as CounterpartyType } from 'Src/api/counterparty';
-  
+  import {
+    apiCounterparty,
+    Counterparty as CounterpartyType,
+  } from 'Src/api/counterparty';
+
   /**
    * Common
    */
-  import { getDefaultCounterparty, setDateAndTimeToDateTimeComponent } from 'Src/common';
+  import {
+    getDefaultCounterparty,
+    setDateAndTimeToDateTimeComponent,
+  } from 'Src/common';
 
   /**
    * Store
    */
-  import { storeToRefs } from 'pinia'
+  import { storeToRefs } from 'pinia';
   import { userStore } from 'Src/stores';
 
   /**
    * Types
    */
-  import { ImportSortColoumn } from '../types';
+  import { ImportSortColumn } from 'Src/types';
   import { Service } from 'bonjour-service';
-  import { Good } from '../../api/good';
+  import { Good } from 'Src/api/good';
 
-  /** 
+  /**
    * Components
    */
-  import GoodElement from '../good/GoodElement.vue';
+  import GoodElement from 'Components/good/GoodElement.vue';
 
   const { user } = storeToRefs(userStore());
 
   const dialog = ref(false);
 
-  const counterparty = ref<CounterpartyType>(user.value.company || getDefaultCounterparty());
+  const counterparty = ref<CounterpartyType>(
+    user.value.company || getDefaultCounterparty(),
+  );
 
   const selectCounterparty = ref<CounterpartyType>(getDefaultCounterparty());
 
-  const counterparty_created = computed(() => setDateAndTimeToDateTimeComponent(counterparty.value.created_at));
+  const counterparty_created = computed(() =>
+    setDateAndTimeToDateTimeComponent(counterparty.value.created_at),
+  );
 
-  const counterparty_updated = computed(() => setDateAndTimeToDateTimeComponent(counterparty.value.updated_at));
+  const counterparty_updated = computed(() =>
+    setDateAndTimeToDateTimeComponent(counterparty.value.updated_at),
+  );
 
   const slide = ref(1);
 
@@ -124,18 +171,23 @@
   const goodsRef = ref<Good[]>([]);
   const servicesRef = ref<Service[]>([]);
 
-  function openEditDialog() {
-    dialog.value = true;
-    selectCounterparty.value = counterparty.value;
-  }
+  async function onRequestGoods({
+    page,
+    size,
+    columns,
+    searchText,
+  }: {
+    page: number;
+    size: number;
+    columns: ImportSortColumn;
+    searchText: string;
+  }) {
+    if (user.value.company?.id) {
+      const { goods, services, base64_photos } = await apiCounterparty(
+        user.value.company?.id,
+      );
 
-  async function onRequestGoods({ page, size, columns, searchText }: { page: number, size: number, columns: ImportSortColoumn, searchText: string })
-  {
-    if(user.value.company?.id)
-    {
-      const { goods, services, base64_photos } = await apiCounterparty(user.value.company?.id);
-
-      goodsRef.value = goods;
+      goodsRef.value = goods as Good[];
       servicesRef.value = services;
 
       photos.value = base64_photos;
@@ -147,7 +199,7 @@
       page: 1,
       size: 10,
       columns: {},
-      searchText: ''
+      searchText: '',
     });
-  })
+  });
 </script>

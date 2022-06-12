@@ -8,7 +8,7 @@ import {
 import AuthService from '../services/auth.service';
 import { userStore } from '../stores/userStore';
 import routes from './routes';
-import { storeToRefs } from 'pinia'
+import { storeToRefs } from 'pinia';
 
 /*
  * If not building with SSR mode, you can
@@ -45,15 +45,15 @@ export default route(function (/* { store, ssrContext } */) {
       if (to.path === '/' || to.path === '/login') {
         return {
           name: user.value.role,
-        }
+        };
       }
     } else {
       if (to.path !== '/login') {
         return {
           name: 'loginPage',
-        }
+        };
       }
-    } 
+    }
   });
 
   return Router;

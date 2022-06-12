@@ -1,6 +1,6 @@
 <template>
-  <DialogCommonWrapper 
-    v-model="dialog" 
+  <DialogCommonWrapper
+    v-model="dialog"
     :button-text="buttonText"
     :header-text="buttonText"
     @on-reset="onReset"
@@ -8,16 +8,24 @@
     <div class="col">
       <div class="row">
         <div class="col">
-          <q-input v-model="filter" :loading="loading" placeholder="Фильтр по компаниям">
+          <q-input
+            v-model="filter"
+            :loading="loading"
+            placeholder="Фильтр по компаниям"
+          >
             <template v-slot:append>
-              <q-icon name="search" @click="getCompany" class="cursor-pointer"/>
+              <q-icon
+                name="search"
+                @click="getCompany"
+                class="cursor-pointer"
+              />
             </template>
           </q-input>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <q-select 
+          <q-select
             v-model="selected"
             :loading="loading"
             :options="counterparties"
@@ -31,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, ref} from 'vue';
+  import { computed, onMounted, ref } from 'vue';
 
   /**
    * Api
@@ -41,17 +49,20 @@
   /**
    * Common
    */
-  import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue'
+  import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue';
 
   const emit = defineEmits(['update:modelValue']);
 
-  const props = withDefaults(defineProps<{
-    modelValue?: Counterparty;
-    buttonText?: string
-  }>(), {
-    modelValue: undefined,
-    buttonText: 'Выбрать компанию'
-  });
+  const props = withDefaults(
+    defineProps<{
+      modelValue?: Counterparty;
+      buttonText?: string;
+    }>(),
+    {
+      modelValue: undefined,
+      buttonText: 'Выбрать компанию',
+    },
+  );
 
   const page = ref(1);
 
@@ -71,11 +82,11 @@
     },
     set(v?: Counterparty | undefined) {
       emit('update:modelValue', v);
-    }
-  })
+    },
+  });
 
   const onReset = () => {
-    filter.value  = '';
+    filter.value = '';
   };
 
   async function updateCounterparty(s = '') {
@@ -87,20 +98,18 @@
           search_string: s,
           columns: {
             name: 'asc',
-            inn: 'desc'
-          }
-        }
-      }
+            inn: 'desc',
+          },
+        },
+      },
     });
 
-    counterparties.value = pagination.counterparties.map(e => {
+    counterparties.value = pagination.counterparties.map((e) => {
       return {
         ...e,
-        name: e.name.length > 50 
-          ? e.name.slice(0, 50) + '...'
-          : e.name,
+        name: e.name.length > 50 ? e.name.slice(0, 50) + '...' : e.name,
       };
-    })
+    });
   }
 
   async function getCompany() {
@@ -115,10 +124,9 @@
 
   onMounted(async () => {
     loading.value = true;
-    
+
     await updateCounterparty();
 
     loading.value = false;
   });
-
 </script>

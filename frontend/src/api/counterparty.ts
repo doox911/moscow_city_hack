@@ -17,7 +17,7 @@ export type Counterparty = {
   full_name: string;
   inn: string;
   ogrn: string;
-  adress: string;
+  address: string;
   email: string;
   phone: string;
   site: string;

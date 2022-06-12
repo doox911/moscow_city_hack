@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-mx-md">
-      <Parsing />
+    <Parsing />
   </q-page>
 </template>
 

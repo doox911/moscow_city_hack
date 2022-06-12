@@ -4,7 +4,12 @@
   </h4>
   <div class="row">
     <div class="cols-auto">
-      <q-input v-model="search" :loading="loading" dense  placeholder="Что ищем?">
+      <q-input
+        v-model="search"
+        :loading="loading"
+        dense
+        placeholder="Что ищем?"
+      >
         <template v-slot:append>
           <q-icon name="search" />
         </template>
@@ -41,7 +46,11 @@
   /**
    * Api
    */
-  import { apiRunParsing, apiPingParsing, apiStopParsing } from 'Src/api/parsing';
+  import {
+    apiRunParsing,
+    apiPingParsing,
+    apiStopParsing,
+  } from 'Src/api/parsing';
 
   /**
    * Components
@@ -59,14 +68,11 @@
   let timeinterval_id: ReturnType<typeof setInterval> | null = null;
 
   function runPing() {
-    timeinterval_id = setInterval(
-      () => {
-        apiPingParsing().then(r => {
-          is_parsing.value = r;
-        });
-      },
-      5000
-    );
+    timeinterval_id = setInterval(() => {
+      apiPingParsing().then((r) => {
+        is_parsing.value = r;
+      });
+    }, 5000);
   }
 
   async function searching() {
@@ -79,7 +85,6 @@
     loading.value = false;
 
     search.value = '';
-
   }
 
   async function stopParsing() {
@@ -100,7 +105,7 @@
     is_parsing.value = await apiPingParsing();
 
     loading.value = false;
-    
+
     if (is_parsing.value) {
       runPing();
     }

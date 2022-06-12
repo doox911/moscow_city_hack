@@ -36,7 +36,7 @@
 
   const { okved } = storeToRefs(okvedStore());
 
-  const options = ref([ ...okved.value ]);
+  const options = ref([...okved.value]);
 
   watch(okved, (v: OKVED[]) => {
     options.value = v;
@@ -53,18 +53,20 @@
     },
   });
 
-  function filterFn (val: string, update: (arg: () => void) => void) {    
+  function filterFn(val: string, update: (arg: () => void) => void) {
     if (val === '') {
       update(() => {
-        options.value = okved.value
-      })
-      return
+        options.value = okved.value;
+      });
+      return;
     }
 
     update(() => {
       const needle = val.toLowerCase();
 
-      options.value = okved.value.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
-    })
+      options.value = okved.value.filter(
+        (v) => v.name.toLowerCase().indexOf(needle) > -1,
+      );
+    });
   }
 </script>

@@ -1,8 +1,6 @@
 <template>
   <div class="q-pa-none">
-    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">
-      Предприятия
-    </h5>
+    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">Предприятия</h5>
     <q-table
       v-model:pagination="pagination"
       v-model:selected="s"
@@ -21,12 +19,12 @@
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
           <div class="col q-gutter justify-center">
-            <template
-              v-for="(button, index) of buttons"
-              :key="index"
-            >
+            <template v-for="(button, index) of buttons" :key="index">
               <IconBtn
-                v-if="button.event != 'map' || button.event == 'map' && props.row.latitude"
+                v-if="
+                  button.event != 'map' ||
+                  (button.event == 'map' && props.row.latitude)
+                "
                 :color="button.color"
                 :icon="button.icon"
                 :tooltip-text="button.tooltip"
@@ -46,11 +44,11 @@
         />
       </template>
       <template v-slot:top-right>
-        <q-input 
+        <q-input
           v-model="searchText"
           borderless
           debounce="300"
-          dense 
+          dense
           placeholder="Search"
           @update:model-value="emitOnRequest"
         >
@@ -61,13 +59,13 @@
       </template>
     </q-table>
   </div>
-  <CounterpartyDialog 
-    v-model="dialog" 
+  <CounterpartyDialog
+    v-model="dialog"
     v-model:counterparty="selectCounterparty"
     @on-success="emitOnRequest"
   />
   <MapDialog
-    v-model="mapDialog" 
+    v-model="mapDialog"
     v-model:coordinate="coordinate"
     :successButton="false"
     :resetButton="false"
@@ -85,36 +83,36 @@
   /**
    * Common
    */
-  import { 
+  import {
     selectedRowsLabel,
     paginationLabel,
     getDefaultCounterparty,
-    setDateAndTimeToDateTimeComponent
+    setDateAndTimeToDateTimeComponent,
   } from 'Src/common';
 
   /**
    * Components
    */
-  import IconBtn from 'Components/common/IconBtn.vue'
+  import IconBtn from 'Components/common/IconBtn.vue';
   import CounterpartyDialog from 'Components/counterparty/CounterpartyDialog.vue';
   import MapDialog from 'Components/counterparty/MapDialog.vue';
 
   /**
    * Types
    */
-  import type { QTableOnRequestProps, ImportSortColoumn } from 'src/types';
+  import type { QTableOnRequestProps, ImportSortColumn } from 'src/types';
   import type { QTableProps } from 'quasar';
 
   /**
    * Store
    */
-  import { storeToRefs } from 'pinia'
+  import { storeToRefs } from 'pinia';
   import { userStore } from '../../stores';
 
   interface Coordinate {
-    lat: number
-    lon: number
-    title?: string
+    lat: number;
+    lon: number;
+    title?: string;
   }
   const { allUser } = storeToRefs(userStore());
 
@@ -137,7 +135,8 @@
       field: 'user_id',
       label: 'Пользователь',
       name: 'user_id',
-      format: (val) => allUser.value.filter(user => user.id == val).pop()?.name,
+      format: (val) =>
+        allUser.value.filter((user) => user.id == val).pop()?.name,
       sortable: true,
     },
     {
@@ -254,11 +253,11 @@
       name: 'registration_date',
       format: (val) => {
         if (val) {
-          const {y, m, d} = val.split('')[0]
+          const { y, m, d } = val.split('')[0];
 
-          return `${d}.${m}.${y}`
+          return `${d}.${m}.${y}`;
         }
-        
+
         return val;
       },
       sortable: false,
@@ -270,9 +269,11 @@
       name: 'keywords_for_search',
       format: (val) => {
         if (val !== null) {
-          return Object.entries(val).map(e => e[1]).join(', ')
+          return Object.entries(val)
+            .map((e) => e[1])
+            .join(', ');
         }
-        
+
         return val;
       },
       sortable: false,
@@ -370,7 +371,7 @@
     coordinate.value = {
       lat: value.latitude || 55.751244,
       lon: value.longitude || 37.618423,
-      title: value.name
+      title: value.name,
     };
   }
 
@@ -380,12 +381,12 @@
     selectCounterparty.value = getDefaultCounterparty();
   }
 
-  function onClick(event: Button['event'], props: Counterparty)
-  {
-    switch(event)
-    {
-    case 'edit': return openEditDialog(props);
-    case 'map': return openMapDialog(props);
+  function onClick(event: Button['event'], props: Counterparty) {
+    switch (event) {
+    case 'edit':
+      return openEditDialog(props);
+    case 'map':
+      return openMapDialog(props);
     }
   }
 
@@ -400,23 +401,23 @@
       descending,
     };
 
-    emitOnRequest()
+    emitOnRequest();
   }
 
-  function emitOnRequest()
-  {
-    let columns: ImportSortColoumn = {};
-    
-    if(pagination.value.sortBy){
-      columns[pagination.value.sortBy] = pagination.value.descending ? 'desc' : 'asc';
+  function emitOnRequest() {
+    let columns: ImportSortColumn = {};
+
+    if (pagination.value.sortBy) {
+      columns[pagination.value.sortBy] = pagination.value.descending
+        ? 'desc'
+        : 'asc';
     }
 
     emit('onRequest', {
       page: pagination.value.page,
       size: pagination.value.rowsPerPage,
       columns,
-      searchText: searchText.value
+      searchText: searchText.value,
     });
   }
-
 </script>
