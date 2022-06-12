@@ -5,21 +5,21 @@ import { requestWrapper } from '../common/wrappers';
 /**
  * Types
  */
-import type { PaginationCount, LaravelPagination } from 'Src/types';
+import type { PaginationCount } from 'Src/types';
 
 export type Task = {
   user_id: number,
   entity_id: number,
   entity_type: string,
   value: string,
-  is_moderated: boolean,
-  is_accepted: boolean,
+  is_moderated: 0 | 1,
+  is_accepted: 0 | 1,
   comment: string,
 };
 
 export type TaskResponce = {
   content: PaginationCount & {
-    tasks: LaravelPagination<Task>,
+    tasks: Task[],
   },
   message: string;
 }
@@ -28,13 +28,19 @@ export type TaskResponce = {
  * Получение списка задач
  */
 export async function apiTasks(config?: AxiosRequestConfig) {
-  let menu: Task[] = [];
+  let response: PaginationCount & {
+    tasks: Task[],
+  } = {
+    pages_count: 0,
+    total_rows: 0,
+    tasks: [],
+  };
 
   await requestWrapper({
     success: async () => {
-      menu = (await new ApiRequest(config).get('api/tasks') as TaskResponce).content.tasks.data;
+      response = (await new ApiRequest(config).get('api/tasks') as TaskResponce).content;
     }
   });
 
-  return menu;
+  return response;
 }

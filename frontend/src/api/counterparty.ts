@@ -27,7 +27,7 @@ export type Counterparty = {
 
 export type CounterpartiesResponce = {
   content: PaginationCount & {
-    counterparties: LaravelPagination<Counterparty>,
+    counterparties: Counterparty[],
   },
   message: string;
 }
@@ -44,21 +44,11 @@ export type CounterpartyResponce = {
  */
 export async function apiCounterparties(config?: AxiosRequestConfig) {
   let pagination: PaginationCount & {
-    counterparties: LaravelPagination<Counterparty>,
+    counterparties: Counterparty[],
   } = {
     pages_count: 0,
     total_rows: 0,
-    counterparties: {
-      current_page: 1,
-      data: [],
-      first_page_url: '',
-      from: '',
-      next_page_url: '',
-      path: '',
-      per_page: '',
-      prev_page_url: '',
-      to: ''
-    }
+    counterparties: []
   };
   await requestWrapper({
     success: async () => {
