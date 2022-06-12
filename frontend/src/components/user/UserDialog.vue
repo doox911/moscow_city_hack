@@ -3,7 +3,7 @@
   <DialogCommonWrapper
     v-model="dialog"
     button-success-label="Сохранить"
-    button-text="Редактировать"
+    :button-text="buttonText"
     :button-success-tooltip="buttonSuccessTooltip"
     :header-bg-color="headerColor"
     :header-text="textHeader"
@@ -37,6 +37,7 @@
       <q-input
         v-model="u.email"
         :rules="[ requiredStringRule ]"
+        autocomplete="false"
         label="Email"
       />
     </div>
@@ -48,7 +49,7 @@
         :rules="[ requiredSelectRule ]"
         label="Роль"
         option-label="label"
-        @update:model-value="(e) => { u.role = e.value.value }"
+        @update:model-value="(e) => { u.role = e.value }"
       />
     </div>
     <div style = "width: 100%">
@@ -104,7 +105,7 @@
    */
   import type { User } from 'Src/stores';
 
-  const { user,  } = storeToRefs(userStore());
+  const { user } = storeToRefs(userStore());
 
   const isAdmin = computed(() => user.value.role == Roles.Admin);
 
@@ -137,20 +138,26 @@
     },
   );
 
+  const buttonText = computed(() => {
+    return  user.value.id === null || user.value.id < 0
+      ? 'Редактировать пользователя'
+      : 'Создать пользователя';
+  });
+
   const headerColor = computed(() => {
-    return user.value.id
+    return  user.value.id === null || user.value.id < 0
       ? 'warning'
       : 'primary';
   });
 
   const textHeader = computed(() => {
-    return user.value.id
+    return user.value.id === null || user.value.id < 0
       ? 'Изменить пользователя'
       : 'Создать пользователя';
   });
 
   const buttonSuccessTooltip = computed(() => {
-    return user.value.id
+    return user.value.id === null || user.value.id < 0
       ? 'Изменить пользователя'
       : 'Создать пользователя';
   });
