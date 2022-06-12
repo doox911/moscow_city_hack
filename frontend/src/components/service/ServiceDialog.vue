@@ -1,4 +1,3 @@
-
 <template>
   <DialogCommonWrapper
     v-model="dialog"
@@ -7,31 +6,30 @@
     :open-dialog-button="false"
     @on-cancel="cancel"
   >
-    <div style = "width: 100%">
+    <div style="width: 100%">
       {{ serviceData.name }}
     </div>
-    <div style = "width: 100%; margin-top: 10px;">
+    <div style="width: 100%; margin-top: 10px">
       {{ serviceData.additional_info }}
     </div>
-    <div style = "width: 100%">
+    <div style="width: 100%">
       {{ serviceData.code }}
     </div>
   </DialogCommonWrapper>
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue';
+  import { computed } from 'vue';
 
   /**
    * Api
    */
-  import { apiCreateService, apiUpdateService, Service } from 'Src/api/service';
+  import { Service } from 'Src/api/service';
 
   /**
    * Components
    */
   import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue';
-
 
   const emit = defineEmits([
     'onCancel',
@@ -47,7 +45,7 @@
     }>(),
     {
       modelValue: false,
-    }
+    },
   );
 
   const dialog = computed({
@@ -69,9 +67,7 @@
   });
 
   const headerColor = computed(() => {
-    return serviceData.value.id
-      ? 'warning'
-      : 'primary';
+    return serviceData.value.id ? 'warning' : 'primary';
   });
 
   const cancel = () => {
@@ -80,4 +76,3 @@
     emit('onCancel');
   };
 </script>
-

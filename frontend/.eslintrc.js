@@ -100,6 +100,7 @@ module.exports = {
       'ignores': [
         'Tooltip',
         'Confirm',
+        'Parsing',
       ]
     }],
 

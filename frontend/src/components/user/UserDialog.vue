@@ -1,4 +1,3 @@
-
 <template>
   <DialogCommonWrapper
     v-model="dialog"
@@ -13,46 +12,43 @@
     @on-reset="onReset"
     @on-success="success"
   >
-    <div style = "width: 100%">
+    <div style="width: 100%">
       <q-input
         v-model="u.second_name"
-        :rules="[ requiredStringRule ]"
+        :rules="[requiredStringRule]"
         label="Фамилия"
       />
     </div>
-    <div style = "width: 100%">
-      <q-input
-        v-model="u.name"
-        :rules="[ requiredStringRule ]"
-        label="Имя"
-      />
+    <div style="width: 100%">
+      <q-input v-model="u.name" :rules="[requiredStringRule]" label="Имя" />
     </div>
-    <div style = "width: 100%">
-      <q-input
-        v-model="u.patronymic"
-        label="Отчество"
-      />
+    <div style="width: 100%">
+      <q-input v-model="u.patronymic" label="Отчество" />
     </div>
-    <div style = "width: 100%">
+    <div style="width: 100%">
       <q-input
         v-model="u.email"
-        :rules="[ requiredStringRule ]"
+        :rules="[requiredStringRule]"
         autocomplete="false"
         label="Email"
       />
     </div>
-    <div style = "width: 100%">
+    <div style="width: 100%">
       <q-select
-        v-if = "isAdmin"
+        v-if="isAdmin"
         :model-value="{ value: u.role, label: RolesDescription[u.role] }"
         :options="roleList"
-        :rules="[ requiredSelectRule ]"
+        :rules="[requiredSelectRule]"
         label="Роль"
         option-label="label"
-        @update:model-value="(e) => { u.role = e.value }"
+        @update:model-value="
+          (e) => {
+            u.role = e.value;
+          }
+        "
       />
     </div>
-    <div style = "width: 100%">
+    <div style="width: 100%">
       <q-input
         v-model="u.password"
         :type="isPwd ? 'password' : 'text'"
@@ -73,7 +69,7 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue';
-  
+
   /**
    * Api
    */
@@ -83,7 +79,7 @@
    * Components
    */
   import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue';
-  
+
   /**
    * Constants
    */
@@ -139,15 +135,13 @@
   );
 
   const buttonText = computed(() => {
-    return  user.value.id === null || user.value.id < 0
+    return user.value.id === null || user.value.id < 0
       ? 'Создать пользователя'
       : 'Редактировать пользователя';
   });
 
   const headerColor = computed(() => {
-    return  user.value.id === null || user.value.id < 0
-      ? 'primary'
-      : 'warning';
+    return user.value.id === null || user.value.id < 0 ? 'primary' : 'warning';
   });
 
   const textHeader = computed(() => {
@@ -191,7 +185,7 @@
   const success = async () => {
     dialog.value = false;
 
-    if(u.value.id === null || u.value.id < 0) {
+    if (u.value.id === null || u.value.id < 0) {
       await apiSignupUser(u.value);
     } else {
       await apiUpdateUserInfo(u.value);
@@ -204,4 +198,3 @@
     emit('onReset', true);
   }
 </script>
-

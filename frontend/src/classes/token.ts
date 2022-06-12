@@ -1,9 +1,10 @@
 export class Token {
-  token: string = '';
-  time: number = 0;
+  token = '';
+  time = 0;
 
   constructor(private name: string, private lifeTime: number = 0) {
-    let localData = localStorage.getItem(name);
+    const localData = localStorage.getItem(name);
+
     if (localData) {
       this.load(JSON.parse(localData));
     }
@@ -12,7 +13,7 @@ export class Token {
    * Сохранение токена в localStorage, и получение метаданных
    */
   save(token: string) {
-    if(!token) return;
+    if (!token) return;
 
     this.time = new Date().getTime() + this.lifeTime * 60 * 1000;
     this.token = token;

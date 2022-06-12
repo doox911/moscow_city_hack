@@ -23,8 +23,6 @@ export function requiredPasswordRule(
   return true;
 }
 
-export function requiredSelectRule(
-  e: { label: string, value: string }
-) {
+export function requiredSelectRule(e: { label: string; value: string }) {
   return requiredStringRule(e && e.value);
 }

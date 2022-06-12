@@ -1,7 +1,7 @@
 import { onMounted, ref } from 'vue';
 
 /**
- * Constants 
+ * Constants
  */
 import { Roles } from 'Src/constants';
 
@@ -13,7 +13,7 @@ import { useRoute, useRouter } from 'vue-router';
 /**
  * Store
  */
-import { storeToRefs } from 'pinia'
+import { storeToRefs } from 'pinia';
 import { userStore } from '../stores/userStore';
 
 /**
@@ -48,7 +48,7 @@ export function useUserPageGuard() {
     if (route.name !== user.value.role) {
       router.push({
         name: user.value.role,
-      })
+      });
     }
   });
 }
@@ -64,7 +64,7 @@ export function useUserProfilePageGuard() {
     if (route.name !== user.value.role + 'Profile') {
       router.push({
         name: user.value.role + 'Profile',
-      })
+      });
     }
   });
 }
@@ -75,10 +75,13 @@ export function useUserSearchPageGuard() {
   const { user } = storeToRefs(userStore());
 
   onMounted(() => {
-    if (user.value.role !== Roles.Government && user.value.role !== Roles.Admin) {
+    if (
+      user.value.role !== Roles.Government &&
+      user.value.role !== Roles.Admin
+    ) {
       router.push({
         name: user.value.role + 'Profile',
-      })
+      });
     }
   });
 }

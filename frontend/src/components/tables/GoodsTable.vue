@@ -1,8 +1,6 @@
 <template>
   <div class="q-pa-none">
-    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">
-      Товары
-    </h5>
+    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">Товары</h5>
     <q-table
       v-model:pagination="pagination"
       v-model:selected="s"
@@ -34,7 +32,7 @@
         </q-td>
       </template>
       <template v-slot:top-left>
-        <div class = "row">
+        <div class="row">
           <q-btn
             :loading="loading"
             color="primary"
@@ -42,8 +40,8 @@
             @click="appendNewGood"
           />
           <SelectCounterparty
-            v-if = "isAttach"
-            style = "padding: 0; margin-left: 5px;"
+            v-if="isAttach"
+            style="padding: 0; margin-left: 5px"
             v-model="selectCounterparty"
             button-text="Привязать товар"
             @on-success="onCounterpartyAttachGoods"
@@ -56,7 +54,7 @@
           v-model="searchText"
           borderless
           debounce="300"
-          dense 
+          dense
           placeholder="Search"
           @update:model-value="emitOnRequest"
         >
@@ -67,8 +65,8 @@
       </template>
     </q-table>
   </div>
-  <GoodDialog 
-    v-model="dialog" 
+  <GoodDialog
+    v-model="dialog"
     v-model:good="selectGood"
     @on-success="emitOnRequest"
   />
@@ -85,18 +83,18 @@
   /**
    * Common
    */
-  import { 
+  import {
     selectedRowsLabel,
     paginationLabel,
     getDefaultGood,
     setDateAndTimeToDateTimeComponent,
-    getDefaultCounterparty
+    getDefaultCounterparty,
   } from 'Src/common';
 
   /**
    * Components
    */
-  import IconBtn from 'Components/common/IconBtn.vue'
+  import IconBtn from 'Components/common/IconBtn.vue';
   import GoodDialog from 'Components/good/GoodDialog.vue';
   import SelectCounterparty from 'Components/counterparty/SelectCounterparty.vue';
 
@@ -109,11 +107,10 @@
   /**
    * Store
    */
-  import { storeToRefs } from 'pinia'
-  import { userStore } from '../../stores';
-  import { apiCounterpartyAttachGoods, Counterparty } from '../../api/counterparty';
-
-  const { allUser } = storeToRefs(userStore());
+  import {
+    apiCounterpartyAttachGoods,
+    Counterparty,
+  } from '../../api/counterparty';
 
   const dialog = ref(false);
 
@@ -212,7 +209,7 @@
       selected: () => [],
       good: () => [],
       isAttach: true,
-      isSearch: true
+      isSearch: true,
     },
   );
 
@@ -255,8 +252,7 @@
     dialog.value = true;
     selectGood.value = getDefaultGood();
   }
-  async function onCounterpartyAttachGoods()
-  {
+  async function onCounterpartyAttachGoods() {
     apiCounterpartyAttachGoods(selectCounterparty.value, props.selected);
   }
 
@@ -271,23 +267,23 @@
       descending,
     };
 
-    emitOnRequest()
+    emitOnRequest();
   }
 
-  function emitOnRequest()
-  {
+  function emitOnRequest() {
     let columns: ImportSortColoumn = {};
-    
-    if(pagination.value.sortBy){
-      columns[pagination.value.sortBy] = pagination.value.descending ? 'desc' : 'asc';
+
+    if (pagination.value.sortBy) {
+      columns[pagination.value.sortBy] = pagination.value.descending
+        ? 'desc'
+        : 'asc';
     }
 
     emit('onRequest', {
       page: pagination.value.page,
       size: pagination.value.rowsPerPage,
       columns,
-      searchText: searchText.value
+      searchText: searchText.value,
     });
   }
-
 </script>

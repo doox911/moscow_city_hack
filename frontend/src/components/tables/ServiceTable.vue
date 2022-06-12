@@ -1,8 +1,6 @@
 <template>
   <div class="q-pa-none">
-    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">
-      Услуги
-    </h5>
+    <h5 class="q-ma-xs q-pl-md non-selectable text-grey-9">Услуги</h5>
     <q-table
       v-model:pagination="pagination"
       v-model:selected="s"
@@ -36,15 +34,17 @@
       <template v-slot:body-cell-additional_info="props">
         <q-td :props="props">
           <div class="col">
-            <div style="width:200px" class="customEllipsis">{{ props.row.additional_info }}</div>
+            <div style="width: 200px" class="customEllipsis">
+              {{ props.row.additional_info }}
+            </div>
           </div>
         </q-td>
       </template>
       <template v-slot:top-left>
-        <div class = "row">
+        <div class="row">
           <SelectCounterparty
-            v-if = "isAttach"
-            style = "padding: 0; margin-left: 5px;"
+            v-if="isAttach"
+            style="padding: 0; margin-left: 5px"
             v-model="selectCounterparty"
             button-text="Привязать услугу"
             @on-success="onCounterpartyAttachServices"
@@ -57,7 +57,7 @@
           v-model="searchText"
           borderless
           debounce="300"
-          dense 
+          dense
           placeholder="Search"
           @update:model-value="emitOnRequest"
         >
@@ -68,8 +68,8 @@
       </template>
     </q-table>
   </div>
-  <ServiceDialog 
-    v-model="dialog" 
+  <ServiceDialog
+    v-model="dialog"
     v-model:service="selectService"
     :successButton="false"
     :resetButton="false"
@@ -88,18 +88,18 @@
   /**
    * Common
    */
-  import { 
+  import {
     selectedRowsLabel,
     paginationLabel,
     getDefaultService,
     setDateAndTimeToDateTimeComponent,
-    getDefaultCounterparty
+    getDefaultCounterparty,
   } from 'Src/common';
 
   /**
    * Components
    */
-  import IconBtn from 'Components/common/IconBtn.vue'
+  import IconBtn from 'Components/common/IconBtn.vue';
   import ServiceDialog from 'Components/service/ServiceDialog.vue';
   import SelectCounterparty from 'Components/counterparty/SelectCounterparty.vue';
 
@@ -112,9 +112,12 @@
   /**
    * Store
    */
-  import { storeToRefs } from 'pinia'
+  import { storeToRefs } from 'pinia';
   import { userStore } from '../../stores';
-  import { apiCounterpartyAttachServices, Counterparty } from '../../api/counterparty';
+  import {
+    apiCounterpartyAttachServices,
+    Counterparty,
+  } from '../../api/counterparty';
 
   const { allUser } = storeToRefs(userStore());
 
@@ -216,7 +219,7 @@
       selected: () => [],
       service: () => [],
       isAttach: true,
-      isSearch: true
+      isSearch: true,
     },
   );
 
@@ -255,9 +258,11 @@
     selectService.value = { ...value };
   }
 
-  async function onCounterpartyAttachServices()
-  {
-    apiCounterpartyAttachServices(selectCounterparty.value, props.selected.map(service => service.id));
+  async function onCounterpartyAttachServices() {
+    apiCounterpartyAttachServices(
+      selectCounterparty.value,
+      props.selected.map((service) => service.id as number),
+    );
   }
 
   function onRequest(ps: QTableOnRequestProps) {
@@ -271,25 +276,25 @@
       descending,
     };
 
-    emitOnRequest()
+    emitOnRequest();
   }
 
-  function emitOnRequest()
-  {
+  function emitOnRequest() {
     let columns: ImportSortColoumn = {};
-    
-    if(pagination.value.sortBy){
-      columns[pagination.value.sortBy] = pagination.value.descending ? 'desc' : 'asc';
+
+    if (pagination.value.sortBy) {
+      columns[pagination.value.sortBy] = pagination.value.descending
+        ? 'desc'
+        : 'asc';
     }
 
     emit('onRequest', {
       page: pagination.value.page,
       size: pagination.value.rowsPerPage,
       columns,
-      searchText: searchText.value
+      searchText: searchText.value,
     });
   }
-
 </script>
 
 <style scoped>

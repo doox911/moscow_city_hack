@@ -43,3 +43,8 @@ export type LaravelPagination<T> = {
 export type ImportSortColoumn = {
   [key: string]: 'asc' | 'desc';
 }
+
+export type DefaultApiResponse<T> = {
+  content: T;
+  message: string;
+}

@@ -19,20 +19,24 @@
     >
       <template v-slot:body-cell-is_moderated="props">
         <q-td :props="props">
-          {{ props.row.is_moderated === 0 ? 'В процессе' : 'Рассмтрена' }}
+          {{ props.row.is_moderated === 0 ? 'В процессе' : 'Рассмотрена' }}
         </q-td>
       </template>
       <template v-slot:body-cell-is_accepted="props">
         <q-td :props="props">
-          {{ props.row.is_moderated === 0 
-            ? 'На рассмотрении' 
-            : props.row.is_accepted
-              ? 'Принята' 
+          {{
+            props.row.is_moderated === 0
+              ? 'На рассмотрении'
+              : props.row.is_accepted
+              ? 'Принята'
               : 'Отклонена'
-         }}
+          }}
         </q-td>
       </template>
-      <template v-if="user.role === Roles.Admin" v-slot:body-cell-actions="props">
+      <template
+        v-if="user.role === Roles.Admin"
+        v-slot:body-cell-actions="props"
+      >
         <q-td :props="props">
           <div class="col q-gutter justify-center">
             <IconBtn
@@ -58,17 +62,17 @@
   /**
    * Components
    */
-  import IconBtn from 'Components/common/IconBtn.vue'
+  import IconBtn from 'Components/common/IconBtn.vue';
 
   /**
    * Common
    */
-  import { selectedRowsLabel, paginationLabel} from 'Src/common'
+  import { selectedRowsLabel, paginationLabel } from 'Src/common';
 
   /**
    * Constants
    */
-  import { Roles } from 'Src/constants'
+  import { Roles } from 'Src/constants';
 
   /**
    * Store
@@ -81,7 +85,6 @@
   import type { QTableOnRequestProps } from 'src/types';
   import type { QTableProps } from 'quasar';
   import type { Task } from 'Src/api/task';
-
 
   type Button = {
     color: string;
@@ -192,7 +195,6 @@
     },
   );
 
-
   function onRequest(ps: QTableOnRequestProps) {
     // eslint-disable-next-line object-curly-newline
     const { page, rowsPerPage, sortBy, descending } = ps.pagination;
@@ -211,5 +213,4 @@
       sort: [`${sortBy},${descending ? 'desc' : 'asc'}`],
     });
   }
-
 </script>

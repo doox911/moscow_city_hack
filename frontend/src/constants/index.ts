@@ -25,4 +25,4 @@ export const RolesDescription = Object.freeze({
   [Roles.Government]: 'Сотрудник Департамента ИПП',
   [Roles.Owner]: 'Представитель компании',
   [Roles.Guest]: 'Гость',
-}); 
+});
