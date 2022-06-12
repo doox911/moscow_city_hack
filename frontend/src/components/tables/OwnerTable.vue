@@ -21,15 +21,19 @@
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
           <div class="col q-gutter justify-center">
-            <IconBtn
+            <template
               v-for="(button, index) of buttons"
               :key="index"
-              :color="button.color"
-              :icon="button.icon"
-              :tooltip-text="button.tooltip"
-              hover-color="primary"
-              @click="openEditDialog(props.row)"
-            />
+            >
+              <IconBtn
+                v-if="button.event != 'map' || button.event == 'map' && props.row.latitude"
+                :color="button.color"
+                :icon="button.icon"
+                :tooltip-text="button.tooltip"
+                hover-color="primary"
+                @click="onClick(button.event, { ...props.row })"
+              />
+            </template>
           </div>
         </q-td>
       </template>
@@ -62,6 +66,12 @@
     v-model:counterparty="selectCounterparty"
     @on-success="emitOnRequest"
   />
+  <MapDialog
+    v-model="mapDialog" 
+    v-model:coordinate="coordinate"
+    :successButton="false"
+    :resetButton="false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -87,6 +97,7 @@
    */
   import IconBtn from 'Components/common/IconBtn.vue'
   import CounterpartyDialog from 'Components/counterparty/CounterpartyDialog.vue';
+  import MapDialog from 'Components/counterparty/MapDialog.vue';
 
   /**
    * Types
@@ -100,15 +111,22 @@
   import { storeToRefs } from 'pinia'
   import { userStore } from '../../stores';
 
+  interface Coordinate {
+    lat: number
+    lon: number
+    title?: string
+  }
   const { allUser } = storeToRefs(userStore());
 
   const dialog = ref(false);
+  const mapDialog = ref(false);
 
   const searchText = ref('');
+  const coordinate = ref<Coordinate>({ lat: 55.751244, lon: 37.618423 });
 
   type Button = {
     color: string;
-    event: 'edit' | 'delete';
+    event: 'edit' | 'delete' | 'map';
     icon: string;
     tooltip: string;
   };
@@ -280,6 +298,12 @@
       icon: 'delete',
       tooltip: 'Удалить',
     },
+    {
+      color: 'positive',
+      event: 'map',
+      icon: 'public',
+      tooltip: 'Посмотреть на карте',
+    },
   ];
 
   const emit = defineEmits([
@@ -338,13 +362,31 @@
   function openEditDialog(value: Counterparty) {
     dialog.value = true;
 
-    selectCounterparty.value = { ...value };
+    selectCounterparty.value = value;
+  }
+  function openMapDialog(value: Counterparty) {
+    mapDialog.value = true;
+
+    coordinate.value = {
+      lat: value.latitude || 55.751244,
+      lon: value.longitude || 37.618423,
+      title: value.name
+    };
   }
 
   function appendNewCounterparty() {
     dialog.value = true;
 
     selectCounterparty.value = getDefaultCounterparty();
+  }
+
+  function onClick(event: Button['event'], props: Counterparty)
+  {
+    switch(event)
+    {
+      case "edit": return openEditDialog(props);
+      case "map": return openMapDialog(props);
+    }
   }
 
   function onRequest(ps: QTableOnRequestProps) {

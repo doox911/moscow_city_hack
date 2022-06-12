@@ -1,25 +1,18 @@
 <template>
   <DialogCommonWrapper
     v-model="dialog"
-    :header-bg-color="headerColor"
-    header-text="Просмотр услуги"
+    header-bg-color="primary"
+    header-text="Карта"
     :open-dialog-button="false"
     @on-cancel="cancel"
+    @on-open="onDialogMounted"
   >
-    <div style="width: 100%">
-      {{ serviceData.name }}
-    </div>
-    <div style="width: 100%; margin-top: 10px">
-      {{ serviceData.additional_info }}
-    </div>
-    <div style="width: 100%">
-      {{ serviceData.code }}
-    </div>
+    <div ref="mapContainerRef"></div>
   </DialogCommonWrapper>
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue';
+  import { computed, onMounted, ref, watch } from 'vue';
 
   /**
    * Api
@@ -30,15 +23,20 @@
    * Components
    */
   import DialogCommonWrapper from 'Components/common/dialogs/DialogCommonWrapper.vue';
+  
+  /**
+   * Map
+   */
+  import YandexMap from '../../yandex-map/map';
 
   const emit = defineEmits([
     'update:modelValue',
-    'update:service',
+    'update:coordinate',
   ]);
 
   const props = withDefaults(
     defineProps<{
-      service: Service;
+      coordinate: any;
       modelValue?: boolean;
     }>(),
     {
@@ -55,22 +53,34 @@
     },
   });
 
-  const serviceData = computed({
+  const coordinateCom = computed({
     get() {
-      return props.service;
+      return props.coordinate;
     },
     set(value?: Service) {
-      emit('update:service', value);
+      emit('update:coordinate', value);
     },
   });
 
-  const headerColor = computed(() => {
-    return serviceData.value.id ? 'warning' : 'primary';
+  const mapContainerRef = ref<any>(null);
+
+  watch(mapContainerRef, () => {
+    const mapContainer: HTMLElement = mapContainerRef.value;
+
+    if(dialog.value && props.coordinate) {
+      mapContainer.appendChild(
+        YandexMap.show(
+          props.coordinate.lat,
+          props.coordinate.lon,
+          props.coordinate.title
+        )
+      );
+    }
+    else YandexMap.hide();
   });
 
   const cancel = () => {
     dialog.value = false;
-
-    emit('onCancel');
   };
+
 </script>
