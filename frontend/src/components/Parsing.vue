@@ -72,13 +72,14 @@
   async function searching() {
     loading.value = true;
 
-    await apiRunParsing(search.value);
+    runPing();
+
+    await apiRunParsing(search.value, timeinterval_id);
 
     loading.value = false;
 
     search.value = '';
 
-    runPing();
   }
 
   async function stopParsing() {
