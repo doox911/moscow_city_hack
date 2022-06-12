@@ -1,8 +1,8 @@
 <template>
   <DialogCommonWrapper 
     v-model="dialog" 
-    button-text="Выбрать компанию"
-    header-text="Выбрать компанию"
+    :button-text="buttonText"
+    :header-text="buttonText"
     @on-reset="onReset"
   >
     <div class="col">
@@ -47,8 +47,10 @@
 
   const props = withDefaults(defineProps<{
     modelValue?: Counterparty;
+    buttonText?: string
   }>(), {
     modelValue: undefined,
+    buttonText: 'Выбрать компанию'
   });
 
   const page = ref(1);
@@ -91,7 +93,7 @@
       }
     });
 
-    counterparties.value = pagination.counterparties.data.map(e => {
+    counterparties.value = pagination.counterparties.map(e => {
       return {
         ...e,
         name: e.name.length > 50 

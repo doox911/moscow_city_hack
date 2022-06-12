@@ -6,6 +6,7 @@ import { requestWrapper } from '../common/wrappers';
  * Types
  */
 import type { PaginationCount, LaravelPagination } from 'Src/types';
+import { Good } from './good';
 
 export type Counterparty = {
   id: number | null,
@@ -107,5 +108,21 @@ export async function apiUpdateCounterparty(
       (await new ApiRequest(config).put(`/api/counterparties/${counterparty.id}`, counterparty) as CounterpartyResponce).content.counterparty;
     },
     success_message: 'Информация о предприятии изменена успешно'
+  });
+}
+
+/**
+ * Привязать к компании товар
+ */
+export async function apiCounterpartyAttachGoods(
+  counterparty: Counterparty,
+  goods: Good[],
+  config?: AxiosRequestConfig
+) {
+  await requestWrapper({
+    success: async () => {
+      await new ApiRequest(config).post(`/api/counterparties/${counterparty.id}/attach_goods`, { goods });
+    },
+    success_message: 'К компании привязаны товары'
   });
 }

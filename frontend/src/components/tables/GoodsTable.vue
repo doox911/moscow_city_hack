@@ -34,12 +34,20 @@
         </q-td>
       </template>
       <template v-slot:top-left>
-        <q-btn
-          :loading="loading"
-          color="primary"
-          label="Создать товар"
-          @click="appendNewGood"
-        />
+        <div class = "row">
+          <q-btn
+            :loading="loading"
+            color="primary"
+            label="Создать товар"
+            @click="appendNewGood"
+          />
+          <SelectCounterparty
+            style = "padding: 0; margin-left: 5px;"
+            v-model="selectCounterparty"
+            button-text="Привязать товар"
+            @on-success="onCounterpartyAttachGoods"
+          />
+        </div>
       </template>
       <template v-slot:top-right>
         <q-input 
@@ -79,7 +87,8 @@
     selectedRowsLabel,
     paginationLabel,
     getDefaultGood,
-    setDateAndTimeToDateTimeComponent
+    setDateAndTimeToDateTimeComponent,
+    getDefaultCounterparty
   } from 'Src/common';
 
   /**
@@ -87,6 +96,7 @@
    */
   import IconBtn from 'Components/common/IconBtn.vue'
   import GoodDialog from 'Components/good/GoodDialog.vue';
+  import SelectCounterparty from 'Components/counterparty/SelectCounterparty.vue';
 
   /**
    * Types
@@ -99,6 +109,7 @@
    */
   import { storeToRefs } from 'pinia'
   import { userStore } from '../../stores';
+  import { apiCounterpartyAttachGoods, Counterparty } from '../../api/counterparty';
 
   const { allUser } = storeToRefs(userStore());
 
@@ -220,6 +231,7 @@
   );
 
   const selectGood = ref<Good>(getDefaultGood());
+  const selectCounterparty = ref<Counterparty>(getDefaultCounterparty());
 
   function openEditDialog(value: Good) {
     dialog.value = true;
@@ -231,6 +243,10 @@
     dialog.value = true;
     console.log(GoodDialog)
     selectGood.value = getDefaultGood();
+  }
+  async function onCounterpartyAttachGoods()
+  {
+    apiCounterpartyAttachGoods(selectCounterparty.value, props.selected);
   }
 
   function onRequest(ps: QTableOnRequestProps) {
