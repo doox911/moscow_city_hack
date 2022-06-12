@@ -140,26 +140,26 @@
 
   const buttonText = computed(() => {
     return  user.value.id === null || user.value.id < 0
-      ? 'Редактировать пользователя'
-      : 'Создать пользователя';
+      ? 'Создать пользователя'
+      : 'Редактировать пользователя';
   });
 
   const headerColor = computed(() => {
     return  user.value.id === null || user.value.id < 0
-      ? 'warning'
-      : 'primary';
+      ? 'primary'
+      : 'warning';
   });
 
   const textHeader = computed(() => {
     return user.value.id === null || user.value.id < 0
-      ? 'Изменить пользователя'
-      : 'Создать пользователя';
+      ? 'Создать пользователя'
+      : 'Изменить пользователя';
   });
 
   const buttonSuccessTooltip = computed(() => {
     return user.value.id === null || user.value.id < 0
-      ? 'Изменить пользователя'
-      : 'Создать пользователя';
+      ? 'Создать пользователя'
+      : 'Изменить пользователя';
   });
 
   const isPwd = ref(true);
