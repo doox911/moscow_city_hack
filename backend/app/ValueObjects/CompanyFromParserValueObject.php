@@ -100,7 +100,7 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
   protected ?float $authorized_capital = null;
 
   /**
-   * @description Дата регистрации
+   * @description Дата регистрации в формате Y-m-d
    * @var string|null
    */
   protected ?string $registration_date = null;
@@ -122,7 +122,6 @@ final class CompanyFromParserValueObject extends AbstractValueObject {
    * @var string|null
    */
   protected ?string $kpp = null;
-
 
   /**
    * @description Контактный телефон

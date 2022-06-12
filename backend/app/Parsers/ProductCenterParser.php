@@ -84,14 +84,14 @@ class ProductCenterParser extends AbstractParser {
         }
       }
 
-      $email = $producer_page->first('.tc_contacts span[itemprop="email"]')->text();
-      $phone = $producer_page->first('.tc_contacts span[itemprop="telephone"]')->text();
-      $site = $producer_page->first('.tc_contacts a[itemprop="url"]')->text();
+      $email = $producer_page->first('.tc_contacts span[itemprop="email"]')?->text();
+      $phone = $producer_page->first('.tc_contacts span[itemprop="telephone"]')?->text();
+      $site = $producer_page->first('.tc_contacts a[itemprop="url"]')?->text();
 
       // фактический адрес
-      $address_region = $producer_page->first('.tc_contacts span[itemprop="addressRegion"]')->text();
-      $address_locality = $producer_page->first('.tc_contacts span[itemprop="addressLocality"]')->text();
-      $street_address = $producer_page->first('.tc_contacts span[itemprop="streetAddress"]')->text();
+      $address_region = $producer_page->first('.tc_contacts span[itemprop="addressRegion"]')?->text();
+      $address_locality = $producer_page->first('.tc_contacts span[itemprop="addressLocality"]')?->text();
+      $street_address = $producer_page->first('.tc_contacts span[itemprop="streetAddress"]')?->text();
 
       if (empty($street_address)) {
         $actual_address = implode(', ', [$address_region, $address_locality]);
@@ -118,6 +118,44 @@ class ProductCenterParser extends AbstractParser {
 
       // дата регистрации
       $registration_date = '';
+
+      // реквизиты компании
+      foreach ($producer_page->find('.tc_contacts .company_data tr') as $i => $tr_node) {
+        [$property_name_node, $property_value_node] = $tr_node->find('td');
+
+        if ($property_name_node->text() === 'Наименование') {
+          $producer_name = $property_value_node->text();
+        }
+
+        if ($property_name_node->text() === 'ОГРН') {
+          $orgn = $property_value_node->text();
+        }
+
+        if ($property_name_node->text() === 'ИНН') {
+          $inn = $property_value_node->text();
+        }
+
+        if ($property_name_node->text() === 'КПП') {
+          $kpp = $property_value_node->text();
+        }
+
+        if ($property_name_node->text() === 'Юридический адрес') {
+          $legal_address = $property_value_node->text();
+        }
+
+        if ($property_name_node->text() === 'Дата регистрации') {
+          $registration_date = Carbon::parse($property_value_node->text())->format('Y-m-d');
+        }
+
+        if ($property_name_node->text() === 'Уставной капитал') {
+          $authorized_capital = (float)preg_replace('~\D+~','', $property_value_node->text());
+        }
+
+        if ($property_name_node->text() === 'Сотрудники') {
+          $number_of_employees = $property_value_node->text();
+        }
+      }
+
 
       // виды деятельности - делятся на 2 типа (Основной ОКВЭД, Дополнительные ОКВЭД)
       $activities = [];
@@ -149,10 +187,10 @@ class ProductCenterParser extends AbstractParser {
       // $counterparty->saveLogoFromUrl($producer_vo->logo_url);
       // $counterparty->savePhotosFromUrlArray($producer_vo->photos_urls);
 
-      dd($producer_vo);
+
       $producers->push($producer_vo);
     }
-
+    dd($producers);
     return $producers;
   }
 }
