@@ -26,11 +26,21 @@ class MenuSeeder extends Seeder {
         'icon_name' => 'perm_identity',
         'to' => '/profile',
         'order' => 1,
+      ],
+      [
+        'title' => 'Поиск',
+        'name' => 'Поиск',
+        'icon_name' => 'search',
+        'to' => '/search',
+        'order' => 3,
+        'separator' => false,
       ]
     ];
 
     foreach ($menus as $menu) {
-      Menu::create($menu);
+      Menu::updateOrCreate([
+        'to' => $menu
+      ], $menu);
     }
   }
 }
