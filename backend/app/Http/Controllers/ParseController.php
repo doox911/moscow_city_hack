@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Counterparty;
+use App\Models\Good;
+use App\Parsers\FNSParser;
 use App\Parsers\ProductCenterParser;
 use App\ValueObjects\CompanyFromParserValueObject;
+use Illuminate\Support\Facades\Cache;
 
 class ParseController extends Controller {
 
@@ -33,40 +37,97 @@ class ParseController extends Controller {
    * @return void
    */
   public function parse(string $query) {
-
+    Cache::forever('parsing_' . request()->user()->id, true);
     $rows = [];
+    $inns = [];
+    $names = [];
+    $fns = new FNSParser;
     foreach ($this->parsers as $parser) {
-      $rows = [...$rows, $parser->parse($query)->toArray()];
-    }
-
-    $inns = array_map(function (CompanyFromParserValueObject $row) {
-      return $row->inn;
-    }, $rows);
-
-    dd($inns);
-
-    $this->saveResult($rows);
-  }
-
-  /**
-   * Сохранение результатов парсинга. На входе массив CompanyFromParserValueObject
-   *
-   * @param array $rows
-   * @return void
-   * @see \App\ValueObjects\CompanyFromParserValueObject
-   */
-  public function saveResult(array $rows) {
-    foreach ($rows as $row) {
-      /**
-       * @var \App\ValueObjects\CompanyFromParserValueObject $row
-       */
-
-      foreach ($rows->goods as $good) {
+      foreach ($parser->parse() as $company) {
         /**
-         * @var \App\ValueObjects\CompanyGoodFromParserValueObject
+         * @var \App\ValueObjects\CompanyFromParserValueObject $company
          */
+        if (empty($company->inn)) {
+          $fns_company = $fns->search($company->name);
+          $inns[] = $fns_company->{'ИНН'};
 
+          Counterparty::updateOrCreate([
+            'inn' => $fns_company->{'ИНН'}
+          ], [
+            'data_source_id' => '',
+            'data_source_item_id' => '',
+            'user_id' => '',
+            'name' => '',
+            'full_name' => '',
+            'inn' => '',
+            'ogrn' => '',
+            'address' => '',
+            'email' => '',
+            'phone' => '',
+            'site' => '',
+
+            'longitude_center' => '',
+            'latitude_center' => '',
+            'longitude' => '',
+            'latitude' => '',
+          ]);
+        } else {
+          $inns[] = $company->inn;
+
+          Counterparty::updateOrCreate([
+            'inn' => $company->inn
+          ], [
+            'data_source_id' => '',
+            'data_source_item_id' => '',
+            'user_id' => '',
+            'name' => '',
+            'full_name' => '',
+            'inn' => '',
+            'ogrn' => '',
+            'address' => '',
+            'email' => '',
+            'phone' => '',
+            'site' => '',
+
+            'longitude_center' => '',
+            'latitude_center' => '',
+            'longitude' => '',
+            'latitude' => '',
+          ]);
+        }
+
+        foreach ($company->goods as $good) {
+          /**
+           * @var \App\ValueObjects\CompanyGoodFromParserValueObject $good
+           */
+
+          Good::create([
+            'data_source_id' => '',
+            'data_source_item_id' => '',
+            'brand' => '',
+            'name' => '',
+            'description' => '',
+            'price' => '',
+            'price_description' => '',
+            'keyword_for_search' => '',
+            'data_source_item_url' => '',
+            'data_source_item_last_edit' => '',
+            'price_min_party' => '',
+            'properties' => '',
+          ]);
+
+        }
       }
     }
+
+    // $additional_companies_info = $fns->searchGroupInfo($inns);
+    //
+    // foreach ($additional_companies_info as $item) {
+    //
+    // }
+
+    Cache::forget('parsing_' . request()->user()->id);
+    dd($inns);
+
   }
 }

@@ -20,6 +20,14 @@ class Good extends Model implements HasMedia {
     'data_source_item_id',
     'brand',
     'name',
+    'description',
+    'price',
+    'price_description',
+    'keyword_for_search',
+    'data_source_item_url',
+    'data_source_item_last_edit',
+    'price_min_party',
+    'properties',
   ];
 
   protected $with = [
