@@ -47,8 +47,7 @@ class CounterpartyController extends Controller {
 
     return response()->json([
       'content' => [
-        //'counterparties' => CounterpartyResource::collection($counterparties->simplePaginate($items_per_page)),
-        'counterparties' => $counterparties->simplePaginate($items_per_page),
+        'counterparties' => CounterpartyResource::collection($counterparties->simplePaginate($items_per_page)),
         'pages_count' => $pages_count,
         'total_rows' => $total_rows,
       ],
@@ -65,6 +64,7 @@ class CounterpartyController extends Controller {
   public function store(Request $request): JsonResponse {
     $data = $request->all();
 
+    // todo move to Trait or Service (duplicate code)
     if ($request->user()->isOwnerRole()) {
       $tc = new TaskController;
       $req = new StoreTaskRequest;
@@ -112,6 +112,7 @@ class CounterpartyController extends Controller {
   public function update(Request $request, Counterparty $counterparty): JsonResponse {
     $data = $request->all();
 
+    // todo move to Trait or Service (duplicate code)
     if ($request->user()->isOwnerRole()) {
       $tc = new TaskController;
       $req = new StoreTaskRequest;
@@ -171,6 +172,6 @@ class CounterpartyController extends Controller {
    * @return Response
    */
   public function destroy(Counterparty $counterparty): Response {
-    // todo realise
+    // todo realise (at the moment we do not destroy anything)
   }
 }

@@ -13,12 +13,15 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * Услуги
  */
 class Service extends Model implements HasMedia {
-  use HasFactory, SoftDeletes, InteractsWithMedia;
+  use HasFactory, InteractsWithMedia;
+
+  protected $table = 'class_okved';
 
   protected $fillable = [
     'id',
     'code',
     'name',
+    'additional_info'
   ];
 
   /**
