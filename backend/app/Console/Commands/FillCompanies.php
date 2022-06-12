@@ -43,11 +43,7 @@ class FillCompanies extends Command {
         'address' => $c->{"Адрес"}->{"АдресПолн"},
       ]);
 
-      $new_service = Service::updateOrCreate([
-        'code' => $c->{"ОснВидДеят"}->{"Код"},
-      ], [
-        'name' => $c->{"ОснВидДеят"}->{"Текст"},
-      ]);
+      $new_service = Service::where('code', $c->{"ОснВидДеят"}->{"Код"})->first();
 
       Activity::updateOrCreate([
         'counterparty_id' => $new_company->id,
@@ -59,15 +55,11 @@ class FillCompanies extends Command {
 
       $extra_services = $c->{"ДопВидДеят"} ?? "";
       foreach (explode(',', $extra_services) as $code) {
-        $new_service = Service::updateOrCreate([
-          'code' => $code,
-        ], [
-          'name' => "",
-        ]);
+        $service = Service::where('code', $code)->first();
 
         Activity::updateOrCreate([
           'counterparty_id' => $new_company->id,
-          'activity_id' => $new_service->id,
+          'activity_id' => $service->id,
           'activity_type' => Service::class,
         ], [
           'is_active' => true,

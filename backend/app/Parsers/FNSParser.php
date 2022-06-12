@@ -43,11 +43,17 @@ class FNSParser extends AbstractParser implements IParser {
    * @throws GuzzleException
    */
   public function searchGroupInfo(array $inn): Collection {
+    if (empty($inn)) {
+      return collect();
+    }
+
     $url = config('services.fns.url') . "multinfo?req=" . implode(',', $inn) . "&key=" . config('services.fns.secret');
 
     $res_json = $this->client->request('GET', $url);
 
-    return collect(json_decode($res_json->getBody())->items);
+    $response = json_decode($res_json->getBody());
+
+    return collect($response->items);
   }
 
   public function search(string $query) {
