@@ -3,16 +3,20 @@
 namespace App\Parsers;
 
 use App\Abstractions\AbstractParser;
+use App\Exceptions\ValidationException;
 use App\Models\Counterparty;
 use App\ValueObjects\CompanyFromParserValueObject;
 use Carbon\Carbon;
 use DiDom\Document;
 use DiDom\Exceptions\InvalidSelectorException;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\ServerException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use Throwable;
 
 /**
  * @description Парсинг информации с сайта "Интернет-выставка Производство России"
@@ -20,7 +24,17 @@ use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 class ProductCenterParser extends AbstractParser {
 
   protected static string $base_url = 'https://productcenter.ru';
-  protected static string $search_url = '/search/r-moskovskaia-obl-191?q=#query#&filter=producers';
+  protected static string $search_url = '/search/r-moskovskaia-obl-191?q=#query#&filter=producers&ajax=1&page=#page_number#';
+  protected Collection $producers;
+
+  /**
+   * Инициализация парсера
+   */
+  public function __construct() {
+    parent::__construct();
+
+    $this->producers = collect();
+  }
 
   /**
    * @param string $query
@@ -29,14 +43,50 @@ class ProductCenterParser extends AbstractParser {
    * @throws GuzzleException
    */
   public function parse(string $query = ''): Collection {
-    $producers = collect();
+    for ($page = 1; $page <= 15; $page++) {
+      $url = self::$base_url . str_replace('#query#', $query, self::$search_url);
+      $url = str_replace('#page_number#', $page, $url);
 
-    $url = self::$base_url . str_replace('#query#', $query, self::$search_url);
+      try {
+        $response = $this->client->request('GET', $url);
+      } catch (ServerException $e) {
+        // очередная страница не существует, превышен лимит страниц на стороне поставщика информации
+        break;
+      }
 
-    $res_json = $this->client->request('GET', $url);
-    $response_html = $res_json->getBody()->getContents();
-    $search_page_document = new Document($response_html);
+      if ($response->getStatusCode() === 200) {
+        $response_json = json_decode($response->getBody()->getContents());
 
+        $html_content = trim($response_json->items, "\n");
+        $html_content = trim($html_content);
+
+        if (empty($html_content)) {
+          // очередная страница не существует
+          break;
+        }
+
+        try {
+          $search_page_document = new Document($html_content);
+
+          $this->parsePage($search_page_document);
+        } catch (Throwable $e) {
+          dd($page, $response_json);
+        }
+      }
+    }
+
+    return $this->producers;
+  }
+
+  /**
+   * @param Document $search_page_document
+   * @return Collection
+   * @throws GuzzleException
+   * @throws InvalidSelectorException
+   * @throws ValidationException
+   * @throws JsonException
+   */
+  private function parsePage(Document $search_page_document) {
     foreach ($search_page_document->find('div.card_item') as $result_text) {
       $producer_id = $result_text->first('.to_favorites')->attr('data-item-id');
 
@@ -120,7 +170,7 @@ class ProductCenterParser extends AbstractParser {
       $registration_date = '';
 
       // реквизиты компании
-      foreach ($producer_page->find('.tc_contacts .company_data tr') as $i => $tr_node) {
+      foreach ($producer_page->find('.tc_contacts .company_data tr') as $tr_node) {
         [$property_name_node, $property_value_node] = $tr_node->find('td');
 
         if ($property_name_node->text() === 'Наименование') {
@@ -148,7 +198,7 @@ class ProductCenterParser extends AbstractParser {
         }
 
         if ($property_name_node->text() === 'Уставной капитал') {
-          $authorized_capital = (float)preg_replace('~\D+~','', $property_value_node->text());
+          $authorized_capital = (float)preg_replace('~\D+~', '', $property_value_node->text());
         }
 
         if ($property_name_node->text() === 'Сотрудники') {
@@ -187,10 +237,7 @@ class ProductCenterParser extends AbstractParser {
       // $counterparty->saveLogoFromUrl($producer_vo->logo_url);
       // $counterparty->savePhotosFromUrlArray($producer_vo->photos_urls);
 
-
-      $producers->push($producer_vo);
+      $this->producers->push($producer_vo);
     }
-    dd($producers);
-    return $producers;
   }
 }

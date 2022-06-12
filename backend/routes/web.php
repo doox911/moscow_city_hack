@@ -9,7 +9,9 @@ Route::get('/', function () {
 
 
 Route::get('/parser', function () {
-  (new ProductCenterParser)->parse('молоко');
+  $producers = (new ProductCenterParser)->parse('молоко');
+
+  dd($producers);
 });
 
 

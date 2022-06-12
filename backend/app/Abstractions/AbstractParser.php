@@ -26,7 +26,7 @@ abstract class AbstractParser implements IParser {
     $proxy_ip_list = ProxyService::getProxyIpCollection();
 
     $http_client_params = [
-      'timeout' => 30.0,
+      'timeout' => 90.0,
       'cookie' => true,
       'verify' => false,
       'request.options' => [],
