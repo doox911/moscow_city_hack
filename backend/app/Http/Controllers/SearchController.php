@@ -46,9 +46,9 @@ class SearchController extends Controller {
 
     return response()->json([
       'content' => [
-        'companies' => $companies,
-        'goods' => $goods,
-        'services' => $services,
+        'companies' => $companies->unique('id')->values(),
+        'goods' => $goods->unique('id')->values(),
+        'services' => $services->unique('id')->values(),
       ]
     ]);
   }
