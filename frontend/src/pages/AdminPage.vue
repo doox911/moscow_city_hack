@@ -181,6 +181,13 @@
       },
     });
 
+    if(counterpartRef.value.rowsNumber
+      && counterpartRef.value.rowsNumber < total_rows)
+      requestWrapper({
+        success: () => {},
+        success_message: `Добавлено новых компаний ${ total_rows - counterpartRef.value.rowsNumber }`
+      });
+
     counterpartRef.value.rowsNumber = total_rows;
     counterpartRef.value.data = counterparties;
     counterpartRef.value.loading = false;
