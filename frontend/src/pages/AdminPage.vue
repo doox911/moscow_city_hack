@@ -70,6 +70,7 @@
   import { apiCounterparties, Counterparty } from 'Src/api/counterparty';
   import { apiGoods, Good } from 'Src/api/good';
   import { apiServices, Service } from 'Src/api/service';
+  import { requestWrapper } from '../common/wrappers';
 
   /**
    * Hooks
@@ -208,7 +209,16 @@
       },
     });
 
+
+    if(goodsRef.value.rowsNumber
+      && goodsRef.value.rowsNumber < total_rows)
+      requestWrapper({
+        success: () => {},
+        success_message: `Добавлено новых товаров ${ total_rows - goodsRef.value.rowsNumber }`
+      });
+
     goodsRef.value.rowsNumber = total_rows;
+
     goodsRef.value.data = goods;
     goodsRef.value.loading = false;
   }
