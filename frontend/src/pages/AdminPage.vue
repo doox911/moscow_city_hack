@@ -70,6 +70,7 @@
   import { apiCounterparties, Counterparty } from 'Src/api/counterparty';
   import { apiGoods, Good } from 'Src/api/good';
   import { apiServices, Service } from 'Src/api/service';
+  import { requestWrapper } from '../common/wrappers';
 
   /**
    * Hooks
@@ -180,6 +181,13 @@
       },
     });
 
+    if(counterpartRef.value.rowsNumber
+      && counterpartRef.value.rowsNumber < total_rows)
+      requestWrapper({
+        success: () => {},
+        success_message: `Добавлено новых компаний ${ total_rows - counterpartRef.value.rowsNumber }`
+      });
+
     counterpartRef.value.rowsNumber = total_rows;
     counterpartRef.value.data = counterparties;
     counterpartRef.value.loading = false;
@@ -208,7 +216,16 @@
       },
     });
 
+
+    if(goodsRef.value.rowsNumber
+      && goodsRef.value.rowsNumber < total_rows)
+      requestWrapper({
+        success: () => {},
+        success_message: `Добавлено новых товаров ${ total_rows - goodsRef.value.rowsNumber }`
+      });
+
     goodsRef.value.rowsNumber = total_rows;
+
     goodsRef.value.data = goods;
     goodsRef.value.loading = false;
   }
