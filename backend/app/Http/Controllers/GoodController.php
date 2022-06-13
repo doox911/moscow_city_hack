@@ -165,7 +165,7 @@ class GoodController extends Controller {
     foreach ($goods as $good) {
       $good = Good::updateOrCreate([
         'name' => $good['name'],
-        'brand' => $good['brand'],
+        'brand' => $good['brand'] ?? '',
       ]);
 
       Activity::updateOrCreate([
